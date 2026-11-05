@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial — TeamRunner</title>
+<meta name="description" content="Build a team of AI agents from text files in ten minutes: a debate with a judge, rounds, a fact checker and the web. No code.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html#install">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="index.html#concepts">Concepts</a>
+      <a href="index.html#examples">Examples</a>
+      <a href="index.html#reference">Reference</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview 0.0.2</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc">
+<p class="label">Tutorial</p>
+<h1>Your first team, in ten minutes</h1>
+<p class="lede">You will build a debate between two AI agents with a judge, run it, and then give it rounds, a fact checker and the web. No code: every step is a text file or one command.</p>
+<div class="aside"><p><b>Before you start,</b> <a href="index.html#install">install TeamRunner</a>. Every step ends with a <b>rehearsal</b>, a run with no model at all: free, and no key needed. Only step 4 calls a real model, and that is the step that needs a key.</p></div>
+<nav class="toc" aria-label="Steps"><ol><li><a href="#make">Make a team</a></li><li><a href="#agents">Write three agents</a></li><li><a href="#check">Check it, then rehearse it</a></li><li><a href="#run">Run it for real</a></li><li><a href="#rounds">Give it rounds</a></li><li><a href="#factcheck">Add a fact checker</a></li><li><a href="#web">Give the team the web</a></li></ol></nav>
+<h2 id="make"><span class="stepno">Step 1</span>Make a team</h2>
+<p>Open a terminal in any folder and make a team called <code>debate</code>:</p>
+<code class="cmd" data-run>teamrunner new debate</code>
+<p>This makes a folder, <code>debate</code>, with one file in it that matters: <code>team.yaml</code>. A folder is a team when it holds a <code>team.yaml</code>. Open it in any text editor and replace what is there with this:</p>
+<div class="panel"><div class="cap"><span class="label">debate/team.yaml</span></div><pre data-file="debate/team.yaml">name: debate
+description: Two debaters argue a topic; a judge decides
+
+message_goes_to: topic
+
+default_inputs:
+  topic: &quot;Remote work makes teams more productive&quot;
+</pre></div>
+<p><code>default_inputs</code> is what the team argues about unless you say otherwise. <code>message_goes_to</code> says that a message you give on the command line becomes the <code>topic</code>.</p>
+<h2 id="agents"><span class="stepno">Step 2</span>Write three agents</h2>
+<p>An agent is a Markdown file in the team's folder: settings between the <code>---</code> lines at the top, and below them the agent's instructions, in plain words. Make these three files in <code>debate</code>.</p>
+<div class="panel"><div class="cap"><span class="label">debate/advocate.md</span></div><pre data-file="debate/advocate.md">---
+description: Argues in favor of the topic
+model: openai/gpt-6-luna
+---
+You are debating in favor of this topic:
+
+&gt; {{topic}}
+
+Each round, make your strongest remaining argument in one short
+paragraph. From round two onward, also rebut your opponent&#x27;s most
+recent point before adding your own. Be persuasive but honest.
+</pre></div>
+<div class="panel"><div class="cap"><span class="label">debate/critic.md</span></div><pre data-file="debate/critic.md">---
+description: Argues against the topic
+model: openai/gpt-6-luna
+---
+You are debating against this topic:
+
+&gt; {{topic}}
+
+Each round, rebut your opponent&#x27;s most recent point, then make your
+strongest remaining argument against the topic in one short paragraph.
+Be persuasive but honest.
+</pre></div>
+<div class="panel"><div class="cap"><span class="label">debate/judge.md</span></div><pre data-file="debate/judge.md">---
+description: Decides who argued better
+model: openai/gpt-6-luna
+output:
+  winner: [advocate, critic]
+  reasoning: &quot;&quot;
+---
+You have watched a debate on:
+
+&gt; {{topic}}
+
+Decide which side argued better — judge argument quality and logical
+clarity, not your own opinion of the topic. Announce the winner and
+explain your decision in one paragraph.
+</pre></div>
+<p>Three things to notice:</p>
+<ul><li><b>Every agent names its model.</b> The model is part of the agent: it is who you hired.</li><li><b><code>{{topic}}</code> is filled in</b> from <code>team.yaml</code>, or from your message.</li><li><b><code>output:</code> makes the judge's verdict a fact you can count:</b> <code>winner</code> is one of two names, <code>reasoning</code> is text. TeamRunner never guesses from free text what an agent decided.</li></ul>
+<p>There is no file saying who speaks when, so the members take one turn each, in alphabetical order: advocate, critic, judge. The folder listing is the running order.</p>
+<h2 id="check"><span class="stepno">Step 3</span>Check it, then rehearse it</h2>
+<p><code>validate</code> reads every file and points at any mistake, with the line and a fix, before a single token is spent:</p>
+<code class="cmd" data-run data-expect="OK">teamrunner validate debate</code>
+<p>A <b>rehearsal</b> runs the whole team with no model: each member says placeholder words, and each typed answer is picked at random from what its file allows. It costs nothing and needs no key. It shows whether the flow goes where you meant, not whether the answers are good.</p>
+<code class="cmd" data-run data-expect="completed">teamrunner run debate --rehearse</code>
+<div class="panel out"><div class="cap"><span class="label">what you see</span></div><pre>run · debate · default input topic: &quot;Remote work makes teams more productive&quot;
+rehearsal · no model is called; the words are placeholders and the answers random
+✓ 1 model (not called)
+advocate                                                     0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 1.”
+critic                                                       0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 2.”
+judge                       winner = critic                  0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 3.”
+
+completed · 3 turns · 0.1s · ≈ $0.0000
+runs/2026-11-05_093012_debate</pre></div>
+<h2 id="run"><span class="stepno">Step 4</span>Run it for real</h2>
+<p>Put your OpenAI key in TeamRunner's key file, <code>~/.teamrunner/.env</code>, in your home folder and never inside a team (team folders get shared, and a key would go with them). If the key is already set in your terminal, TeamRunner offers to save it the first time.</p>
+<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENAI_API_KEY=sk-...
+</pre></div>
+<p>Then run the debate, on its default topic or on one you give:</p>
+<code class="cmd" data-run="skip">teamrunner run debate</code>
+<code class="cmd" data-run="skip">teamrunner run debate --message &quot;Four-day weeks make teams more productive&quot;</code>
+<p>Each turn shows who spoke, what they decided, how long it took and what it cost; a run like this costs a fraction of a cent. Every run is kept in <code>debate/runs/</code>: everything said, every prompt, the model that answered, and the cost. To see them all, newest first:</p>
+<code class="cmd" data-run data-expect="debate">teamrunner runs debate</code>
+<div class="aside"><p>Other providers work the same way: write <code>model: anthropic/…</code> or <code>model: gemini/…</code> and put that provider's key in the same file. Free local models work too, through <a href="https://ollama.com">Ollama</a>: <code>model: ollama/llama3.2</code>.</p></div>
+<h2 id="rounds"><span class="stepno">Step 5</span>Give it rounds</h2>
+<p>A real debate has rounds. Who acts when is the job of the team's <b>chair</b>, a file called <code>chair.md</code> holding the meeting's script. Add it:</p>
+<div class="panel"><div class="cap"><span class="label">debate/chair.md</span></div><pre data-file="debate/chair.md"># Three rounds of advocate and critic, then the judge decides.
+
+rounds(*3) -&gt; judge
+
+rounds = advocate -&gt; critic
+</pre></div>
+<p><code>a -> b</code> means one after the other, <code>rounds(*3)</code> repeats a step three times, and <code>rounds = …</code> says what that step is. Lines starting with <code>#</code> are notes for people. Now the debate runs advocate, critic three times over, then the judge.</p>
+<code class="cmd" data-run data-expect="7 turns">teamrunner run debate --rehearse</code>
+<p>To read the flow back in plain English, or as a picture in your browser:</p>
+<code class="cmd" data-run data-expect="judge">teamrunner explain debate</code>
+<code class="cmd" data-run="skip">teamrunner explain debate --diagram</code>
+<h2 id="factcheck"><span class="stepno">Step 6</span>Add a fact checker</h2>
+<p>Suppose each speech should be fact-checked before it stands. A fact checker is one more agent, whose <code>output:</code> is a verdict:</p>
+<div class="panel"><div class="cap"><span class="label">debate/fact_checker.md</span></div><pre data-file="debate/fact_checker.md">---
+description: Checks the factual claims in the latest speech
+model: openai/gpt-6-luna
+output:
+  verdict: [pass, fail]
+  reasons: &quot;&quot;
+---
+You are a neutral fact checker in a formal debate. Examine the latest
+speech for checkable factual claims and verify them by searching the
+web (ask the web toolkeeper). Search only for claims you cannot confirm
+from what you know; most speeches need one or two searches. Minor
+exaggeration is fine; invented statistics, misattributed quotes and
+false claims are not.
+
+Set verdict to fail only if a claim is materially false, and list each
+false claim with a one-line correction in reasons. Otherwise set it to
+pass.
+</pre></div>
+<p>The chair decides what each verdict means. Replace <code>chair.md</code> with:</p>
+<div class="panel"><div class="cap"><span class="label">debate/chair.md</span></div><pre data-file="debate/chair.md"># Three rounds. Each speech is fact-checked; a failed speech gets two
+# more tries, then the debate moves on. Then the judge decides.
+
+rounds(*3) -&gt; judge
+
+rounds = advocate_turn -&gt; critic_turn
+
+advocate_turn = advocate -&gt; fact_checker
+                fact_checker --fail--&gt; advocate
+                fact_checker --pass,*3--&gt; done
+
+critic_turn = critic -&gt; fact_checker
+              fact_checker --fail--&gt; critic
+              fact_checker --pass,*3--&gt; done
+</pre></div>
+<p><code>--fail--> advocate</code> sends a failed speech back. <code>--pass,*3--> done</code> reads “on pass, or the third time, this turn is done”: every loop needs a limit, so a debate always ends. The fact checker's file says how to judge; the chair says what its verdict means here, which is why the same fact checker serves both sides.</p>
+<code class="cmd" data-run data-expect="OK">teamrunner validate debate</code>
+<code class="cmd" data-run data-expect="completed">teamrunner run debate --rehearse</code>
+<div class="aside"><p>Mistype an option, say <code>--puss--></code>, and <code>validate</code> stops you: “<code>puss</code> is not one of <code>fact_checker</code>'s options; did you mean <code>pass</code>?”</p></div>
+<h2 id="web"><span class="stepno">Step 7</span>Give the team the web</h2>
+<p>Agents never hold tools themselves. A tool sits with a <b>toolkeeper</b>, a member with no model that checks who is asking and enforces the limits, like the attendant at a tool crib. Add one for web search:</p>
+<div class="panel"><div class="cap"><span class="label">debate/web.md</span></div><pre data-file="debate/web.md">---
+description: The web toolkeeper — searches the web, on different terms for different members
+kind: toolkeeper
+tools:
+  web_search_brave: {max_results: 5, calls_per_turn: 2}   # the base terms
+access:
+  fact_checker: {calls_per_turn: 3}   # a few claims a speech may need checking
+  judge: standard                     # the base terms
+---
+I search the web. Send me a search query and I return the top five
+results with their sources.
+</pre></div>
+<ul><li><b><code>tools:</code></b> names the tool and its base terms: five results, two searches a turn.</li><li><b><code>access:</code></b> lists who may use it. The fact checker may search three times a turn; the judge gets the base terms; the debaters, not listed, argue from what they know.</li><li><b>The text below</b> is what the members who may use it are told about it.</li></ul>
+<p>Nothing in the chair mentions <code>web</code>: during its turn the fact checker may search, up to its limit, or not at all. Every request, the toolkeeper's yes or no, and the search are logged. <code>explain</code> prints who may use what, on which terms:</p>
+<code class="cmd" data-run data-expect="completed">teamrunner run debate --rehearse</code>
+<code class="cmd" data-run data-expect="web_search_brave">teamrunner explain debate</code>
+<div class="aside"><p>For real searches, add a <a href="https://brave.com/search/api/">Brave Search API</a> key to the same key file as <code>BRAVE_API_KEY</code>. A search costs half a cent at Brave's list price, and a run's cost counts it.</p></div>
+<h2 id="next">Where to go next</h2>
+<ul><li><b>Start from an example.</b> Six ship with TeamRunner; <code>teamrunner new my_team --from fact_checked</code> copies the finished version of this tutorial, with a Python sandbox too. <a href="index.html#examples">See all six</a>.</li><li><b>Read the reference.</b> Every file and every word a team may use is in the <a href="https://github.com/teamrunner/teamrunner#readme">documentation</a>.</li><li><b>Tell us what you found.</b> <a href="https://github.com/teamrunner/teamrunner/issues/new/choose">Open an issue</a>, or write to hello@teamrunner.ai.</li></ul>
+<div class="nextprev"><a href="index.html">← Home</a><a href="index.html#examples">The examples →</a></div>
+</main>
+</body>
+</html>
