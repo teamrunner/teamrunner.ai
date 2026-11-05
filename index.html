@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TeamRunner — experiments on teams of AI agents</title>
+<meta name="description" content="Run a team of AI agents from text files. Change one line, run it again, and keep every prompt, reply and cost. For people who study organizations.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="TeamRunner">
+<meta property="og:description" content="The experimentation platform for agent organizations: run a team of AI agents from text files.">
+<meta property="og:url" content="https://teamrunner.ai/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab instrument's manual. One text column at 68ch, with wide
+   "specimen" panels (file trees, code, diffs) that break out to the right. */
+:root{
+  --paper:#f5f7f8; --panel:#ffffff; --ink:#14202b; --ink-2:#4a5866; --rule:#d9e0e5;
+  --accent:#2340c9; --accent-soft:#e6eafb;
+  --add:#16794a; --add-bg:#e5f4ec; --del:#b42318; --del-bg:#fbe9e7;
+  --defect:#b42318;
+  --f-display:"Newsreader", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --s1:.8125rem; --s2:.9375rem; --s3:1.0625rem; --s4:1.375rem; --s5:2rem; --s6:clamp(2.4rem,5.4vw,3.9rem);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f151b; --panel:#161e26; --ink:#e4eaef; --ink-2:#9aa8b5; --rule:#273340;
+  --accent:#8ea2ff; --accent-soft:#1d2550;
+  --add:#5fd39a; --add-bg:#12301f; --del:#ff8a7a; --del-bg:#3a1712; --defect:#ff8a7a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f151b; --panel:#161e26; --ink:#e4eaef; --ink-2:#9aa8b5; --rule:#273340;
+  --accent:#8ea2ff; --accent-soft:#1d2550;
+  --add:#5fd39a; --add-bg:#12301f; --del:#ff8a7a; --del-bg:#3a1712; --defect:#ff8a7a;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:var(--s3);line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto}
+code,pre,.mono{font-family:var(--f-mono)}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;line-height:1.15;margin:0}
+h2{font-size:var(--s5)}
+h3{font-size:var(--s4)}
+p{margin:0}
+.label{font-family:var(--f-mono);font-size:var(--s1);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+
+/* Header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:24px;padding-block:14px;flex-wrap:wrap}
+.mark{font-family:var(--f-mono);font-weight:500;font-size:1rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.mark svg{flex:none}
+nav{display:flex;gap:20px;flex-wrap:wrap;font-size:var(--s2)}
+nav a{color:var(--ink-2);text-decoration:none}
+nav a:hover{color:var(--ink)}
+.top .right{margin-left:auto;display:flex;gap:12px;align-items:center}
+.pill{font-family:var(--f-mono);font-size:.75rem;border:1px solid var(--rule);border-radius:999px;padding:2px 10px;color:var(--ink-2);white-space:nowrap}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:56px;padding-block:72px 64px;align-items:center}
+.hero h1{font-size:var(--s6);letter-spacing:-.01em}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero .lede{font-size:1.1875rem;color:var(--ink-2);max-width:34em;margin-top:20px}
+.install{margin-top:28px;display:flex;align-items:center;gap:0;border:1px solid var(--rule);background:var(--panel);border-radius:6px;max-width:30rem}
+.install code{flex:1;min-width:0;padding:12px 14px;font-size:var(--s2);overflow-x:auto;white-space:nowrap}
+.install code::before{content:"$ ";color:var(--ink-2)}
+.copy{font:inherit;font-size:var(--s1);font-family:var(--f-mono);border:0;border-left:1px solid var(--rule);background:transparent;color:var(--ink-2);padding:12px 14px;cursor:pointer}
+.copy:hover{color:var(--ink)}
+.ctas{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.btn{display:inline-block;font-size:var(--s2);font-weight:500;padding:10px 18px;border-radius:6px;text-decoration:none;border:1px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--paper)}
+.btn.ghost{color:var(--accent)}
+.hero .note{margin-top:14px;font-size:var(--s1);color:var(--ink-2)}
+
+/* Specimen panels */
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:8px;min-width:0}
+.panel .cap{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--rule)}
+.panel pre{margin:0;padding:16px;overflow-x:auto;font-size:.875rem;line-height:1.7}
+.tree .c{color:var(--ink-2)}
+.tree .d{color:var(--accent);font-weight:500}
+
+/* Sections */
+section.band{padding-block:72px;border-top:1px solid var(--rule)}
+.intro{max-width:44rem;display:grid;gap:14px}
+.intro p{color:var(--ink-2)}
+.q{font-family:var(--f-display);font-size:clamp(1.8rem,3.6vw,2.6rem);line-height:1.2;font-style:italic;max-width:24em;text-wrap:balance}
+
+.steps{display:grid;gap:40px;margin-top:44px}
+.step{display:grid;grid-template-columns:minmax(0,19rem) minmax(0,1fr);gap:40px;align-items:start}
+.step .txt{display:grid;gap:10px}
+.step .txt p{color:var(--ink-2);font-size:var(--s2)}
+.stepno{font-family:var(--f-mono);font-size:var(--s1);color:var(--accent)}
+
+/* Code with planted defects */
+.code{display:grid;grid-template-columns:auto minmax(0,1fr);font-family:var(--f-mono);font-size:.84rem;line-height:1.75;overflow-x:auto;padding-block:12px}
+.code .ln{color:var(--ink-2);text-align:right;padding:0 12px 0 16px;user-select:none}
+.code .src{white-space:pre;padding-right:16px}
+.code .bad{background:var(--del-bg)}
+.code .bad.ln{color:var(--defect);font-weight:500}
+.defects{display:grid;gap:8px;padding:14px 16px;border-top:1px solid var(--rule);font-size:var(--s1)}
+.defects div{display:grid;grid-template-columns:4.2rem minmax(0,1fr);gap:8px}
+.defects b{font-family:var(--f-mono);font-weight:500;color:var(--defect)}
+
+
+/* Candidates and private facts */
+.cands{display:grid;gap:0}
+.cand{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:12px;padding:10px 16px;font-size:var(--s2);border-bottom:1px solid var(--rule)}
+.cand:last-child{border-bottom:0}
+.cand b{font-family:var(--f-display);font-weight:500;font-size:1.1rem}
+.cand span{color:var(--ink-2)}
+.cand.lead b::after{content:"looks best";display:block;font-family:var(--f-mono);font-size:.68rem;font-weight:400;color:var(--accent);letter-spacing:.04em}
+.private{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule)}
+.private>div{background:var(--panel);padding:14px 16px;display:grid;gap:8px;align-content:start;font-size:var(--s1);line-height:1.5}
+.private .who{font-family:var(--f-mono);font-weight:500;font-size:.8rem}
+.private .who i{display:block;font-style:normal;font-weight:400;color:var(--ink-2)}
+.private .neg,.private .pos{font-family:var(--f-mono);font-size:.72rem;padding:0 6px;border-radius:3px;margin-right:4px}
+.private .neg{background:var(--del-bg);color:var(--del)}
+.private .pos{background:var(--add-bg);color:var(--add)}
+@media (max-width:880px){.private{grid-template-columns:minmax(0,1fr)}}
+
+/* Diff */
+.diff{font-family:var(--f-mono);font-size:.84rem;line-height:1.7;padding-block:10px;overflow-x:auto}
+.diff div{white-space:pre;padding:0 16px}
+.diff .m{background:var(--del-bg);color:var(--del)}
+.diff .p{background:var(--add-bg);color:var(--add)}
+.diff .x{color:var(--ink-2)}
+
+.soon{display:inline-block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.04em;padding:1px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent);vertical-align:middle;margin-left:6px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+
+/* Why cards */
+.why{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-top:36px}
+.why div{background:var(--panel);padding:26px 26px 28px;display:grid;gap:10px;align-content:start}
+.why h3{font-size:1.25rem}
+.why p{color:var(--ink-2);font-size:var(--s2)}
+
+/* Ideas */
+.ideas{display:grid;gap:0;margin-top:36px;border-top:1px solid var(--rule)}
+.idea{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) minmax(0,15rem);gap:28px;padding-block:20px;border-bottom:1px solid var(--rule);align-items:baseline}
+.idea h3{font-size:1.2rem}
+.idea p{color:var(--ink-2);font-size:var(--s2)}
+.idea code{font-size:.82rem;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:2px 6px;justify-self:start}
+
+/* Install tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);padding-inline:8px;overflow-x:auto}
+.tabs button{font:inherit;font-size:var(--s2);background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabpane{padding:18px 16px;display:grid;gap:14px}
+.tabpane ol{margin:0;padding-left:1.3rem;display:grid;gap:14px;font-size:var(--s2)}
+.tabpane li p{color:var(--ink-2)}
+.cmd{display:block;margin-top:6px;font-family:var(--f-mono);font-size:.84rem;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:8px 10px;overflow-x:auto;white-space:nowrap}
+
+/* Run folder */
+.runs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;margin-top:36px;align-items:start}
+.runs dl{margin:0;display:grid;gap:14px}
+.runs dt{font-family:var(--f-mono);font-size:var(--s2);font-weight:500}
+.runs dd{margin:2px 0 0;color:var(--ink-2);font-size:var(--s2)}
+
+footer{border-top:1px solid var(--rule);padding-block:40px 56px;font-size:var(--s2);color:var(--ink-2)}
+footer .wrap{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:28px}
+footer h4{margin:0 0 8px;font-size:var(--s1);font-family:var(--f-mono);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+footer a{color:var(--ink-2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+.mockup{font-family:var(--f-mono);font-size:.75rem;text-align:center;padding:6px 16px;background:var(--accent-soft);color:var(--accent);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+
+@media (max-width:880px){
+  .hero,.step,.runs,.pair{grid-template-columns:minmax(0,1fr)}
+  .hero{gap:36px;padding-block:44px}
+  .step{gap:16px}
+  .why{grid-template-columns:minmax(0,1fr)}
+  .idea{grid-template-columns:minmax(0,1fr);gap:6px}
+  footer .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}
+  nav{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.copy,nav a{transition:color .15s,background-color .15s}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="#install">Install</a>
+      <a href="https://github.com/teamrunner/teamrunner#tutorial-your-first-debate-in-10-minutes">Tutorial</a>
+      <a href="#ideas">Concepts</a>
+      <a href="#example">Examples</a>
+      <a href="https://github.com/teamrunner/teamrunner#appendix-a-file-reference-at-a-glance">Reference</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview 0.0.2</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <p class="label">The experimentation platform for agent organizations</p>
+      <h1 style="margin-top:14px">Run a team of AI agents from <em>text files</em>. Change one line. Run it again.</h1>
+      <p class="lede">An agent is a Markdown file, a team is a folder, and the org chart is the directory tree. No Python and no framework to learn. Edit the prose, run one command, and every prompt, reply and cost is kept.</p>
+      <div class="install">
+        <code id="pipcmd">pip install teamrunner</code>
+        <button class="copy" type="button" id="copybtn" data-target="pipcmd">Copy</button>
+      </div>
+      <div class="ctas">
+        <a class="btn primary" href="#example">See the example</a>
+        <a class="btn ghost" href="#install">No Python? Start here</a>
+      </div>
+      <p class="note">Mac, Windows and Linux. Works with OpenAI, Anthropic and free local models through Ollama.</p>
+    </div>
+
+    <div class="panel tree" aria-label="An example team folder">
+      <div class="cap"><span class="label">hiring_committee/</span><span class="label">a team</span></div>
+<pre><span class="d">hiring_committee/</span>
+├── team.yaml   <span class="c">← this folder is a team: the job and the packet</span>
+├── chair.md    <span class="c">← how the meeting is run</span>
+├── chen.md     <span class="c">← a member: settings on top, prompt below</span>
+├── diaz.md     <span class="c">← each knows something the others don't</span>
+├── okafor.md
+├── clerk.md    <span class="c">← records the decision</span>
+├── <span class="d">models/</span>
+│   └── member.yaml  <span class="c">← one model for the whole committee</span>
+└── <span class="d">runs/</span>       <span class="c">← every run, logged here</span></pre>
+    </div>
+  </div>
+
+  <section class="band" id="example">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">A question from the study of groups</p>
+        <p class="q">When the key facts are spread across a committee, does it pick the best candidate?</p>
+        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents does the same, and what fixes it.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The task</span>
+            <h3>Three members, three candidates, and facts no one person has</h3>
+            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don't.</p>
+            <p>Alone, each member would still choose Avery. With all six facts on the table, Blake is the clear choice.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">What everyone knows</span><span class="label">team.yaml</span></div>
+            <div class="cands">
+              <div class="cand lead"><b>Avery</b><span>12 years · ran a $20M budget · strongest interview · MBA · under budget three years running</span></div>
+              <div class="cand"><b>Blake</b><span>6 years, at one food bank · promoted twice · never managed more than $3M · halting interview</span></div>
+              <div class="cand"><b>Casey</b><span>9 years in retail logistics · bilingual · no nonprofit experience</span></div>
+            </div>
+            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">What only one member knows</span><span class="label">each member's own file</span></div>
+            <div class="private">
+              <div><p class="who">chen.md <i>reference calls</i></p><p><span class="neg">Avery</span> Former manager would not say whether they would rehire.</p><p><span class="pos">Blake</span> “The best operations person I have worked with.”</p></div>
+              <div><p class="who">diaz.md <i>finance office</i></p><p><span class="neg">Avery</span> Part of one under-budget year came from a one-time grant.</p><p><span class="pos">Blake</span> Cost per meal delivered fell 18% in two years.</p></div>
+              <div><p class="who">okafor.md <i>human resources</i></p><p><span class="neg">Avery</span> Team turnover 28%, against 18% across the sector.</p><p><span class="pos">Blake</span> Regular volunteers grew from 250 to 400.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The change</span>
+            <h3>Change how the meeting is run, in one line</h3>
+            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>. Moving one <code>#</code> switches from open discussion to share-first. Nothing else changes.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">chair.md</span><span class="label">open discussion → share first</span></div>
+            <div class="diff" aria-label="Diff of chair.md">
+<div class="x">  # How the meeting is run. This is the line the experiment changes.</div>
+<div class="m">- meeting(*3) -> clerk:record</div>
+<div class="p">+ # meeting(*3) -> clerk:record</div>
+<div class="m">- # chen:share_facts -> diaz:share_facts -> okafor:share_facts -> meeting(*2) -> clerk:record</div>
+<div class="p">+ chen:share_facts -> diaz:share_facts -> okafor:share_facts -> meeting(*2) -> clerk:record</div>
+<div class="x"></div>
+<div class="x">  meeting = chen -> diaz -> okafor</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The run</span>
+            <h3>Run both versions. Then run them fifty times.</h3>
+            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. One run is an anecdote, because models are random. With experiments, one file describes both versions and the number of runs, and you get one CSV for R, Stata or pandas.</p>
+          </div>
+          <div class="pair">
+            <div class="panel">
+              <div class="cap"><span class="label">today</span><span class="label">0.0.2</span></div>
+<pre>teamrunner new committee \
+  --from hiring_committee
+teamrunner run committee
+teamrunner runs</pre>
+            </div>
+            <div class="panel">
+              <div class="cap"><span class="label">experiment.yaml <span class="soon">0.2</span></span></div>
+<pre>base: ../hiring_committee
+factors:
+  meeting:
+    - {label: open, patch: {}}
+    - label: share_first
+      patch:
+        chair: file:variants/share_first.md
+replications: 25
+seed: 42</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Why it is needed</p>
+        <h2>Teams of agents are a new laboratory for studying organizations. It has been built for programmers.</h2>
+      </div>
+      <div class="why">
+        <div>
+          <h3>Built for the people who study organizations</h3>
+          <p>Management scientists and behavioural economists know how structure changes a team's output. They shouldn't have to write hundreds of lines of orchestration code to ask their first question.</p>
+        </div>
+        <div>
+          <h3>Structure is a one-line change</h3>
+          <p>Who reports to whom, who sees which facts, who decides. Each is a value in a file, and anything in a file can be varied in an experiment.</p>
+        </div>
+        <div>
+          <h3>One run is an anecdote</h3>
+          <p>Most published multi-agent results come from a single run. TeamRunner seeds what it controls, replicates what the model makes random, and records everything.</p>
+        </div>
+        <div>
+          <h3>A study you can send someone</h3>
+          <p>A team folder is a replication package. Zip it, put it in git, cite it in a methods section. Anyone can rerun it with the exact version you used.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="ideas">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Concepts</p>
+        <h2>Five ideas cover the whole format</h2>
+      </div>
+      <div class="ideas">
+        <div class="idea"><h3>An agent is a Markdown file</h3><p>Settings at the top, the prompt as prose below. Edit it in any text editor.</p><code>judge.md</code></div>
+        <div class="idea"><h3>A folder is a team</h3><p>Any folder with a <code style="border:0;padding:0;background:none">team.yaml</code> is a team. A team inside a team is a subcommittee. The file browser is the org chart.</p><code>team.yaml</code></div>
+        <div class="idea"><h3>Every team has a chair</h3><p>Someone always decides who speaks next: a script you wrote, or members in name order. Every decision is logged.</p><code>chair.md</code></div>
+        <div class="idea"><h3>Tools sit behind a toolkeeper</h3><p>Like a factory's tool crib: one member holds the web search or the code sandbox and decides who may use it, on what terms.</p><code>web.md</code></div>
+        <div class="idea"><h3>Experiments are overlays <span class="soon">0.2</span></h3><p>An experiment file sits outside the team and patches it. The team itself stays clean and runnable.</p><code>experiment.yaml</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="install">
+    <div class="wrap">
+      <div class="steps" style="margin-top:0">
+        <div class="step">
+          <div class="txt">
+            <p class="label">Install</p>
+            <h2>Running in five minutes, even without Python</h2>
+            <p>The installer, uv, fetches the right version of Python on its own. You need a terminal and an API key, or Ollama for free local models.</p>
+          </div>
+          <div class="panel">
+            <div class="tabs" role="tablist" aria-label="Operating system">
+              <button role="tab" id="t-mac" aria-selected="true" aria-controls="p-mac">macOS</button>
+              <button role="tab" id="t-win" aria-selected="false" aria-controls="p-win">Windows</button>
+              <button role="tab" id="t-lin" aria-selected="false" aria-controls="p-lin">Linux</button>
+              <button role="tab" id="t-py" aria-selected="false" aria-controls="p-py">I have Python</button>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-mac" aria-labelledby="t-mac">
+              <ol>
+                <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”) and install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
+                <li>Close Terminal, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
+              <ol>
+                <li>Open <b>PowerShell</b> from the Start menu and install uv:<code class="cmd">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></li>
+                <li>Close PowerShell, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
+              <ol>
+                <li>In a terminal, install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
+                <li>Open a new terminal, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>
+              <ol>
+                <li>Python 3.10 or later:<code class="cmd">pip install teamrunner</code></li>
+                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+              </ol>
+            </div>
+            <div class="defects" style="font-size:var(--s2)">
+              <div style="grid-template-columns:minmax(0,1fr)"><span>Then put your key in <code>~/.teamrunner/.env</code>, a file in your home folder that is never inside a team. TeamRunner offers to put it there the first time it needs one.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="runs">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">What every run keeps</p>
+        <h2>A run folder is a full record, on your own disk</h2>
+        <p>Plain files you can open, diff and query. No dashboard you have to log in to, and no agent can read or change the log.</p>
+      </div>
+      <div class="runs">
+        <div class="panel tree">
+          <div class="cap"><span class="label">runs/2026-10-12_143201_debate/</span></div>
+<pre><span class="d">runs/2026-10-12_143201_debate/</span>
+├── run.json      <span class="c">← when, what, versions, cost</span>
+├── events.jsonl  <span class="c">← every turn, one line each</span>
+├── output.md     <span class="c">← what the team produced</span>
+├── <span class="d">inputs/</span>       <span class="c">← copies of files it was given</span>
+└── <span class="d">work/</span>         <span class="c">← what its code wrote</span></pre>
+        </div>
+        <dl>
+          <div><dt>Every prompt and every reply</dt><dd>Exactly what each agent could read, what it said, which model answered, tokens, cost and time.</dd></div>
+          <div><dt>Every decision about who acts next</dt><dd>Who made it and why. There are no hidden if-statements.</dd></div>
+          <div><dt>Every tool call</dt><dd>Who asked, whether the toolkeeper said yes, and the full result.</dd></div>
+          <div><dt>The exact version that ran</dt><dd>Your 2026 study can be rerun in 2028.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
+      <p style="margin-top:8px">Preview release. Until 0.1, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
+    </div>
+    <div><h4>Learn</h4><ul><li><a href="#install">Install</a></li><li><a href="https://github.com/teamrunner/teamrunner#tutorial-your-first-debate-in-10-minutes">Tutorial</a></li><li><a href="#ideas">Concepts</a></li><li><a href="#example">Examples</a></li></ul></div>
+    <div><h4>Reference</h4><ul><li><a href="#runs">Files</a></li><li><a href="#runs">Commands</a></li><li><a href="#runs">Run folder</a></li><li><a href="#why">Roadmap</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues">GitHub issues</a></li><li><span class="mono" style="user-select:all">hello@teamrunner.ai</span></li></ul></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn=document.getElementById('copybtn');
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.dataset.target);
+    var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500)};
+    try{navigator.clipboard.writeText(el.textContent).then(done,function(){selectText(el)})}catch(e){selectText(el)}
+  });
+  function selectText(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+  var tabs=document.querySelectorAll('[role=tab]');
+  tabs.forEach(function(t){t.addEventListener('click',function(){
+    tabs.forEach(function(o){o.setAttribute('aria-selected',o===t?'true':'false');document.getElementById(o.getAttribute('aria-controls')).hidden=(o!==t)});
+  })});
+  var ua=navigator.userAgent||'';
+  if(/Windows/i.test(ua)) document.getElementById('t-win').click();
+  else if(/Linux/i.test(ua)&&!/Android/i.test(ua)) document.getElementById('t-lin').click();
+})();
+</script>
+
+</body>
+</html>
