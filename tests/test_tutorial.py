@@ -59,6 +59,10 @@ def teamrunner() -> list[str]:
 
 
 def main() -> int:
+    # Windows consoles default to a code page with no ✓ or ✗; print UTF-8 everywhere
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     page = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1] / "tutorial.html"
     parser = Steps()
     parser.feed(page.read_text(encoding="utf-8"))
