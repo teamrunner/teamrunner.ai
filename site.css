@@ -22,6 +22,7 @@
   color-scheme:dark}
 
 *{box-sizing:border-box}
+[hidden]{display:none !important}  /* a hidden tab pane stays hidden, whatever its layout */
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:var(--s3);line-height:1.6;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
