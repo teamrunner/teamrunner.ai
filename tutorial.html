@@ -49,17 +49,18 @@
 <div class="panel"><div class="cap"><span class="label">debate/team.yaml</span></div><pre data-file="debate/team.yaml">name: debate
 description: Two debaters argue a topic; a judge decides
 
+default_model: openai/gpt-6-luna
+
 message_goes_to: topic
 
 default_inputs:
   topic: &quot;Remote work makes teams more productive&quot;
 </pre></div>
-<p><code>default_inputs</code> is what the team argues about unless you say otherwise. <code>message_goes_to</code> says that a message you give on the command line becomes the <code>topic</code>.</p>
+<p><code>default_model</code> is the model every agent in the team runs on, unless an agent names its own. <code>default_inputs</code> is what the team argues about unless you say otherwise. <code>message_goes_to</code> says that a message you give on the command line becomes the <code>topic</code>.</p>
 <h2 id="agents"><span class="stepno">Step 2</span>Write three agents</h2>
 <p>An agent is a Markdown file in the team's folder: settings between the <code>---</code> lines at the top, and below them the agent's instructions, in plain words. Make these three files in <code>debate</code>.</p>
 <div class="panel"><div class="cap"><span class="label">debate/advocate.md</span></div><pre data-file="debate/advocate.md">---
 description: Argues in favor of the topic
-model: openai/gpt-6-luna
 ---
 You are debating in favor of this topic:
 
@@ -71,7 +72,6 @@ recent point before adding your own. Be persuasive but honest.
 </pre></div>
 <div class="panel"><div class="cap"><span class="label">debate/critic.md</span></div><pre data-file="debate/critic.md">---
 description: Argues against the topic
-model: openai/gpt-6-luna
 ---
 You are debating against this topic:
 
@@ -83,7 +83,6 @@ Be persuasive but honest.
 </pre></div>
 <div class="panel"><div class="cap"><span class="label">debate/judge.md</span></div><pre data-file="debate/judge.md">---
 description: Decides who argued better
-model: openai/gpt-6-luna
 output:
   winner: [advocate, critic]
   reasoning: &quot;&quot;
@@ -97,7 +96,7 @@ clarity, not your own opinion of the topic. Announce the winner and
 explain your decision in one paragraph.
 </pre></div>
 <p>Three things to notice:</p>
-<ul><li><b>Every agent names its model.</b> The model is part of the agent: it is who you hired.</li><li><b><code>{{topic}}</code> is filled in</b> from <code>team.yaml</code>, or from your message.</li><li><b><code>output:</code> makes the judge's verdict a fact you can count:</b> <code>winner</code> is one of two names, <code>reasoning</code> is text. TeamRunner never guesses from free text what an agent decided.</li></ul>
+<ul><li><b>No agent names a model,</b> so all three run on the team's <code>default_model</code>. An agent that should run on another adds its own line, <code>model: …</code>, which wins. <code>teamrunner show debate/judge.md</code> prints the judge as it will run, model included.</li><li><b><code>{{topic}}</code> is filled in</b> from <code>team.yaml</code>, or from your message.</li><li><b><code>output:</code> makes the judge's verdict a fact you can count:</b> <code>winner</code> is one of two names, <code>reasoning</code> is text. TeamRunner never guesses from free text what an agent decided.</li></ul>
 <p>There is no file saying who speaks when, so the members take one turn each, in alphabetical order: advocate, critic, judge. The folder listing is the running order.</p>
 <h2 id="check"><span class="stepno">Step 3</span>Check it, then rehearse it</h2>
 <p><code>validate</code> reads every file and points at any mistake, with the line and a fix, before a single token is spent:</p>
@@ -125,7 +124,7 @@ runs/2026-11-05_093012_debate</pre></div>
 <code class="cmd" data-run="skip">teamrunner run debate --message &quot;Four-day weeks make teams more productive&quot;</code>
 <p>Each turn shows who spoke, what they decided, how long it took and what it cost; a run like this costs a fraction of a cent. Every run is kept in <code>debate/runs/</code>: everything said, every prompt, the model that answered, and the cost. To see them all, newest first:</p>
 <code class="cmd" data-run data-expect="debate">teamrunner runs debate</code>
-<div class="aside"><p>Other providers work the same way: write <code>model: anthropic/…</code> or <code>model: gemini/…</code> and put that provider's key in the same file. Free local models work too, through <a href="https://ollama.com">Ollama</a>: <code>model: ollama/llama3.2</code>.</p></div>
+<div class="aside"><p>Other providers work the same way: change <code>default_model:</code> to <code>anthropic/…</code> or <code>gemini/…</code> and put that provider's key in the same file. Free local models work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/llama3.2</code>.</p></div>
 <h2 id="rounds"><span class="stepno">Step 5</span>Give it rounds</h2>
 <p>A real debate has rounds. Who acts when is the job of the team's <b>chair</b>, a file called <code>chair.md</code> holding the meeting's script. Add it:</p>
 <div class="panel"><div class="cap"><span class="label">debate/chair.md</span></div><pre data-file="debate/chair.md"># Three rounds of advocate and critic, then the judge decides.
@@ -143,7 +142,6 @@ rounds = advocate -&gt; critic
 <p>Suppose each speech should be fact-checked before it stands. A fact checker is one more agent, whose <code>output:</code> is a verdict:</p>
 <div class="panel"><div class="cap"><span class="label">debate/fact_checker.md</span></div><pre data-file="debate/fact_checker.md">---
 description: Checks the factual claims in the latest speech
-model: openai/gpt-6-luna
 output:
   verdict: [pass, fail]
   reasons: &quot;&quot;

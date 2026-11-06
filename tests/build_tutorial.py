@@ -76,14 +76,17 @@ p("This makes a folder, <code>debate</code>, with one file in it that matters: "
 file("debate/team.yaml", '''name: debate
 description: Two debaters argue a topic; a judge decides
 
+default_model: openai/gpt-6-luna
+
 message_goes_to: topic
 
 default_inputs:
   topic: "Remote work makes teams more productive"
 ''')
-p("<code>default_inputs</code> is what the team argues about unless you say otherwise. "
-  "<code>message_goes_to</code> says that a message you give on the command line becomes the "
-  "<code>topic</code>.")
+p("<code>default_model</code> is the model every agent in the team runs on, unless an agent "
+  "names its own. <code>default_inputs</code> is what the team argues about unless you say "
+  "otherwise. <code>message_goes_to</code> says that a message you give on the command line "
+  "becomes the <code>topic</code>.")
 
 h2(2, "Write three agents", "agents")
 p("An agent is a Markdown file in the team's folder: settings between the <code>---</code> "
@@ -91,7 +94,6 @@ p("An agent is a Markdown file in the team's folder: settings between the <code>
   "Make these three files in <code>debate</code>.")
 file("debate/advocate.md", '''---
 description: Argues in favor of the topic
-model: openai/gpt-6-luna
 ---
 You are debating in favor of this topic:
 
@@ -103,7 +105,6 @@ recent point before adding your own. Be persuasive but honest.
 ''')
 file("debate/critic.md", '''---
 description: Argues against the topic
-model: openai/gpt-6-luna
 ---
 You are debating against this topic:
 
@@ -115,7 +116,6 @@ Be persuasive but honest.
 ''')
 file("debate/judge.md", '''---
 description: Decides who argued better
-model: openai/gpt-6-luna
 output:
   winner: [advocate, critic]
   reasoning: ""
@@ -129,7 +129,9 @@ clarity, not your own opinion of the topic. Announce the winner and
 explain your decision in one paragraph.
 ''')
 p("Three things to notice:")
-ul(["<b>Every agent names its model.</b> The model is part of the agent: it is who you hired.",
+ul(["<b>No agent names a model,</b> so all three run on the team's <code>default_model</code>. "
+    "An agent that should run on another adds its own line, <code>model: …</code>, which wins. "
+    "<code>teamrunner show debate/judge.md</code> prints the judge as it will run, model included.",
     "<b><code>{{topic}}</code> is filled in</b> from <code>team.yaml</code>, or from your message.",
     "<b><code>output:</code> makes the judge's verdict a fact you can count:</b> "
     "<code>winner</code> is one of two names, <code>reasoning</code> is text. "
@@ -170,10 +172,10 @@ p("Each turn shows who spoke, what they decided, how long it took and what it co
   "this costs a fraction of a cent. Every run is kept in <code>debate/runs/</code>: everything "
   "said, every prompt, the model that answered, and the cost. To see them all, newest first:")
 run("teamrunner runs debate", expect="debate")
-aside("<p>Other providers work the same way: write <code>model: anthropic/…</code> or "
-      "<code>model: gemini/…</code> and put that provider's key in the same file. "
+aside("<p>Other providers work the same way: change <code>default_model:</code> to "
+      "<code>anthropic/…</code> or <code>gemini/…</code> and put that provider's key in the same file. "
       "Free local models work too, through <a href=\"https://ollama.com\">Ollama</a>: "
-      "<code>model: ollama/llama3.2</code>.</p>")
+      "<code>ollama/llama3.2</code>.</p>")
 
 h2(5, "Give it rounds", "rounds")
 p("A real debate has rounds. Who acts when is the job of the team's <b>chair</b>, a file called "
@@ -197,7 +199,6 @@ p("Suppose each speech should be fact-checked before it stands. A fact checker i
   "whose <code>output:</code> is a verdict:")
 file("debate/fact_checker.md", '''---
 description: Checks the factual claims in the latest speech
-model: openai/gpt-6-luna
 output:
   verdict: [pass, fail]
   reasons: ""
