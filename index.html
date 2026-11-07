@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TeamRunner — experiments on teams of AI agents</title>
-<meta name="description" content="Run a team of AI agents from text files. Change one line, run it again, and keep every prompt, reply and cost. For people who study organizations.">
+<title>TeamRunner — build a team of AI agents from text files</title>
+<meta name="description" content="Build a team of AI agents from text files. Change one line, run it again, and keep every prompt, reply and cost. Rehearse for free, with no key. For people who study organizations.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="TeamRunner">
-<meta property="og:description" content="The experimentation platform for agent organizations: run a team of AI agents from text files.">
+<meta property="og:description" content="Build a team of AI agents from text files. Change one line. Run it again.">
 <meta property="og:url" content="https://teamrunner.ai/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,14 +27,14 @@
       teamrunner
     </a>
     <nav aria-label="Main">
-      <a href="#install">Install</a>
-      <a href="#tutorial">Tutorial</a>
-      <a href="#concepts">Concepts</a>
+      <a href="#install">Try it</a>
+      <a href="tutorial.html">Tutorial</a>
       <a href="#examples">Examples</a>
+      <a href="#coming">What’s coming</a>
       <a href="#reference">Reference</a>
     </nav>
     <div class="right">
-      <span class="pill">preview 0.0.2</span>
+      <span class="pill">preview</span>
       <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
     </div>
   </div>
@@ -43,190 +43,98 @@
 <main id="top">
   <div class="wrap hero">
     <div>
-      <p class="label">The experimentation platform for agent organizations</p>
-      <h1 style="margin-top:14px">Run a team of AI agents from <em>text files</em>. Change one line. Run it again.</h1>
-      <p class="lede">An agent is a Markdown file, a team is a folder, and the org chart is the directory tree. No Python and no framework to learn. Edit the prose, run one command, and every prompt, reply and cost is kept.</p>
-      <div class="install">
-        <code id="pipcmd">pip install teamrunner</code>
-        <button class="copy" type="button" id="copybtn" data-target="pipcmd">Copy</button>
+      <p class="label">Teams of AI agents, for people who study organizations</p>
+      <h1 style="margin-top:14px">Build a team of AI agents from <em>text files</em>. Change one line. Run it again.</h1>
+      <p class="lede">Each agent is a text file in plain words, and a team is a folder. No code and no framework to learn. Try the whole flow for free in a <a class="t" tabindex="0" data-tip="A run with no model: each agent says placeholder words and each answer is picked at random. It costs nothing, needs no key, and shows whether the flow goes where you meant.">rehearsal</a>, then run it for real and keep every prompt, reply and cost.</p>
+      <div class="hinstall">
+        <div class="tabs" role="tablist" aria-label="How to install">
+          <button role="tab" id="h-uv" aria-selected="true" aria-controls="hp-uv">With uv</button>
+          <button role="tab" id="h-py" aria-selected="false" aria-controls="hp-py">I have Python</button>
+        </div>
+        <div role="tabpanel" id="hp-uv" aria-labelledby="h-uv">
+          <div class="install"><code id="cmd-uv">uv tool install teamrunner</code><button class="copy" type="button" data-target="cmd-uv">Copy</button></div>
+          <p class="hint">No uv yet? It is one command, and it fetches Python for you. <a href="#install">Install steps for your system</a>.</p>
+        </div>
+        <div role="tabpanel" id="hp-py" aria-labelledby="h-py" hidden>
+          <div class="install"><code id="cmd-py">pip install teamrunner</code><button class="copy" type="button" data-target="cmd-py">Copy</button></div>
+          <p class="hint">Python 3.10 or later.</p>
+        </div>
       </div>
       <div class="ctas">
-        <a class="btn primary" href="tutorial.html">Start the tutorial</a>
-        <a class="btn ghost" href="#install">No Python? Start here</a>
+        <a class="btn primary" href="#install">Try it free in 5 minutes</a>
+        <a class="btn ghost" href="tutorial.html">Start the tutorial</a>
       </div>
-      <p class="note">Mac, Windows and Linux. Works with OpenAI, Anthropic and free local models through Ollama.</p>
+      <p class="note">Mac, Windows and Linux. Works with OpenAI, Anthropic, Gemini, OpenRouter and free local models through Ollama.</p>
     </div>
 
     <div class="panel tree" aria-label="An example team folder">
       <div class="cap"><span class="label">hiring_committee/</span><span class="label">a team</span></div>
 <pre><span class="d">hiring_committee/</span>
-├── team.yaml   <span class="c">← this folder is a team: the job and the packet</span>
+├── team.yaml   <span class="c">← the job, and the packet everyone reads</span>
 ├── chair.md    <span class="c">← how the meeting is run</span>
-├── chen.md     <span class="c">← a member: settings on top, prompt below</span>
+├── chen.md     <span class="c">← a member, written in plain words</span>
 ├── diaz.md     <span class="c">← each knows something the others don't</span>
 ├── okafor.md
 ├── clerk.md    <span class="c">← records the decision</span>
 ├── <span class="d">models/</span>
 │   └── member.yaml  <span class="c">← one model for the whole committee</span>
-└── <span class="d">runs/</span>       <span class="c">← every run, logged here</span></pre>
+└── <span class="d">runs/</span>       <span class="c">← every run, kept here</span></pre>
     </div>
   </div>
 
-<section class="band" id="why">
+  <section class="band" id="describe">
     <div class="wrap">
       <div class="intro">
-        <p class="label">Why it is needed</p>
-        <h2>Teams of agents are a new laboratory for studying organizations. It has been built for programmers.</h2>
+        <p class="label">Start from a sentence</p>
+        <h2>Describe your team in a sentence, and TeamRunner writes the files</h2>
+        <p>Say who is on the team and how they work together. A model writes the files, TeamRunner checks them and has any mistakes fixed, then shows you the team and draws its flow. Every file is plain text you can read and change.</p>
       </div>
-      <div class="why">
-        <div>
-          <h3>Built for the people who study organizations</h3>
-          <p>Management scientists and behavioural economists know how structure changes a team's output. They shouldn't have to write hundreds of lines of orchestration code to ask their first question.</p>
+      <div class="trio">
+        <div class="panel">
+          <div class="cap"><span class="label">1 · you write</span></div>
+          <p class="say">“A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go.”</p>
+          <div class="foot"><code>teamrunner new launch --describe "…"</code></div>
         </div>
-        <div>
-          <h3>Structure is a one-line change</h3>
-          <p>Who reports to whom, who sees which facts, who decides. Each is a value in a file, and anything in a file can be varied in an experiment.</p>
-        </div>
-        <div>
-          <h3>One run is an anecdote</h3>
-          <p>Most published multi-agent results come from a single run. TeamRunner seeds what it controls, replicates what the model makes random, and records everything.</p>
-        </div>
-        <div>
-          <h3>A study you can send someone</h3>
-          <p>A team folder is a replication package. Zip it, put it in git, cite it in a methods section. Anyone can rerun it with the exact version you used.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<section class="band" id="install">
-    <div class="wrap">
-      <div class="steps" style="margin-top:0">
-        <div class="step">
-          <div class="txt">
-            <p class="label">Install</p>
-            <h2>Running in five minutes, even without Python</h2>
-            <p>The installer, uv, fetches the right version of Python on its own. You need a terminal and an API key, or Ollama for free local models.</p>
-          </div>
-          <div class="panel">
-            <div class="tabs" role="tablist" aria-label="Operating system">
-              <button role="tab" id="t-mac" aria-selected="true" aria-controls="p-mac">macOS</button>
-              <button role="tab" id="t-win" aria-selected="false" aria-controls="p-win">Windows</button>
-              <button role="tab" id="t-lin" aria-selected="false" aria-controls="p-lin">Linux</button>
-              <button role="tab" id="t-py" aria-selected="false" aria-controls="p-py">I have Python</button>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-mac" aria-labelledby="t-mac">
-              <ol>
-                <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”) and install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
-                <li>Close Terminal, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
-              <ol>
-                <li>Open <b>PowerShell</b> from the Start menu and install uv:<code class="cmd">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></li>
-                <li>Close PowerShell, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
-              <ol>
-                <li>In a terminal, install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
-                <li>Open a new terminal, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>
-              <ol>
-                <li>Python 3.10 or later:<code class="cmd">pip install teamrunner</code></li>
-                <li>Check that it works:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-              </ol>
-            </div>
-            <div class="defects" style="font-size:var(--s2)">
-              <div style="grid-template-columns:minmax(0,1fr)"><span>Then put your key in <code>~/.teamrunner/.env</code>, a file in your home folder that is never inside a team. TeamRunner offers to put it there the first time it needs one.</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="tutorial">
-    <div class="wrap">
-      <div class="steps" style="margin-top:0">
-        <div class="step">
-          <div class="txt">
-            <p class="label">Tutorial</p>
-            <h2>Your first team, in ten minutes</h2>
-            <p>Build a three-agent debate from four text files, then give it rounds, a fact checker and the web. Every step ends with a rehearsal, a run with no model at all: free, and no key needed, so you can follow along before you have one.</p>
-            <p><a class="btn primary" href="tutorial.html" style="margin-top:8px">Start the tutorial</a></p>
-          </div>
-          <div class="panel">
-            <div class="cap"><span class="label">seven steps</span><span class="label">no code</span></div>
-            <ol class="outline">
-              <li><div><b>Make a team</b><br><span>One command, and one file that says what the team does.</span></div></li>
-              <li><div><b>Write three agents</b><br><span>An advocate, a critic and a judge, each a Markdown file.</span></div></li>
-              <li><div><b>Check it, then rehearse it</b><br><span>Catch mistakes before a single token is spent.</span></div></li>
-              <li><div><b>Run it for real</b><br><span>With your key, for a fraction of a cent.</span></div></li>
-              <li><div><b>Give it rounds</b><br><span>A chair: the meeting's script, in two lines.</span></div></li>
-              <li><div><b>Add a fact checker</b><br><span>A speech that fails goes back, at most twice.</span></div></li>
-              <li><div><b>Give the team the web</b><br><span>Through a toolkeeper, on terms you set.</span></div></li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<section class="band" id="concepts">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">Concepts</p>
-        <h2>Five ideas cover the whole format</h2>
-      </div>
-      <div class="ideas">
-        <div class="idea"><h3>An agent is a Markdown file</h3><p>Settings at the top, the prompt as prose below. Edit it in any text editor.</p><code>judge.md</code></div>
-        <div class="idea"><h3>A folder is a team</h3><p>Any folder with a <code style="border:0;padding:0;background:none">team.yaml</code> is a team. A team inside a team is a subcommittee. The file browser is the org chart.</p><code>team.yaml</code></div>
-        <div class="idea"><h3>Every team has a chair</h3><p>Someone always decides who speaks next: a script you wrote, or members in name order. Every decision is logged.</p><code>chair.md</code></div>
-        <div class="idea"><h3>Tools sit behind a toolkeeper</h3><p>Like a factory's tool crib: one member holds the web search or the code sandbox and decides who may use it, on what terms.</p><code>web.md</code></div>
-        <div class="idea"><h3>Experiments are overlays <span class="soon">0.2</span></h3><p>An experiment file sits outside the team and patches it. The team itself stays clean and runnable.</p><code>experiment.yaml</code></div>
-      </div>
-    </div>
-  </section>
-
-<section class="band" id="runs">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">Concepts · what every run keeps</p>
-        <h2>A run folder is a full record, on your own disk</h2>
-        <p>Plain files you can open, diff and query. No dashboard you have to log in to, and no agent can read or change the log.</p>
-      </div>
-      <div class="runs">
         <div class="panel tree">
-          <div class="cap"><span class="label">runs/2026-10-12_143201_debate/</span></div>
-<pre><span class="d">runs/2026-10-12_143201_debate/</span>
-├── run.json      <span class="c">← when, what, versions, cost</span>
-├── events.jsonl  <span class="c">← every turn, one line each</span>
-├── output.md     <span class="c">← what the team produced</span>
-├── <span class="d">inputs/</span>       <span class="c">← copies of files it was given</span>
-└── <span class="d">work/</span>         <span class="c">← what its code wrote</span></pre>
+          <div class="cap"><span class="label">2 · it writes</span></div>
+<pre><span class="d">launch/</span>
+├── team.yaml   <span class="c">← the feature</span>
+├── chair.md    <span class="c">← who speaks when</span>
+├── pm.md
+├── engineer.md
+├── designer.md
+└── ceo.md      <span class="c">← decides</span></pre>
+          <div class="foot">Open any file and change the words.</div>
         </div>
-        <dl>
-          <div><dt>Every prompt and every reply</dt><dd>Exactly what each agent could read, what it said, which model answered, tokens, cost and time.</dd></div>
-          <div><dt>Every decision about who acts next</dt><dd>Who made it and why. There are no hidden if-statements.</dd></div>
-          <div><dt>Every tool call</dt><dd>Who asked, whether the toolkeeper said yes, and what came back. Web search results are read but not kept, as Brave’s terms require.</dd></div>
-          <div><dt>The exact version that ran</dt><dd>Your 2026 study can be rerun in 2028.</dd></div>
-        </dl>
+        <div class="panel">
+          <div class="cap"><span class="label">3 · it draws</span></div>
+          <svg class="flow" viewBox="0 0 240 304" role="img" aria-label="The flow: pm, then twice engineer, designer and pm, then the ceo decides">
+            <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>
+            <g class="node"><rect x="60" y="8" width="120" height="30" rx="4"/><text x="120" y="28" text-anchor="middle">pm</text></g>
+            <path class="edge" d="M120 38 V60"/>
+            <rect class="group" x="28" y="62" width="184" height="168" rx="8"/>
+            <text class="gl" x="40" y="80">pushback, 2 times</text>
+            <g class="node"><rect x="60" y="90" width="120" height="30" rx="4"/><text x="120" y="110" text-anchor="middle">engineer</text></g>
+            <path class="edge" d="M120 120 V138"/>
+            <g class="node"><rect x="60" y="140" width="120" height="30" rx="4"/><text x="120" y="160" text-anchor="middle">designer</text></g>
+            <path class="edge" d="M120 170 V188"/>
+            <g class="node"><rect x="60" y="190" width="120" height="30" rx="4"/><text x="120" y="210" text-anchor="middle">pm</text></g>
+            <path class="edge" d="M120 230 V256"/>
+            <g class="node decide"><rect x="50" y="258" width="140" height="34" rx="4"/><text x="120" y="280" text-anchor="middle">ceo · go / no_go</text></g>
+          </svg>
+          <div class="foot"><code>teamrunner explain launch --diagram</code></div>
+        </div>
       </div>
+      <p style="margin-top:18px;color:var(--ink-2);font-size:var(--s2)">Writing the team calls a model, so it needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider (OpenAI, Anthropic, OpenRouter…) that lets TeamRunner use its models. The provider bills you for what you use, usually a fraction of a cent a run.">API key</a> and costs a cent or two. Rehearsing the team it wrote is free.</p>
     </div>
   </section>
 
-<section class="band" id="examples">
+  <section class="band" id="examples">
     <div class="wrap">
       <div class="intro">
         <p class="label">A question from the study of groups</p>
         <p class="q">When the key facts are spread across a committee, does it pick the best candidate?</p>
-        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents does the same, and what fixes it.</p>
+        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents does the same, and what fixes it. It ships as an example, so you can run it today.</p>
       </div>
 
       <div class="steps">
@@ -234,7 +142,7 @@
           <div class="txt">
             <span class="stepno">The task</span>
             <h3>Three members, three candidates, and facts no one person has</h3>
-            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don't.</p>
+            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don't, written into that member's own file.</p>
             <p>Alone, each member would still choose Avery. With all six facts on the table, Blake is the clear choice.</p>
           </div>
           <div class="panel">
@@ -256,12 +164,12 @@
         <div class="step">
           <div class="txt">
             <span class="stepno">The change</span>
-            <h3>Change how the meeting is run, in one line</h3>
-            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>. Moving one <code>#</code> switches from open discussion to share-first. Nothing else changes.</p>
+            <h3>Change how the meeting is run: swap one line for another</h3>
+            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>, the team's <a class="t" tabindex="0" data-tip="The file chair.md: the meeting's script, saying who speaks when. With no chair, members take one turn each, in name order.">chair</a>. Both versions are already written there. Put a <code>#</code> in front of one and take it off the other. Nothing else changes.</p>
           </div>
           <div class="panel">
             <div class="cap"><span class="label">chair.md</span><span class="label">open discussion → share first</span></div>
-            <div class="diff" aria-label="Diff of chair.md">
+            <div class="diff" aria-label="What changes in chair.md: the open-discussion line is turned off and the share-first line is turned on">
 <div class="x">  # How the meeting is run. This is the line the experiment changes.</div>
 <div class="m">- meeting(*3) -> clerk:record</div>
 <div class="p">+ # meeting(*3) -> clerk:record</div>
@@ -270,25 +178,189 @@
 <div class="x"></div>
 <div class="x">  meeting = chen -> diaz -> okafor</div>
             </div>
+            <div class="defects"><div style="grid-template-columns:minmax(0,1fr)"><span>Red is the old line, green the new one: this view of a change is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>. A line starting with <code>#</code> is a note for people, and is not run.</span></div></div>
           </div>
         </div>
 
         <div class="step">
           <div class="txt">
             <span class="stepno">The run</span>
-            <h3>Run both versions. Then run them fifty times.</h3>
-            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. One run is an anecdote, because models are random. With experiments, one file describes both versions and the number of runs, and you get one CSV for R, Stata or pandas.</p>
+            <h3>Run both versions, a few times each, and compare</h3>
+            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. Models are random, so run each version more than once; <code>teamrunner runs</code> lists every run with the committee's decision.</p>
+            <p>Running each version 25 times and getting one table is <a href="#research">coming soon</a>.</p>
           </div>
-          <div class="pair">
-            <div class="panel">
-              <div class="cap"><span class="label">today</span><span class="label">0.0.2</span></div>
-<pre>teamrunner new committee \
-  --from hiring_committee
-teamrunner run committee
-teamrunner runs</pre>
+          <div class="panel">
+            <div class="cap"><span class="label">in your terminal</span><span class="label">works today</span></div>
+<pre>teamrunner new open --from hiring_committee
+teamrunner new share_first --from hiring_committee
+<span style="color:var(--ink-2)"># swap the line in share_first/chair.md, then:</span>
+teamrunner run open
+teamrunner run share_first
+teamrunner runs open
+teamrunner runs share_first</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="install">
+    <div class="wrap">
+      <div class="steps" style="margin-top:0">
+        <div class="step">
+          <div class="txt">
+            <p class="label">Try it in 5 minutes</p>
+            <h2>Rehearse a team first. No key, no cost.</h2>
+            <p>Install, copy an example, and rehearse it. A rehearsal runs the whole team with no model, so it is free and needs no account anywhere. You need only a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a>.</p>
+            <p>The installer, uv, fetches the right version of Python on its own, so you don't need Python first.</p>
+          </div>
+          <div class="panel">
+            <div class="tabs" role="tablist" aria-label="Operating system">
+              <button role="tab" id="t-mac" aria-selected="true" aria-controls="p-mac">macOS</button>
+              <button role="tab" id="t-win" aria-selected="false" aria-controls="p-win">Windows</button>
+              <button role="tab" id="t-lin" aria-selected="false" aria-controls="p-lin">Linux</button>
+              <button role="tab" id="t-py" aria-selected="false" aria-controls="p-py">I have Python</button>
             </div>
-            <div class="panel">
-              <div class="cap"><span class="label">experiment.yaml <span class="soon">0.2</span></span></div>
+            <div class="tabpane" role="tabpanel" id="p-mac" aria-labelledby="t-mac">
+              <ol>
+                <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”) and install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
+                <li>Close Terminal, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
+              <ol>
+                <li>Open <b>PowerShell</b> from the Start menu and install uv:<code class="cmd">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></li>
+                <li>Close PowerShell, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
+              <ol>
+                <li>In a terminal, install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
+                <li>Open a new terminal, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
+                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+              </ol>
+            </div>
+            <div class="tabpane" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>
+              <ol>
+                <li>With Python 3.10 or later:<code class="cmd">pip install teamrunner</code></li>
+                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
+                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+              </ol>
+            </div>
+            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">what you see</span><span class="label">free</span></div>
+<pre style="color:var(--ink-2)">rehearsal · no model is called; the words are placeholders and the answers random
+for                                       0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 1.”
+against                                   0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 2.”
+judge          winner = for               0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 3.”
+
+completed · 3 turns · 0.0s · ≈ $0.0000</pre>
+            <div class="defects" style="font-size:var(--s2)">
+              <div style="grid-template-columns:minmax(0,1fr)"><span><b style="color:var(--ink);font-family:var(--f-body);font-weight:600">Ready for a real run?</b> Drop <code>--rehearse</code>. If the model needs a key you haven't given, TeamRunner stops before spending anything and says which key, and where to put it: <code>~/.teamrunner/.env</code>, a file in your home folder, never inside a team. One key is enough. The <a href="tutorial.html#first-run">tutorial</a> walks you through it.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="tutorial">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Tutorial</p>
+        <h2>Nine steps, each on a team that ships with TeamRunner</h2>
+        <p>Each step starts from a working example and adds one idea. The first is free; after that, every step can still be rehearsed for free before you spend anything.</p>
+      </div>
+      <ol class="ladder">
+        <li><a href="tutorial.html#rehearse"><span class="no">1</span><b>Rehearse<span class="free">free</span></b><span>Copy <code>round_robin</code> and run it with no model.</span></a></li>
+        <li><a href="tutorial.html#first-run"><span class="no">2</span><b>Your first real run</b><span>Add a key, give it your own topic, open what it kept.</span></a></li>
+        <li><a href="tutorial.html#prose"><span class="no">3</span><b>Edit the words</b><span>Make the critic aggressive, run again, compare the two runs.</span></a></li>
+        <li><a href="tutorial.html#flow"><span class="no">4</span><b>Take control of the flow</b><span>Add a chair and rounds, and see the flow drawn.</span></a></li>
+        <li><a href="tutorial.html#decisions"><span class="no">5</span><b>Typed answers and decisions</b><span>The judge’s winner, then a fact checker that sends a speech back.</span></a></li>
+        <li><a href="tutorial.html#tools"><span class="no">6</span><b>Tools</b><span>Reading the web, through a toolkeeper, on terms you set.</span></a></li>
+        <li><a href="tutorial.html#private"><span class="no">7</span><b>Private information</b><span>The hiring committee: facts only one member knows.</span></a></li>
+        <li><a href="tutorial.html#experiment"><span class="no">8</span><b>A first experiment, by hand</b><span>Open discussion vs. share first, five runs each, and a tally.</span></a></li>
+        <li><a href="tutorial.html#bigger"><span class="no">9</span><b>Bigger organizations</b><span>A code review by five engineers, and a reference checker.</span></a></li>
+      </ol>
+      <p style="margin-top:24px"><a class="btn primary" href="tutorial.html">Start the tutorial</a></p>
+
+      <div class="intro" style="margin-top:72px">
+        <p class="label">All six examples</p>
+        <h3 style="font-size:var(--s5)">Start from the one closest to what you want</h3>
+        <p>Copy one by name and it is yours to change: <code>teamrunner new my_team --from fact_checked</code></p>
+      </div>
+      <div class="exlist">
+        <div class="ex"><code>round_robin</code><p>The simplest team: three members and no chair, one turn each in name order, and a typed verdict.</p></div>
+        <div class="ex"><code>multi_agent_debate</code><p>A chair: the debate as a script, with a repeated block of rounds.</p></div>
+        <div class="ex"><code>fact_checked</code><p>The debate with a fact checker that reads the web, and a Python sandbox to check the sums.</p></div>
+        <div class="ex"><code>hiring_committee</code><p>The committee above: facts only one member knows, kept in that member’s own file.</p></div>
+        <div class="ex"><code>orchestrators_lite</code><p>Five engineers review code against planted bugs, sharing one model profile.</p></div>
+        <div class="ex"><code>reference_check</code><p>Checks every reference in a paper: that it exists, that its details are right, and that it says what the citing sentence claims.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="concepts">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Concepts</p>
+        <h2>Five ideas cover the whole format</h2>
+      </div>
+      <div class="ideas">
+        <div class="idea"><h3>An agent is a Markdown file</h3><p>Settings at the top, between two <code style="border:0;padding:0;background:none">---</code> lines (the <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent's file: a description, which model, what answer it must give.">frontmatter</a>), and below them the agent’s instructions in plain words. Edit it in any text editor.</p><code>judge.md</code></div>
+        <div class="idea"><h3>A folder is a team</h3><p>Any folder with a <code style="border:0;padding:0;background:none">team.yaml</code> is a team, and the file browser is the org chart. <a class="t" tabindex="0" data-tip="A plain-text format for settings: one “name: value” per line, with indents for things inside things. team.yaml is a YAML file.">YAML</a> is just settings, one per line.</p><code>team.yaml</code></div>
+        <div class="idea"><h3>Every team has a chair</h3><p>Someone always decides who speaks next: the script in <code style="border:0;padding:0;background:none">chair.md</code>, or, with no chair file, members in name order. Every decision is logged.</p><code>chair.md</code></div>
+        <div class="idea"><h3>Tools sit with a toolkeeper</h3><p>A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> holds a tool, such as reading the web, and decides who may use it, on what terms. Agents never hold tools themselves.</p><code>web.md</code></div>
+        <div class="idea"><h3>Every run is kept</h3><p>Each run gets its own folder on your disk with everything that happened, so two runs can be compared line by line.</p><code>runs/</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="runs">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">What every run keeps</p>
+        <h2>A run folder is a full record, on your own disk</h2>
+        <p>Plain files you can open and compare. No dashboard you have to log in to, and no agent can read or change the record.</p>
+      </div>
+      <div class="runs">
+        <div class="panel tree">
+          <div class="cap"><span class="label">runs/2026-10-12_143201_debate/</span></div>
+<pre><span class="d">runs/2026-10-12_143201_debate/</span>
+├── output.md     <span class="c">← what the team produced: open this first</span>
+├── run.json      <span class="c">← when, what, versions, cost</span>
+├── events.jsonl  <span class="c">← every turn, one line each</span>
+├── <span class="d">inputs/</span>       <span class="c">← copies of files it was given</span>
+└── <span class="d">work/</span>         <span class="c">← what its code wrote</span></pre>
+        </div>
+        <dl>
+          <div><dt>Every prompt and every reply</dt><dd>Exactly what each agent could read, what it said, which model answered, tokens, cost and time.</dd></div>
+          <div><dt>Every decision about who acts next</dt><dd>Who made it and why. There are no hidden if-statements.</dd></div>
+          <div><dt>Every tool call</dt><dd>Who asked, whether the toolkeeper said yes, and what came back.</dd></div>
+          <div><dt>The exact version that ran</dt><dd>Your 2026 study can be rerun in 2028. Put the team folder in <a class="t" tabindex="0" data-tip="Version control: it keeps every saved version of a folder, so you can go back, see what changed, or share it on GitHub.">git</a> or zip it, and it is a replication package.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="research">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Built for research <span class="soon">Coming soon</span></p>
+        <h2>Describe both versions in one file, run each 25 times, get one CSV</h2>
+        <p>One run is an anecdote, because models are random. Soon an experiment file will sit beside your team, name the versions to compare, and say how many <a class="t" tabindex="0" data-tip="How many times each version is run. 25 replications of two versions is 50 runs in all.">replications</a> of each to run, with one <a class="t" tabindex="0" data-tip="A number that fixes the random choices TeamRunner makes, such as the order of runs, so the same seed gives the same plan.">seed</a>. Each version is a <a class="t" tabindex="0" data-tip="A small change applied to a copy of the team for one version, leaving the team itself as it was.">patch</a>, and the file is an <a class="t" tabindex="0" data-tip="A file that sits outside a team and changes it for one study, without editing the team.">overlay</a>: your team stays clean and runnable. You get one CSV for R, Stata or pandas.</p>
+      </div>
+      <details class="yaml">
+        <summary>Show the experiment file</summary>
+        <div class="panel">
+          <div class="cap"><span class="label">experiment.yaml</span><span class="label">coming soon</span></div>
 <pre>base: ../hiring_committee
 factors:
   meeting:
@@ -296,25 +368,33 @@ factors:
     - label: share_first
       patch:
         chair: file:variants/share_first.md
-replications: 25
+replications: 25      # 25 runs of each version, 50 in all
 seed: 42</pre>
-            </div>
-          </div>
         </div>
+      </details>
+      <p style="margin-top:18px;color:var(--ink-2);font-size:var(--s2)">Until then, <a href="tutorial.html#experiment">step 8 of the tutorial</a> runs the same comparison by hand.</p>
+    </div>
+  </section>
+
+  <section class="band" id="coming">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">What’s coming</p>
+        <h2>Planning a study? Here is what comes next</h2>
+        <p>Nothing on this list is in TeamRunner yet, and none of it is in the tutorial. What you build today keeps working as these arrive.</p>
       </div>
-      <div class="intro" style="margin-top:72px">
-        <p class="label">All six examples</p>
-        <h2>Start from the one closest to what you want</h2>
-        <p>Each adds something the one before it doesn’t have. Copy one by name, and it is yours to change: <code>teamrunner new my_team --from fact_checked</code></p>
+      <div class="coming">
+        <div><h3>Designed experiments</h3><p>One file names the versions to compare and how many runs of each. TeamRunner runs them all, seeded, and gives you one CSV.</p></div>
+        <div><h3>Who sees what</h3><p>Seal reviewers from each other, or pass work along a chain where each person hears only the one before. One line each, in a whiteboard file.</p></div>
+        <div><h3>Managers</h3><p>An AI that runs the meeting and decides who speaks next, in place of a fixed script, so script vs. judgment can itself be compared.</p></div>
+        <div><h3>A run browser</h3><p>Open a run, or two side by side, and read it turn by turn in your browser. The files on your disk stay the record.</p></div>
       </div>
-      <div class="exlist">
-        <div class="ex"><code>round_robin</code><p>The simplest team: three members and no chair, one turn each in name order, and a typed verdict.</p></div>
-        <div class="ex"><code>multi_agent_debate</code><p>A chair: the debate as a script, with a repeated block of rounds.</p></div>
-        <div class="ex"><code>hiring_committee</code><p>The committee above: facts only one member knows, kept in that member’s own file.</p></div>
-        <div class="ex"><code>orchestrators_lite</code><p>Five engineers review code against planted bugs, sharing one model profile.</p></div>
-        <div class="ex"><code>fact_checked</code><p>The debate with a fact checker, a web search on different terms for different members, and a Python sandbox.</p></div>
-        <div class="ex"><code>reference_check</code><p>Checks every reference in a paper: that it exists, that its details are right, and that it says what the citing sentence claims.</p></div>
-      </div>
+      <form class="notify" id="notify">
+        <label for="notify-email" class="label" style="flex-basis:100%">Tell me when experiments arrive</label>
+        <input id="notify-email" type="email" placeholder="you@university.edu" autocomplete="email" required>
+        <button type="submit">Notify me</button>
+      </form>
+      <p class="notify-note">This opens an email to hello@teamrunner.ai from your own mail app; we write back when there is news. Or <a href="https://github.com/teamrunner/teamrunner">watch the repository on GitHub</a> for new releases.</p>
     </div>
   </section>
 
@@ -326,19 +406,40 @@ seed: 42</pre>
         <p>During the preview, the full documentation is the README on GitHub. This site will take over more of it.</p>
       </div>
       <div class="refs">
-        <a href="tutorial.html"><i>this site</i><b>Tutorial</b><span>Your first team, step by step</span></a>
+        <a href="tutorial.html"><i>this site</i><b>Tutorial</b><span>Nine steps, each on a shipped example</span></a>
+        <a href="#glossary"><i>this site</i><b>Glossary</b><span>The words this site uses, in plain English</span></a>
+        <a href="#coming"><i>this site</i><b>What’s coming</b><span>What comes next, and how to hear about it</span></a>
         <a href="https://github.com/teamrunner/teamrunner#readme"><i>GitHub</i><b>Documentation</b><span>Everything TeamRunner does today, on one page</span></a>
         <a href="https://github.com/teamrunner/teamrunner#appendix-a-file-reference-at-a-glance"><i>GitHub</i><b>File reference</b><span>Every file a team may hold, and what it means</span></a>
         <a href="https://github.com/teamrunner/teamrunner#what-lands-in-a-run-folder"><i>GitHub</i><b>Run folder</b><span>What a run keeps, event by event</span></a>
         <a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md"><i>GitHub</i><b>Changelog</b><span>What changed in each version</span></a>
-        <a href="https://github.com/teamrunner/teamrunner#status-and-roadmap"><i>GitHub</i><b>Roadmap</b><span>What comes with 0.2, 0.3 and later</span></a>
         <a href="https://pypi.org/project/teamrunner/"><i>PyPI</i><b>Package</b><span>Every version, and its installation files</span></a>
         <a href="https://github.com/teamrunner/teamrunner"><i>GitHub</i><b>Source code</b><span>The code, the examples and their licences</span></a>
         <a href="https://github.com/teamrunner/teamrunner/issues/new/choose"><i>GitHub</i><b>Questions and bugs</b><span>A short form for each, or write to hello@teamrunner.ai</span></a>
         <a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md"><i>GitHub</i><b>Security</b><span>Report a problem privately</span></a>
-        <a href="https://github.com/teamrunner/teamrunner/blob/main/LICENSE"><i>GitHub</i><b>Licence</b><span>GPL-3.0-or-later; the examples are MIT-0</span></a>
         <div class="refcard"><i>your terminal</i><b>Commands</b><span>Type <code>teamrunner --help</code>, or <code>--help</code> after any command</span></div>
       </div>
+
+      <div class="intro" id="glossary" style="margin-top:72px">
+        <p class="label">Glossary</p>
+        <h3 style="font-size:var(--s5)">The words, in plain English</h3>
+      </div>
+      <dl class="gloss">
+        <div><dt>API key</dt><dd>A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use. Rehearsals need none.</dd></div>
+        <div><dt>chair</dt><dd>The file <code>chair.md</code>: the meeting’s script, saying who speaks when. With no chair, members take one turn each, in name order.</dd></div>
+        <div><dt>diff</dt><dd>A view of what changed between two versions of a file: removed lines in red, added lines in green.</dd></div>
+        <div><dt>frontmatter</dt><dd>The settings block between the two <code>---</code> lines at the top of an agent’s file.</dd></div>
+        <div><dt>git</dt><dd>Version control: it keeps every saved version of a folder, so you can go back, see what changed, or share it. Optional.</dd></div>
+        <div><dt>Markdown</dt><dd>Plain text with light formatting, in a file ending <code>.md</code>. An agent is one.</dd></div>
+        <div><dt>overlay</dt><dd>A file that sits outside a team and changes it for one study, without editing the team. Coming soon.</dd></div>
+        <div><dt>patch</dt><dd>A small change applied to a copy of the team for one version of an experiment. Coming soon.</dd></div>
+        <div><dt>rehearsal</dt><dd>A run with no model: placeholder words and random answers. Free, needs no key, and shows whether the flow goes where you meant.</dd></div>
+        <div><dt>replications</dt><dd>How many times each version is run. Models are random, so one run is an anecdote.</dd></div>
+        <div><dt>seed</dt><dd>A number that fixes the random choices TeamRunner makes, so the same seed gives the same plan.</dd></div>
+        <div><dt>terminal</dt><dd>The window where you type commands: Terminal on a Mac, PowerShell on Windows.</dd></div>
+        <div><dt>toolkeeper</dt><dd>A member with no model that holds one tool, such as reading the web, and decides who may use it and how often.</dd></div>
+        <div><dt>YAML</dt><dd>A plain-text format for settings, one <code>name: value</code> per line. <code>team.yaml</code> is one.</dd></div>
+      </dl>
     </div>
   </section>
 </main>
@@ -347,31 +448,40 @@ seed: 42</pre>
   <div class="wrap">
     <div>
       <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
-      <p style="margin-top:8px">Preview release. Until 0.1.0 is announced, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
       <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
     </div>
-    <div><h4>Learn</h4><ul><li><a href="#install">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#examples">Examples</a></li></ul></div>
-    <div><h4>Reference</h4><ul><li><a href="https://github.com/teamrunner/teamrunner#readme">Documentation</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
-    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><span class="mono" style="user-select:all">hello@teamrunner.ai</span></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
+    <div><h4>Learn</h4><ul><li><a href="#install">Try it</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="#examples">Examples</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#glossary">Glossary</a></li></ul></div>
+    <div><h4>Reference</h4><ul><li><a href="https://github.com/teamrunner/teamrunner#readme">Documentation</a></li><li><a href="#coming">What’s coming</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><a href="mailto:hello@teamrunner.ai">hello@teamrunner.ai</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
   </div>
 </footer>
 
 <script>
 (function(){
-  var btn=document.getElementById('copybtn');
-  btn.addEventListener('click',function(){
-    var el=document.getElementById(btn.dataset.target);
-    var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500)};
-    try{navigator.clipboard.writeText(el.textContent).then(done,function(){selectText(el)})}catch(e){selectText(el)}
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target);
+      var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500)};
+      try{navigator.clipboard.writeText(el.textContent).then(done,function(){selectText(el)})}catch(e){selectText(el)}
+    });
   });
   function selectText(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
-  var tabs=document.querySelectorAll('[role=tab]');
-  tabs.forEach(function(t){t.addEventListener('click',function(){
-    tabs.forEach(function(o){o.setAttribute('aria-selected',o===t?'true':'false');document.getElementById(o.getAttribute('aria-controls')).hidden=(o!==t)});
-  })});
+  document.querySelectorAll('[role=tablist]').forEach(function(list){
+    var tabs=list.querySelectorAll('[role=tab]');
+    tabs.forEach(function(t){t.addEventListener('click',function(){
+      tabs.forEach(function(o){o.setAttribute('aria-selected',o===t?'true':'false');document.getElementById(o.getAttribute('aria-controls')).hidden=(o!==t)});
+    })});
+  });
   var ua=navigator.userAgent||'';
   if(/Windows/i.test(ua)) document.getElementById('t-win').click();
   else if(/Linux/i.test(ua)&&!/Android/i.test(ua)) document.getElementById('t-lin').click();
+  document.getElementById('notify').addEventListener('submit',function(e){
+    e.preventDefault();
+    var who=document.getElementById('notify-email').value;
+    location.href='mailto:hello@teamrunner.ai?subject='+encodeURIComponent('Notify me when experiments arrive')
+      +'&body='+encodeURIComponent('Please let me know at '+who+' when TeamRunner experiments arrive.');
+  });
 })();
 </script>
 
