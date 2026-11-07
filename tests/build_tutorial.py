@@ -149,21 +149,23 @@ p("A real run calls a model, which needs an "
   + tip("API key", "A password-like code from a model provider that lets TeamRunner use its "
         "models. The provider bills you for what you use.")
   + ": a code from the model's provider that lets TeamRunner use it, billed by the provider. "
-  "The model is named once, in <code>hello/team.yaml</code> or in each agent's settings. "
-  "<code>explain</code> says which:")
+  "The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>. "
+  "<code>explain</code> shows it beside each member:")
 run("teamrunner explain hello", expect="for")
 p("Try a real run. If the key is missing, TeamRunner stops before anything is spent and tells "
   "you which key it needs:")
 run("teamrunner run hello", skip=True)
 output("""✗ the run cannot start:
-  OPENAI_API_KEY    for, against and judge use openai/gpt-6-luna, which needs OPENAI_API_KEY;
-                    not found in ~/.teamrunner/.env, your shell or the package
-                    add `OPENAI_API_KEY=…` to ~/.teamrunner/.env""", cap="without a key")
-p("Get that key from the provider's website and put it in TeamRunner's key file, "
+  OPENROUTER_API_KEY   for, against and judge use openrouter/google/gemma-4-31b-it,
+                       which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
+                       your shell or the package
+                       add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env""", cap="without a key")
+p("The examples run on Gemma 4 through <a href=\"https://openrouter.ai\">OpenRouter</a>, one key "
+  "for many providers' models. Make an account there, add a few dollars of credit, create a key, and put it in TeamRunner's key file, "
   "<code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called "
   "<code>.teamrunner</code> in your home folder. It is never inside a team, because team folders "
   "get shared and a key would go with them. One key is all you need.")
-file("~/.teamrunner/.env", "OPENAI_API_KEY=sk-...\n", note="in your home folder")
+file("~/.teamrunner/.env", "OPENROUTER_API_KEY=sk-or-...\n", note="in your home folder")
 p("Run it again, and this time give it your own topic. <code>--message</code> fills in "
   "<code>{{topic}}</code>:")
 run('teamrunner run hello --message "Four-day weeks make teams more productive"', skip=True)
@@ -177,9 +179,9 @@ p("Every run is kept in <code>hello/runs/</code>, one folder each, named for whe
 run("teamrunner runs hello", expect="winner")
 p("And to see the newest one again, as it printed:")
 run("teamrunner runs hello latest", expect="judge")
-aside("<p><b>Another provider, or free local models?</b> Change the model's name to "
-      "<code>anthropic/…</code>, <code>gemini/…</code> or <code>openrouter/…</code> and put that "
-      "provider's key in the same file. OpenRouter is one key for many providers' models. Free "
+aside("<p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to "
+      "<code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and put that "
+      "provider's key in the same file instead. Free "
       "models on your own computer work too, through <a href=\"https://ollama.com\">Ollama</a>: "
       "<code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the "
       "smallest models often can't give answers in the form a team needs.</p>")

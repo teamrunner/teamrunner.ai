@@ -73,16 +73,17 @@ completed · 3 turns · 0.0s · ≈ $0.0000
 hello/runs/2026-11-05_093012_hello</pre></div>
 <p>There is no file saying who speaks when, so each member takes one turn, in the order of their file names: <code>01_for</code>, <code>02_against</code>, <code>03_judge</code>. The numbers set the order and are not part of the names.</p>
 <h2 id="first-run"><span class="stepno">Step 2</span>Your first real run</h2>
-<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, in <code>hello/team.yaml</code> or in each agent's settings. <code>explain</code> says which:</p>
+<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>. <code>explain</code> shows it beside each member:</p>
 <code class="cmd" data-run data-expect="for">teamrunner explain hello</code>
 <p>Try a real run. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs:</p>
 <code class="cmd" data-run="skip">teamrunner run hello</code>
 <div class="panel out"><div class="cap"><span class="label">without a key</span></div><pre>✗ the run cannot start:
-  OPENAI_API_KEY    for, against and judge use openai/gpt-6-luna, which needs OPENAI_API_KEY;
-                    not found in ~/.teamrunner/.env, your shell or the package
-                    add `OPENAI_API_KEY=…` to ~/.teamrunner/.env</pre></div>
-<p>Get that key from the provider's website and put it in TeamRunner's key file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. One key is all you need.</p>
-<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENAI_API_KEY=sk-...
+  OPENROUTER_API_KEY   for, against and judge use openrouter/google/gemma-4-31b-it,
+                       which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
+                       your shell or the package
+                       add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env</pre></div>
+<p>The examples run on Gemma 4 through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. Make an account there, add a few dollars of credit, create a key, and put it in TeamRunner's key file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. One key is all you need.</p>
+<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENROUTER_API_KEY=sk-or-...
 </pre></div>
 <p>Run it again, and this time give it your own topic. <code>--message</code> fills in <code>{{topic}}</code>:</p>
 <code class="cmd" data-run="skip">teamrunner run hello --message &quot;Four-day weeks make teams more productive&quot;</code>
@@ -92,7 +93,7 @@ hello/runs/2026-11-05_093012_hello</pre></div>
 <code class="cmd" data-run data-expect="winner">teamrunner runs hello</code>
 <p>And to see the newest one again, as it printed:</p>
 <code class="cmd" data-run data-expect="judge">teamrunner runs hello latest</code>
-<div class="aside"><p><b>Another provider, or free local models?</b> Change the model's name to <code>anthropic/…</code>, <code>gemini/…</code> or <code>openrouter/…</code> and put that provider's key in the same file. OpenRouter is one key for many providers' models. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
+<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and put that provider's key in the same file instead. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
 <div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It costs a cent or two, and you can rehearse what it wrote for free:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
 <h2 id="prose"><span class="stepno">Step 3</span>Edit the words</h2>
 <p>Everything an agent does comes from its words. Make the critic more aggressive: in <code>hello/02_against.md</code>, replace the last two lines with these. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>.</p>
