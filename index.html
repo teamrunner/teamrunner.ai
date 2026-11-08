@@ -57,7 +57,7 @@
 
     <div class="demo-head">
       <p class="label">Five text files → a running team <span class="soon">example: multi_agent_debate</span></p>
-      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it, then add a fact checker: one new file and a few new lines in <code>chair.md</code>, and the flow redraws.</p>
+      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it for free, watch a real run we recorded on Claude Opus 5.5, then add a fact checker: one new file and a few new lines in <code>chair.md</code>, and the flow redraws.</p>
     </div>
     <div class="demo" id="demo">
       <div class="col">
@@ -114,14 +114,29 @@
       <div class="bar">
         <div class="btns">
           <button class="btn primary" type="button" id="play">▶ Rehearse it</button>
+          <button class="btn primary alt" type="button" id="watch">▶ Watch a real run</button>
           <button class="btn ghost" type="button" id="add" aria-pressed="false">+ Add a fact checker</button>
         </div>
         <pre class="log" id="log" aria-live="polite">A rehearsal runs the whole team with no model: placeholder words, random
 answers, real decisions and loops. Free, and it needs no key.
-In your terminal it is one line:  teamrunner run debate --rehearse</pre>
+A real run is the same team on a real model. Watch one we recorded.</pre>
+      </div>
+      <div class="tx" id="tx" hidden>
+        <div class="txhead">
+          <div>
+            <p class="label" id="txtitle">Recorded run</p>
+            <p class="txmeta" id="txmeta"></p>
+          </div>
+          <div class="txctl">
+            <span class="label">runs</span><span id="txpick"></span>
+            <button type="button" class="txbtn" id="txskip">Skip to the verdict</button>
+          </div>
+        </div>
+        <div class="txlist" id="txlist" aria-live="polite"></div>
+        <p class="txfoot" id="txfoot" hidden></p>
       </div>
     </div>
-    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
+    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “A team of AI agents does better work than a single AI model”, <i>against</i> won every time, with or without the fact checker, and the checked debates cost about twice as much. Would your model agree? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
   </div>
 
   <!-- 2 · Why -->
@@ -487,7 +502,7 @@ seed: 42</pre>
   /* + Add a fact checker: a new file, a changed chair, a redrawn flow */
   var add=document.getElementById('add'), foot=document.getElementById('demofoot');
   add.addEventListener('click',function(){
-    if(playing)stop();
+    if(playing)stop(); stopReplay(); tx.hidden=true;
     on=!on;
     FILES=on?BASE.concat([FC]):BASE.slice();
     fx.classList.toggle('with',on);
@@ -528,6 +543,7 @@ seed: 42</pre>
   function stop(){clearTimeout(timer);playing=false;btn.textContent='▶ Rehearse it again';rl('rounds, 3 times');mark(FILES[cur].hl)}
   btn.addEventListener('click',function(){
     if(playing){stop();return}
+    stopReplay();
     playing=true;btn.textContent='■ Stop';log.textContent='';
     var S=plan(),i=0,fast=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
     (function step(){
@@ -539,6 +555,103 @@ seed: 42</pre>
       if(s.end){playing=false;btn.textContent='▶ Rehearse it again';rl('rounds, 3 times');setTimeout(function(){if(!playing)mark(FILES[cur].hl)},1200);return}
       timer=setTimeout(step,fast?120:560);
     })();
+  });
+
+  /* Watch a real run: a replay of runs we recorded with TeamRunner, read from their
+     own events (runs/debate.json, packed by tests/pack_runs.py). Nothing is written by
+     hand; each run's run.json and events.jsonl sit beside it in runs/. */
+  var RUNS=null, rp={timer:null,run:null,i:0,live:false}, pickIdx={plain:0,checked:0};
+  var tx=document.getElementById('tx'), txlist=document.getElementById('txlist'), watch=document.getElementById('watch');
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function md(s){ // the little Markdown the debaters use: paragraphs, **bold**, *italic*
+    return s.split(/\n{2,}/).map(function(p){
+      return '<p>'+esc(p).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/\n/g,'<br>')+'</p>'}).join('');
+  }
+  function plainText(s){return s.replace(/\*\*(.+?)\*\*/g,'$1').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1$2')}
+  function secs(ms){var s=Math.round(ms/1000);return s<60?s+' s':Math.floor(s/60)+' min '+(s%60)+' s'}
+  function day(iso){return new Date(iso).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}
+  function keysFor(t,prev){
+    if(!on) return t.from==='for'?'F':t.from==='against'?'eFA A':t.from==='judge'?'eOut J':'';
+    if(t.from==='for') return 'FT F'+(t.attempt>1?' eFail1':'');
+    if(t.from==='against') return 'AT A'+(t.attempt>1?' eFail2':' ePass1');
+    if(t.from==='fact_checker') return prev==='against'?'eA FC2':'eF FC1';
+    if(t.from==='judge') return 'eOut J';
+    return '';
+  }
+  function stopReplay(){clearTimeout(rp.timer);rp.live=false;watch.textContent='▶ Watch a real run'}
+  function finish(){
+    stopReplay(); var r=rp.run;
+    txlist.querySelectorAll('.typing').forEach(function(b){b.classList.remove('typing');b.innerHTML=md(b.dataset.src)});
+    var f=document.getElementById('txfoot'); f.hidden=false;
+    f.innerHTML='<b>completed</b> · '+r.turns.length+' turns · '+secs(r.ms)+' · ≈ $'+r.cost.toFixed(2)
+      +' · winner: <b>'+r.winner+'</b><br>'+tally()+'<br>The record, exactly as TeamRunner wrote it: <a href="runs/'+r.name+'/events.jsonl">events.jsonl</a> · <a href="runs/'+r.name+'/run.json">run.json</a>';
+    rl('rounds, 3 times'); setTimeout(function(){if(!rp.live&&!playing)mark(FILES[cur].hl)},1500);
+  }
+  function card(t,n){
+    var a=document.createElement('article'); a.className='turn t-'+t.from;
+    var v=t.output&&(t.output.verdict||t.output.winner);
+    var who=t.from+(t.round?' <i>round '+t.round+'</i>':'')+(t.attempt>1?' <i>try '+t.attempt+' of 3</i>':'');
+    a.innerHTML='<header><span class="who">'+who+'</span>'+(v?'<span class="vd vd-'+v+'">'+(t.output.winner?'winner = ':'')+v+'</span>':'')
+      +'<span class="meta">'+(t.ms/1000).toFixed(1)+' s · $'+t.cost.toFixed(4)+'</span></header><div class="body"></div>';
+    var extra=t.output&&(t.output.reasons||t.output.reasoning);
+    if(extra){var d=document.createElement('details');d.innerHTML='<summary>'+(t.output.reasons?'reasons':'full reasoning')+'</summary>'+md(extra);
+      if(t.from==='fact_checker'&&t.output.verdict==='fail')d.open=true; a.appendChild(d)}
+    txlist.appendChild(a); return a.querySelector('.body');
+  }
+  function typeInto(body,src,done){
+    body.dataset.src=src; body.classList.add('typing');
+    var txt=plainText(src), n=0, step=Math.max(6,Math.ceil(txt.length/90));
+    if(reduce){body.classList.remove('typing');body.innerHTML=md(src);rp.timer=setTimeout(done,500);return}
+    (function tick(){
+      if(!rp.live)return;
+      n+=step; body.textContent=txt.slice(0,n); txlist.scrollTop=txlist.scrollHeight;
+      if(n<txt.length)rp.timer=setTimeout(tick,28);
+      else{body.classList.remove('typing');body.innerHTML=md(src);txlist.scrollTop=txlist.scrollHeight;rp.timer=setTimeout(done,700)}
+    })();
+  }
+  function tally(){ // winners across every recorded run, by version: the start of an experiment
+    var t={plain:{},checked:{}};RUNS.forEach(function(r){t[r.version][r.winner]=(t[r.version][r.winner]||0)+1});
+    var f=function(v){var o=t[v],n=(o['for']||0)+(o.against||0);return n?'for '+(o['for']||0)+', against '+(o.against||0)+' of '+n:'none yet'};
+    return 'All our recorded runs: plain debate: '+f('plain')+' · with the fact checker: '+f('checked');
+  }
+  function picker(){
+    var v=on?'checked':'plain', mine=RUNS.filter(function(r){return r.version===v}), p=document.getElementById('txpick');
+    p.innerHTML='';
+    mine.forEach(function(r,i){var b=document.createElement('button');b.type='button';b.className='txbtn'+(r===rp.run?' cur':'');
+      b.textContent='run '+(i+1);b.title='Replay recorded run '+(i+1);
+      b.addEventListener('click',function(){pickIdx[v]=i;start(r)});p.appendChild(b)});
+  }
+  function start(r){
+    if(playing)stop(); stopReplay();
+    rp.run=r; rp.i=0; rp.live=true; tx.hidden=false; txlist.innerHTML=''; document.getElementById('txfoot').hidden=true;
+    watch.textContent='■ Stop';
+    document.getElementById('txtitle').textContent='Recorded run · '+(r.version==='checked'?'with the fact checker':'the plain debate');
+    document.getElementById('txmeta').innerHTML='“'+esc(r.topic)+'” · <code>'+esc(r.model)+'</code> · '+day(r.started)+' · TeamRunner '+r.teamrunner;
+    log.textContent='Replaying a real run, turn by turn, from its own record.\nEvery word below is what the model said; times and costs are the real ones.';
+    picker(); var prev=null;
+    (function next(){
+      if(!rp.live)return;
+      if(rp.i>=r.turns.length){finish();return}
+      var t=r.turns[rp.i++];
+      if(t.round)rl('rounds · '+t.round+' of 3'); mark(keysFor(t,prev)); prev=t.from==='fact_checker'?prev:t.from;
+      typeInto(card(t),t.content,next);
+    })();
+  }
+  watch.addEventListener('click',function(){
+    if(rp.live){stopReplay();return}
+    var go=function(){var v=on?'checked':'plain', mine=RUNS.filter(function(r){return r.version===v});
+      if(!mine.length){log.textContent='No recorded run of this version yet.';return}
+      var r=mine[pickIdx[v]%mine.length]; pickIdx[v]++; start(r);
+      tx.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'})};
+    if(RUNS)go(); else fetch('runs/debate.json').then(function(x){return x.json()}).then(function(d){RUNS=d.runs;go()})
+      .catch(function(){log.textContent='Could not load the recorded runs.'});
+  });
+  document.getElementById('txskip').addEventListener('click',function(){
+    if(!rp.run)return; clearTimeout(rp.timer);
+    var r=rp.run, prev=null; rp.live=true;
+    txlist.querySelectorAll('.typing').forEach(function(b){b.classList.remove('typing');b.innerHTML=md(b.dataset.src)});
+    while(rp.i<r.turns.length){var t=r.turns[rp.i++];var b=card(t);b.innerHTML=md(t.content)}
+    mark(keysFor(r.turns[r.turns.length-1],prev)); finish(); txlist.scrollTop=txlist.scrollHeight;
   });
 
   /* What's coming: notify by email */

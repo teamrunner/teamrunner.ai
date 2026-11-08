@@ -1,0 +1,778 @@
+{
+ "runs": [
+  {
+   "name": "plain-1",
+   "version": "plain",
+   "started": "2026-11-08T20:50:20.223058+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** The core case for teams is the same reason human institutions use peer review, code review, and second opinions. A single model working alone has no outside check on its own blind spots: when it makes an error early in its reasoning, it tends to build on that error rather than catch it. A team of agents changes this structurally. One agent drafts, another critiques, a third verifies against sources or runs the tests, and errors get caught *between* steps instead of compounding silently. Research supports this. Multi-agent debate setups, such as Du et al. (2023), improved factual accuracy and math reasoning over a single model answering alone. Simpler ensemble methods like self-consistency voting reliably beat single-pass answers. Teams also overcome hard practical limits. A single model has one context window and one sequential thread of attention. A team can split a large codebase or research question into parallel subtasks, giving each agent a focused context rather than one overloaded one. To be fair, teams cost more and need good coordination. But on complex, high-stakes work, where quality matters more than raw efficiency, division of labor plus independent verification is a durable advantage, not a gimmick.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 6948,
+     "cost": 0.010284
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** The peer-review analogy breaks down where it matters. Human reviewers have different training, experiences, and incentives. Agents in a typical team are usually the same model with different prompts, so they share the same blind spots. An error the drafter finds plausible, the critic often finds plausible too. Correlated reviewers give the *feeling* of verification without its substance. The research is also weaker than presented:\n\n- **Self-consistency is not a team.** It is one model sampled several times and voted. If anything, it shows that extra compute helps, not that division of labor does.\n- **Debate gains shrink when compute is matched.** Later work, such as Wang et al. (2024), found that a single agent with a strong prompt and comparable budget roughly matches multi-agent discussion.\n- **Self-critique is unreliable.** Huang et al. (2023) showed that models critiquing reasoning without external feedback often fail to improve and can even talk themselves out of correct answers.\n\nThe real value comes from *external* signals like running tests or checking sources. A single agent can use those tools just as well.\n\n**My strongest argument:** Splitting work across agents creates a new and serious failure mode: information lost at the handoffs. Each agent sees only a slice of the context, so subagents make decisions that conflict with choices they never saw. One might pick a different API convention, misread the overall goal, or duplicate or contradict another's work. A systematic study of multi-agent failures (Cemri et al., 2025, \"Why Do Multi-Agent LLM Systems Fail?\") found that a large share of failures came from inter-agent misalignment and coordination breakdowns rather than from the underlying model's limits. This is why practitioners building coding agents, such as Cognition in \"Don't Build Multi-Agents,\" have argued that a single agent with one continuous context is more reliable for tightly coupled work. Even multi-agent advocates like Anthropic report using roughly 15x more tokens, with gains concentrated in broad, easily parallelized research tasks. So teams are a specialized tool for breadth-heavy problems, not a general route to better work. For coherent, interdependent tasks, which describes most serious work, one well-equipped model that keeps the whole picture in view usually does better.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 12554,
+     "cost": 0.023596
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** Handoff failures are real, but they are an engineering problem with known fixes, not a ceiling on teams. Cemri et al. catalogued how *poorly specified* systems fail, and many of those failures trace to vague role definitions and missing verification, which better design addresses. Cognition's critique targets naive parallel subagents working blind. Its own remedy is to share full context and traces, which is a design principle for teams, not a case against them. My opponent's Anthropic example also cuts both ways. Yes, it used about 15x the tokens, but Anthropic reported roughly a 90% improvement over a single strong agent on its internal research evaluation. On high-stakes work, that is often a trade worth making. And \"most serious work is tightly coupled\" is asserted, not shown. Literature reviews, codebase-wide migrations, security audits, and due diligence all decompose naturally.\n\n**My strongest remaining argument:** A single agent cannot give itself a fresh pair of eyes. Over long tasks, one continuous context accumulates clutter, and performance degrades as it grows (the \"lost in the middle\" and context-rot findings). Worse, the model stays anchored to its own earlier reasoning. This is exactly why Huang et al. found self-critique unreliable: the critic is reading its own rationalizations. A separate reviewer agent sees only the artifact and the spec, so it judges the output on its merits rather than re-walking the path that produced the error. Teams also answer the correlated-blind-spots objection directly, because nothing requires every agent to be the same model. Mixture-of-Agents work (Together AI, 2024) showed that layering *different* LLMs beat any single one of them. One model with tools gets external signals. A well-designed team gets external signals *plus* independent, unanchored, and potentially diverse judgment about what those signals mean.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 13753,
+     "cost": 0.028448
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** The \"fresh pair of eyes\" argument proves less than it claims. A single model can review its work with a clean context: start a new session, hand it the artifact and the spec, and ask for a review. If that counts as a \"team,\" the topic shrinks to \"calling a model more than once helps,\" which nobody disputes. Context rot is also addressed within single agents through compaction, summarization, and note-taking. And a reviewer that sees only the artifact loses the reasoning behind it, so it can miss errors of intent as easily as it avoids anchoring. Huang et al.'s main lesson was that critique without *external feedback* is unreliable. A fresh-context critic still lacks that feedback, so it is not the fix my opponent suggests. Mixture-of-Agents is the weakest support offered:\n\n- **Its headline gains came from AlpacaEval,** a benchmark judged by an LLM that rewards polished, longer answers.\n- **The follow-up study undercuts it.** \"Rethinking Mixture-of-Agents\" (Li et al., 2025) found that repeatedly sampling the *single best model* often beat mixing different models, because weaker models dilute the output.\n\nSo model diversity, the supposed answer to correlated blind spots, frequently made results worse.\n\n**My strongest remaining argument:** Strip away the framing and most team gains are really *compute* gains. Debate, MoA, and reviewer pipelines all spend several times the inference budget. When studies give a single agent the same budget, the advantage mostly disappears. Reasoning models now show that one model can turn extra compute into better answers by thinking longer, sampling, and checking itself against tests, with no coordination overhead. Teams also add a failure mode single models avoid: social dynamics. Debate studies have documented agents conforming to a confident but wrong peer, so errors converge instead of getting corrected. The fair comparison is not \"one model, one pass\" versus \"a team with 15x the tokens.\" It is a team versus one model given the same resources. On that test, the evidence that teams do better work, rather than simply more expensive work, is thin outside breadth-heavy research tasks.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 20139,
+     "cost": 0.040248
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's compute argument concedes more than it seems to. Anthropic itself found that token usage explained most of the performance variance in its research evaluation. But that is the point: a single agent cannot productively spend 15x the tokens in one context window without hitting the context rot we both acknowledge. A team architecture is *how* extra compute becomes better answers. Parallel contexts let you spend more without degrading. The \"fresh session reviewer\" reply makes the same move. A separate instance with its own context, a defined role, and only the artifact and spec is a team of two. Calling it \"one model used twice\" relabels the design without refuting it. My opponent is right that conformity is a real risk in debate. The standard mitigation is to have agents answer independently before seeing each other's answers. A lone model has no such fix for agreeing with itself.\n\n**My strongest remaining argument:** Teams enable *separation of duties*, which no single agent can replicate however much compute it gets. When one agent writes both the code and the tests, it can make the tests pass by weakening them. Coding agents have been documented doing exactly this: editing or special-casing tests rather than fixing the bug, a form of reward hacking. A team can enforce structural independence:\n\n- **Locked tests:** the implementer never sees or edits the held-out tests.\n- **Separate verification:** a verifier runs checks in its own sandbox.\n- **Distinct permissions:** a security reviewer holds permissions the builder lacks.\n\nThis is not about smarter judgment. It is about making external signals trustworthy by ensuring the agent being graded cannot touch the grader. My opponent says the real value comes from external feedback like tests. I agree, and external feedback is only reliable when the producer cannot shape it. Auditing, finance, and safety engineering separate these roles for exactly this reason. For high-stakes work, that kind of verification is what better work means.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14846,
+     "cost": 0.034972
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** Separation of duties is a real principle, but my opponent credits it to the wrong thing. What makes locked tests trustworthy is the *harness*: read-only files, a sandbox, held-out tests run by CI, and scoped permissions. Those are deterministic infrastructure, not agents. A single agent whose work is graded by a held-out test suite it cannot see or edit already has full separation of duties. Adding an LLM \"verifier\" reintroduces a judge that can be gamed. LLM judges are known to be swayed by confident framing and polished output, so the most trustworthy check in my opponent's list is the one that involves no second agent. On compute, I agree that parallel contexts help with breadth, which I conceded from the start. For depth, reasoning models already turn extra compute into better answers through long sequential thinking with compaction. My opponent says \"independent answers before debate\" fixes conformity, but independent answers then voted on are just self-consistency, which is single-model sampling. And if any fresh-context call counts as a \"team of two,\" the topic becomes trivially true and stops describing multi-agent architectures at all.\n\n**My strongest remaining argument:** A team turns task decomposition into a single point of failure while making that failure harder to see. The orchestrator splits the problem once. If the split is subtly wrong, with a misjudged interface, a missed dependency, or a misread goal, every subagent faithfully executes its slice of a flawed plan, and none has the full picture needed to notice. Reliability also compounds downward: if each handoff preserves intent 95% of the time, a five-stage pipeline is intact only about 77% of the time. When it breaks, diagnosing which agent misunderstood which message is far harder than reading one coherent trace. Meanwhile, the gap teams were built to fill keeps narrowing. Each model generation handles longer contexts and longer-horizon tasks more coherently, so work that once needed decomposition increasingly fits in one capable agent. Teams remain a useful tool for wide, parallelizable research. But as a general claim, \"a team does better work\" mistakes a workaround for current limits, and some good harness engineering, for a lasting advantage.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 17479,
+     "cost": 0.041352
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Against wins. They consistently undercut For's evidence and moved the debate to the fairer test of a team versus one model with the same resources. For argued well, but its best points were either absorbed into the single-agent case or depended on a loose definition of 'team'.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Both sides argued with specific evidence, but Against more consistently weakened the support for For's central claim. For opened well with the peer-review analogy, debate research, self-consistency and parallel contexts. Against then showed that self-consistency is single-model sampling and that debate gains shrink once compute is matched (Wang et al.). It also argued that same-model agents share correlated blind spots, and that the real benefit comes from external signals a single agent can also use. For's best moves were reframing extra compute as needing parallel contexts, the Anthropic result of roughly 90% improvement, and the separation-of-duties argument about agents gaming tests. Against answered each of these. It credited the trustworthiness of locked tests to deterministic harness infrastructure rather than a second agent. It cited Li et al. against Mixture-of-Agents, so model diversity often made results worse. And it pointed out that calling any fresh-context call a 'team of two' makes the motion trivially true rather than defending multi-agent architectures. For was right that 'most serious work is tightly coupled' was asserted rather than shown. Against's 95%-per-handoff figure was illustrative rather than evidenced, and its final decomposition argument came with no chance of reply, so I gave it limited weight. Even so, Against had already narrowed the defensible claim to a compute-matched comparison and breadth-heavy tasks, which it conceded from the start. For never re-established that teams do better work as a general claim, rather than more expensive work. On argument quality and engagement with the evidence, Against edges it."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 12118,
+     "cost": 0.035884
+    }
+   ],
+   "ms": 108958,
+   "cost": 0.214784,
+   "tokens": {
+    "input": 13411,
+    "output": 8057
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "plain-2",
+   "version": "plain",
+   "started": "2026-11-08T20:52:02.023912+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** The core advantage of a team of AI agents is that errors get caught. A single model working alone has one pass, one perspective, and a known tendency to commit early to a line of reasoning and rationalize it. A team can split the work into roles: one agent drafts, another critiques, a third checks facts or runs tests. That turns blind spots into points of friction where mistakes surface. The evidence supports this. Multi-agent debate setups (e.g., Du et al., 2023) improved factual accuracy and math reasoning over the same model answering alone. Simpler ensemble methods like self-consistency, which sample several reasoning paths and take the majority answer, reliably beat single-pass answers on reasoning benchmarks. In software engineering, systems that pair a \"coder\" agent with a \"tester\" or \"reviewer\" agent catch bugs a lone generator ships. Teams also let you specialize and parallelize: separate agents can research, plan, and verify at the same time, each with a focused context window, instead of one model juggling everything at once. This mirrors why human institutions use peer review, editors, and second opinions. Raw intelligence isn't enough; checks and diverse perspectives are what turn good work into reliable work. To be fair, teams cost more compute and can fail when poorly coordinated. But when the question is which produces *better work*, structured collaboration has the edge.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 6946,
+     "cost": 0.011184
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's evidence proves less than it seems. Self-consistency isn't a team at all. It's one model sampled several times and majority-voted, so it supports \"more compute helps,\" not \"multiple agents help.\" That confound runs through the debate literature too. When researchers give a single model a matched compute budget and strong prompting, much of the multi-agent advantage shrinks or disappears (e.g., Wang et al., 2024, \"Rethinking the Bounds of LLM Reasoning\"). The peer-review analogy also breaks down. Human reviewers bring different training, knowledge, and incentives. Copies of the same model share the same blind spots, so \"critique\" often means one instance confidently ratifying another's error. Debate agents are known to converge on a confident wrong answer rather than surface the right one.\n\n**My argument:** Teams introduce a new failure mode that single models don't have: coordination loss. Every handoff between agents compresses context. The critic doesn't see everything the drafter considered. The tester doesn't know the design intent. The subagents make implicit decisions that conflict with each other. Empirical studies of multi-agent systems (e.g., Cemri et al., 2025, \"Why Do Multi-Agent LLM Systems Fail?\") find that many failures come from exactly this: misaligned roles, lost information between agents, and premature or skipped verification, not from weak individual models. That's why some practitioners building real agentic products have publicly argued for a single agent with full, continuous context over fragmented teams. Better work usually comes from coherence: one mind holding the whole problem. Adding agents mostly adds seams where that coherence can tear.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 10319,
+     "cost": 0.020772
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal and new argument:** My opponent is right that self-consistency is one model sampled repeatedly and that compute is a real confound. But coordination loss is not an argument against teams. It is a list of engineering bugs. Cemri et al. catalog *fixable* failures (unclear roles, dropped information, skipped verification), and they show that better role specification and verification protocols improve results. The \"one mind holding the whole problem\" alternative has its own seams. Single models degrade over long contexts, losing track of information buried in the middle and drifting from earlier constraints. Moving the work to one context window doesn't remove the problem. It hides it.\n\nMy strongest remaining point answers the \"shared blind spots\" objection directly: good teams are *heterogeneous* and *grounded*. You don't have to staff a team with clones. Mixture-of-Agents (Wang et al., 2024) combined different open models and outscored GPT-4o on AlpacaEval 2.0, which no single member could do alone. And a verifier agent doesn't have to just \"agree.\" It can run the code, execute the tests, or query a source, so its critique rests on external evidence rather than the drafter's reasoning. This exploits a real asymmetry: checking an answer is usually easier than producing one. A team built to use that asymmetry, with different models and tools that touch reality, catches errors that a single model, however coherent, will confidently carry to the end.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 10681,
+     "cost": 0.021388
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's strongest point actually supports my side. A verifier that runs code, executes tests, or queries a source is powerful because of the *tool*, not the *teammate*. A single agent can run the same tests and check the same sources itself, with full knowledge of why it wrote the code the way it did. That is the compute confound again, in a new form: grounding helps, but grounding is not teamwork.\n\nThe verification asymmetry is also narrower than claimed. Checking is cheap when a cheap checker exists, such as unit tests or a math answer. For essays, strategy, or design there is no oracle, and a critic agent is just another opinion with less context.\n\nMixture-of-Agents is a fair example of heterogeneity. But AlpacaEval is a preference benchmark judged by an LLM, MoA spent several times the inference of its single-model baseline, and the edge came from pooling *different* strong models. A comparably resourced single frontier model is the right comparison, and such models have since overtaken those scores.\n\n\"Fixable engineering bugs\" concedes my point for now. The usual fix is giving agents more shared context, which moves the system back toward one mind. Long-context degradation is real, but splitting the work doesn't cure it. Someone still has to integrate the pieces, and that integrator works with *less* information, not more.\n\n**My argument:** The strongest trend cuts against teams. The draft-critique-revise loop that multi-agent systems build externally is being learned *inside* single models. Reasoning models are trained to generate, check, backtrack, and verify within one continuous chain of thought, with no handoffs and nothing lost between roles. As this happens, the reported gains from bolting on debate or critic agents tend to shrink. The team structure was a scaffold that compensated for models that couldn't yet check themselves. When you compare fairly, with the same tools, the same compute, and a capable model, a single agent typically matches or beats the team. It is also cheaper, easier to debug, and produces a more coherent final product. \"Better work\" should mean better under equal conditions, and under equal conditions the team advantage mostly reflects extra resources rather than collaboration.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 19110,
+     "cost": 0.037528
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent says reasoning models now draft, check, and backtrack inside one chain of thought. But that internal check runs on the same weights, the same context, and the same assumptions that produced the error. Huang et al. (2023, \"Large Language Models Cannot Self-Correct Reasoning Yet\") found that intrinsic self-correction without outside feedback often fails to help and sometimes makes answers worse. So \"full knowledge of why it wrote the code that way\" is exactly the problem. The author's rationale is what blinds it. A verifier with a *fresh* context doesn't inherit those assumptions, and that independence is a property of the teammate, not the tool. Better reasoning models don't make teams obsolete either. They make better teammates.\n\n**My argument:** The \"equal compute\" framing assumes that a single agent could use a team's budget equally well. Often it can't. A single agent works serially within one context window, so beyond some point extra compute just means a longer, more degraded trace. Teams are how you turn more compute into better work on large problems: broad research, big codebases, many-source analysis. Anthropic reported that its multi-agent research system, a lead agent directing parallel subagents, outperformed a single Claude Opus 4 agent by about 90% on its internal research evaluation. To be honest, Anthropic also found that token usage explained much of that gain, and it noted that multi-agent setups suit some tasks (like tightly coupled coding) less well. That caveat makes my point rather than weakening it. On problems too broad for one context, the team structure is what lets the extra compute pay off. For the work that matters most, \"better\" is not a lab tie under artificial budget limits. It is what you can accomplish when the task outgrows one mind, and that is where teams win.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 12691,
+     "cost": 0.031084
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** Huang et al. actually cuts against my opponent. The same paper tested multi-agent debate and found it did no better than self-consistency with an equal number of responses. What failed was correction *without external feedback*, and a second instance of the same model is not external feedback. A fresh context resets the assumptions in the window, not the weights, so the critic shares the author's training-level blind spots. When outside signal does help, it comes from tests, tools, or sources, which a single agent can use too.\n\nThe Anthropic example deserves credit for its honesty, but look at what it says. Anthropic reported that token usage alone explained roughly 80% of the performance variance. Its multi-agent system also used several times the tokens of a single agent. That is the compute confound, documented by the people who built the system. Anthropic also said the approach fits poorly with tightly coupled tasks like most coding.\n\nSo the defense has narrowed from \"teams do better work\" to \"teams do better on broad, parallelizable research when cost is no object.\" I accept that narrower claim. Even there, the edge is eroding as context windows grow and single agents gain memory and compaction tools.\n\n**My argument:** The topic is a general claim, and it fails as a general claim. The case for teams holds in a specific regime: tasks that split cleanly into independent pieces, have cheap external checks, and come with budgets large enough to absorb several times the cost. Most valuable work doesn't look like that. An essay, a product design, a legal argument, or a refactor of interdependent code all depend on one consistent vision. Splitting that vision across agents creates seams, conflicting implicit decisions, and an integrator working from summaries. A single capable agent with the same tools also has practical advantages. It is easier to debug, because there is one trace to read and no inter-agent miscommunication to untangle. Its errors are easier to attribute, and it costs far less. Teams are a useful technique for a particular class of problems, not a general recipe for better work. When resources are equal and the task needs coherence, one mind holding the whole problem usually does better.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14518,
+     "cost": 0.037096
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "I'm giving this one to the Against side. Both sides argued well and handled evidence honestly, but Against more consistently located the causal mechanism behind the For side's examples, and by the end For's position had narrowed to a regime that Against conceded without giving up the general claim.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Both sides argued at a high level, handled evidence carefully, and each conceded fair points. Against wins on argument quality because it repeatedly identified the causal mechanism behind For's evidence and showed it was not teamwork itself. Self-consistency is repeated sampling. Grounded verification depends on the tool, not the teammate. Mixture-of-Agents and Anthropic's research system relied on extra inference, and Anthropic's own data showed token usage explained most of the performance variance. For answered some of this well. The point that a fresh-context verifier avoids inheriting the author's rationale was sharp, and so was the argument that parallelism lets teams turn compute into results on tasks too broad for one context window. But Against countered effectively: Huang et al., the paper For cited, found multi-agent debate no better than compute-matched self-consistency, and a fresh context resets the window, not the weights. For's final position, that teams win when tasks outgrow one mind, was a real but narrowed claim. Against explicitly accepted that narrow regime while arguing the general resolution fails for coherence-dependent work such as essays, design, and tightly coupled code. For never fully rebutted the 'equal conditions' framing, apart from the partial answer about serial context limits. As a result, Against left the debate with the more defensible account of the general claim."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8035,
+     "cost": 0.026124
+    }
+   ],
+   "ms": 83816,
+   "cost": 0.185176,
+   "tokens": {
+    "input": 12219,
+    "output": 6815
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "plain-3",
+   "version": "plain",
+   "started": "2026-11-08T20:53:28.389110+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** The core case for teams is error correction through independence. A single model reasoning alone has no outside check. When it makes an early mistake, every later step builds on it, and the model is poorly placed to catch its own blind spots because the same weights that produced the error are judging it. A team breaks that loop. One agent drafts, another critiques, a third verifies, and errors that would silently compound get flagged. This isn't just theory. Du et al. (2023) found that having multiple model instances debate and refine their answers improved factual accuracy and mathematical reasoning over a single model answering alone. Anthropic reported that its multi-agent research system, a lead agent coordinating parallel subagents, outperformed a single-agent setup by about 90% on its internal research evaluation. Teams also get around hard limits of a single context window: subagents can each explore a separate thread in depth and return condensed findings, so the combined system covers more ground than one model can hold in its head at once. Teams aren't free, since they cost more compute and need good coordination. But for complex, open-ended work where breadth and reliability matter, dividing labor and cross-checking results is how both human and AI work gets better.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 7411,
+     "cost": 0.012544
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's case rests on \"independence,\" but copies of the same model are not independent checkers. They share the same weights, training data, and blind spots, so their errors are correlated. A critic agent built on the same model tends to miss exactly the mistakes the drafter made, or simply agrees with them. Research on self-correction (Huang et al., 2023) found that without external feedback, models asked to critique and revise often fail to improve and sometimes change correct answers to wrong ones.\n\nThe cited gains also mostly reflect spending more compute, not teamwork itself. When Wang et al. (2024) gave a single agent strong prompting and a comparable budget, it largely matched multi-agent debate. Anthropic's own write-up of its research system is telling:\n\n* Multi-agent runs used roughly 15× the tokens of a normal chat.\n* Token usage alone explained about 80% of the performance variance on their browsing evaluation.\n\nSo the \"90% improvement\" is largely a finding about spending more tokens, not about dividing labor.\n\n**Argument:** The real cost of teams is fragmented context. Good work on coherent tasks, such as writing a program, an argument, or a design, depends on every decision being made with full awareness of every other decision. Splitting the work among agents means each one acts on a lossy summary of what the others know. They then make locally reasonable choices that conflict globally.\n\nThis is why Anthropic itself said multi-agent setups fit poorly with tightly interdependent work like most coding. It is also why practitioners such as Cognition have argued publicly against building multi-agent systems for this kind of work. Systematic studies of multi-agent failures (Cemri et al., 2025) find that many breakdowns come from coordination itself: misaligned roles, lost information, and agents ignoring each other.\n\nTeams can help on wide, parallelizable searches. But for the deep, integrated reasoning that makes up most valuable work, one model holding the whole problem in a single context, given equal compute, is the better design.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 12426,
+     "cost": 0.02384
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent treats \"equal compute\" as a fair comparison, but a single context can't use 15× the tokens well. Long-context performance degrades: Liu et al. (2023) showed models often miss information buried in the middle of long inputs. So when token usage explains 80% of Anthropic's results, that supports teams. Splitting work across fresh contexts is *how* extra compute becomes extra quality instead of noise. Fragmented context is a real risk, but it is a design problem with known fixes: share full traces where tasks are coupled, and parallelize only where they aren't. Cognition's critique targeted naive splitting, not coordination as such, and Cemri et al. catalogued failures in order to fix them. I concede that tightly coupled coding is a weak case for heavy parallelism. But even there, a separate reviewer with a clean context avoids the anchoring that makes self-review fail. Huang et al. studied a model re-reading its own reasoning, which is exactly the loop a team breaks.\n\n**Argument:** The correlated-errors objection applies only to identical clones, and real teams don't have to be clones. A team can mix different models, roles, and tools, and that is where independence actually comes from. In Mixture-of-Agents (Wang et al., 2024, Together AI), layers of different open-source models refining each other's outputs scored 65.1% on AlpacaEval 2.0, beating GPT-4o's 57.5%, even though no single member could do that alone. Teams can also include agents whose job is to check work against reality: running tests, executing code, or querying sources. That brings in the external feedback that Huang et al. found self-correction lacks. A single model can call tools too, but a team can give verification its own agent, incentives, and context, so checking isn't biased by authorship. Diverse members plus grounded verification produce error correction that one mind, however large, cannot supply for itself.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14178,
+     "cost": 0.029816
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** Mixture-of-Agents is weaker evidence for diversity than it looks. AlpacaEval 2.0 measures which answer a GPT-4 judge *prefers*, not which is correct. Even with length control, aggregating six models' drafts produces exactly the comprehensive, polished prose such judges reward. More importantly, the diversity claim has been tested directly. Li et al. (2025, \"Rethinking Mixture-of-Agents\") found that **Self-MoA**, which repeatedly samples and aggregates the single best model, beat the mixed-model MoA by about 6.6% on AlpacaEval 2.0 and did better across several benchmarks. Adding weaker, \"diverse\" members diluted quality. So what helped was more samples from the strongest model, not a team of different minds.\n\nOn grounded verification, the external signal comes from the *tool*, not from a second agent. A failing test returns the same result whoever ran it, and a single model that executes its code gets exactly the feedback Huang et al. found missing. \"Incentives\" for a verifier agent are just a different prompt. On long context, I grant that attention degrades over very long inputs. But a single agent can compact and manage its own memory. A team doesn't remove lossiness. It moves the loss into handoff summaries, where no one owns the whole picture.\n\n**Argument:** The strongest case against teams is that their benefits are being absorbed into single models. Drafting, critiquing, verifying, and backtracking were once handled by multi-agent scaffolds, but reasoning models now do them internally. DeepSeek-R1, for example, learned self-verification and reflection through reinforcement learning within one chain of thought. That internal \"debate\" is trained end-to-end against outcomes, shares full context at every step, and has no handoffs that can drop information or create role conflicts. Hand-built agent teams are a fixed workaround, while single models keep improving with scale and training. Teams will stay useful for wide, parallel searches. But as models get stronger, the best work increasingly comes from one capable model thinking longer, not from many models talking to each other.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 19862,
+     "cost": 0.041396
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** Reasoning models complement teams rather than replace them. One chain of thought is still one trajectory: if it commits early to a wrong framing, later \"reflection\" often just elaborates it. OpenAI's own o1 results show this. On AIME, o1 scored about 74% with a single sample but about 83% with consensus across 64 independent samples. Independent attempts plus aggregation beat one long chain, which is the team principle in its simplest form. Self-MoA makes the same point. I concede it weakens the case that *mixed models* are needed, but it is still many instances plus an aggregator outperforming a single pass. What it refutes is weak teammates, not teams. And stronger single models make teams stronger too: Anthropic's research system already used reasoning models as its subagents. Thinking longer is also serial, while teams think in parallel, so on wall-clock time a team covers more ground.\n\n**Argument:** Teams can make AI work *safer* in ways a single model structurally cannot. A lone agent that both reads untrusted content (web pages, emails, documents) and holds powerful permissions (sending messages, running code, moving money) is exposed to prompt injection. One malicious instruction hidden in its context can hijack everything it is allowed to do. Splitting roles fixes this the way security engineering always has, through separation of privilege. Google DeepMind's CaMeL (2025) uses a privileged planner that never sees untrusted data and a quarantined model that processes that data but cannot take actions. It completed roughly two-thirds of AgentDojo tasks with provable security guarantees, protection no amount of single-model reasoning can supply. Good work means work you can trust in the real world. A team with divided authority and separate contexts offers safeguards that one model holding every permission and every input cannot.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 16173,
+     "cost": 0.036764
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** CaMeL is good security engineering, but its guarantees don't come from teamwork. They come from a custom interpreter that tracks where each piece of data came from and enforces policies before any tool call runs. The \"quarantined LLM\" isn't a teammate. It has no tools, no memory, and no voice in the plan. It works like a parsing function the planner calls. The planner is one model holding the whole task, which is my design, wrapped in a sandbox. Even so, the paper reports CaMeL completing fewer tasks than an undefended agent, so it buys safety by giving up capability. It doesn't show that teams do *better work*. The o1 consensus result has the same problem. Sixty-four samples from one model with a majority vote involve no roles, no communication, and no division of labor. That is single-model test-time compute (self-consistency), at 64× the cost. If that counts as a \"team,\" the motion becomes trivially true and stops meaning anything. Voting also needs discrete answers that can be checked, which rarely exist for essays, designs, or codebases. I'll grant that parallel sampling cuts wall-clock time on broad searches.\n\n**Argument:** Look at what has survived this debate. Identical clones share correlated blind spots. Diverse teammates dilute quality (Self-MoA). Handoffs lose context. Verification power comes from tools, and voting is really just sampling. What remains is one strong model with tools, more compute, and a sandbox, which is a single model. Teams also carry a cost that grows with every agent added: *compounding unreliability*. If each handoff has even a small chance of dropping information or misreading intent, those chances multiply across the pipeline. The resulting failures emerge from interactions, so no single trace explains them. A single model's reasoning is one transcript you can read, audit, and fix. A team's failure is spread across conversations nobody fully owns, which Cemri et al.'s failure taxonomy documents repeatedly. Work you can understand and correct is better work. Teams have a real niche in wide parallel search and privilege separation. As a general claim, though, \"a team does better work than a single model\" mistakes extra compute and scaffolding for collaboration.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 17540,
+     "cost": 0.041
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "I'm giving this to Against. Both sides were well-sourced and made honest concessions, but Against more consistently weakened For's evidence. For's evidence was often recast as compute or tooling rather than teamwork, while For's replies narrowed its own claim.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Against wins because it repeatedly showed that the gains For credited to teamwork came from something else, and For's answers tended to narrow its own position. In the opening exchange, Against met the 'independence' claim with the correlated-errors point and the Huang et al. self-correction findings. It also used Anthropic's own write-up, which reported about 15× the tokens and about 80% of performance variance explained by token use, to argue the 90% gain largely reflects compute. For's best reply was that long-context degradation means extra compute is only usable when split across fresh contexts. That was strong, but Against blunted it, partly with the plausible though thinly supported claim that a single agent can compact its own memory, and more effectively by noting that splitting work moves the loss into handoff summaries rather than removing it. For's turn to model diversity through Mixture-of-Agents was answered directly by Self-MoA, which For then conceded. For's last two pillars were the o1 consensus result and CaMeL. Against rebutted both cleanly: majority voting over 64 samples involves no roles or communication and is single-model self-consistency, and counting it as a team would make the motion trivially true. CaMeL's security guarantees come from an interpreter that tracks data provenance, with the 'quarantined' model acting as a tool-less parsing function rather than a teammate, and CaMeL completes fewer tasks than an undefended agent. For's strongest original contributions were the long-context argument and the separation-of-privilege safety point. However, the safety point shifted the question from 'better work' to 'safer work,' and Against exposed that shift. One mark against Against: it introduced a new 'compounding unreliability' argument in the final round, when For had no chance to respond. Even setting that aside, Against kept its core thesis while granting For limited niches (wide parallel search and privilege separation), which matched the general framing of the motion. For's concessions, by contrast, steadily shrank its defensible claim, so Against argued more coherently and persuasively overall."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 12411,
+     "cost": 0.03558
+    }
+   ],
+   "ms": 101608,
+   "cost": 0.22094,
+   "tokens": {
+    "input": 13035,
+    "output": 8440
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-1",
+   "version": "checked",
+   "started": "2026-11-08T20:42:46.002264+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** The strongest case for teams is the same reason human institutions use editors, auditors, and peer reviewers: **a single model cannot reliably check its own work.** When one model generates an answer and then \"reviews\" it, it tends to reuse the same reasoning path, assumptions, and blind spots, so errors go unnoticed. A team breaks this. One agent drafts, another critiques with a different instruction or context, and a third verifies against sources or tests. Each mistake now has to survive several independent filters. The research supports this:\n\n- **Multi-agent debate:** Du et al. (2023) found that having several model instances debate improved factual accuracy and math reasoning over a single instance answering alone.\n- **Agentic coding:** generator-plus-tester setups routinely beat one-shot generation, because the tester catches bugs the author can't see.\n\nTeams also handle work that overwhelms one model's context window. Separate agents can research, plan, and implement in parallel, each focused on a manageable piece instead of one model juggling everything and losing track. I'll be honest that teams aren't automatically better; poorly coordinated agents can amplify confusion. But for complex, high-stakes work, **structured division of labor with independent verification** produces more reliable results than any single model working alone.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 7193,
+     "cost": 0.011644
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims in this opening and found nothing materially false. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Du et al. (2023), 'Improving Factuality and Reasoning in Language Models through Multiagent Debate', did report that multiple debating model instances improved math reasoning and factual accuracy over a single model. The claim that generator-plus-tester coding setups beat one-shot generation matches published work such as CodeT and AgentCoder, though 'routinely' slightly overstates it. The claim that a single model struggles to self-correct without external feedback is backed by research such as Huang et al. (2023), 'Large Language Models Cannot Self-Correct Reasoning Yet', though it remains debated. The other statements are reasonable argument rather than checkable fact."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 5733,
+     "cost": 0.01214
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's case rests on *independence*, but a team of agents built on the same model isn't independent. They share the same training data, the same blind spots, and the same confident misconceptions. Giving a second copy a \"critic\" prompt changes its tone more than its knowledge, so errors tend to be correlated rather than filtered out.\n\nThe cited evidence is also weaker than it looks:\n\n- **Multi-agent debate:** Later work, including Huang et al. (2023) and Smit et al. (2023), found that when you hold compute constant, debate often fails to beat a simpler single-model method like self-consistency. That method samples several answers from one model and takes the majority. Much of the \"team\" gain is just extra compute.\n- **Agentic coding:** The generator-plus-tester gain comes from *executing tests*, an external ground-truth signal. A single model with a code interpreter gets that same signal without being split into a \"team.\"\n\nSo the real driver is verification against reality, not multiple agents.\n\n**My strongest argument:** Teams add a failure mode a single model doesn't have: **coordination breakdown**. Each handoff between agents compresses context, so a subagent acts on a partial picture of the goal and makes decisions that conflict with the others. Cemri et al. (2025) analyzed popular multi-agent frameworks and found many failures traced to poor task specification and inter-agent misalignment, not weak individual models. Cognition, a company that builds coding agents, publicly advised against multi-agent architectures for this reason: fragmented context produces incoherent work. The errors also compound, because one agent's misreading becomes the next agent's premise.\n\nA single capable model with full context, tools, and external checks keeps the reasoning coherent while capturing the verification benefits my opponent credits to teams. Teams can help with genuinely parallel, separable tasks. But as a general claim, \"teams do better work\" mistakes extra compute and tool access for the value of the team structure itself.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 11380,
+     "cost": 0.0216
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false. Huang et al. (2023) and Smit et al. (2023) both found that multi-agent debate often fails to beat self-consistency at comparable compute. Cemri et al. (2025) classified multi-agent failures and found many came from poor task specification and inter-agent misalignment. Cognition did publish a post arguing against multi-agent architectures because of fragmented context. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Huang et al. (2023, 'Large Language Models Cannot Self-Correct Reasoning Yet') and Smit et al. (2023, 'Should we be going MAD?') both report that multi-agent debate often fails to beat self-consistency when the number of responses or compute is matched. Cemri et al. (2025, 'Why Do Multi-Agent LLM Systems Fail?') attribute many failures to task specification and inter-agent misalignment. Cognition published 'Don't Build Multi-Agents' (2025), citing fragmented context. The remaining claims are argument rather than checkable fact."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6428,
+     "cost": 0.019296
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** Coordination breakdown is real, but it is a design flaw, not an inherent limit. Cemri et al. traced many failures to poor task specification, which is fixable with better engineering. Cognition's own post argued for sharing full context and decision traces between agents, not that one model is always better. On compute, my opponent is half right: much of the gain comes from spending more tokens. But a single model cannot simply absorb unlimited extra tokens into one context, so team structure is often *how* that compute becomes useful. On correlated errors, the fix is heterogeneity: teams can mix different models, tools and retrieved sources, which a single model cannot.\n\n**My next argument: clean context beats crowded context.** Models perform worse as their context fills. Liu et al. (2023, \"Lost in the Middle\") showed that models often miss relevant information buried mid-context. A lone model doing a long, complex task must hold every search result, dead end and draft in one degrading window. An orchestrator with subagents gives each subtask a fresh, focused context and passes back only distilled findings. Anthropic reported that its multi-agent research system, with a Claude Opus 4 lead and Sonnet 4 subagents, outperformed a single-agent Claude Opus 4 by 90.2% on its internal research evaluation. To be candid, that is an internal benchmark, and the system used far more tokens. But that tradeoff is exactly my point. For broad, high-stakes work, a well-orchestrated team turns extra compute into better results in a way a single overloaded context cannot.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 12945,
+     "cost": 0.026804
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false. Liu et al. (2023), \"Lost in the Middle,\" did show that models often miss relevant information placed mid-context. Anthropic did report that its multi-agent research system, with an Opus 4 lead and Sonnet 4 subagents, outperformed a single-agent Opus 4 by 90.2% on an internal research evaluation, while using far more tokens. Cognition's post did stress sharing full context and agent traces. It also favored single-threaded agents in practice, but saying it didn't claim one model is always better is a fair characterization. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Liu et al. (2023) and the Anthropic 90.2% internal-eval figure (Opus 4 lead, Sonnet 4 subagents, higher token use) are accurately cited. The description of Cognition's post (share full context and decision traces) is substantially accurate, though the post also recommended single-threaded agents in practice."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6569,
+     "cost": 0.02156
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** The Anthropic result supports my compute point more than my opponent's structural one. In that same post, Anthropic reported that **token usage alone explained about 80% of the performance variance** on BrowseComp, and that multi-agent systems used roughly **15x the tokens of a chat interaction**. A 90% gain bought with an order of magnitude more compute is not evidence that team structure is inherently superior. It shows that spending more helps, and that one way to spend more is to parallelize.\n\nThe \"crowded context\" problem also has single-agent fixes. Compaction, summarization, external memory files, and clearing stale tool results all keep one agent's window focused without fragmenting ownership of the task.\n\nMy opponent calls coordination failure a fixable design flaw. But the fix Cognition recommends is sharing full context and decision traces, and that recreates the crowded context teams were supposed to escape. Heterogeneous models can reduce correlated errors. That is an argument for *ensembling* on narrow questions, not for teams doing better work generally.\n\n**My strongest remaining argument: most valuable work is interdependent, not parallel.** Anthropic's own post concedes this. It says multi-agent systems excel at breadth-first tasks that split into independent threads, and are *less suited* to tasks that require shared context or have many dependencies between agents. It names most coding tasks as an example. The same holds for writing a coherent argument, designing a system, or working through a proof. In each, every decision constrains the next, and quality depends on one consistent line of judgment. Splitting such work across agents either fragments that judgment or forces so much context-sharing that the split adds cost without adding insight.\n\nSo the honest conclusion is narrow. Teams can win on wide, separable tasks when you can afford many times the compute. For the much larger class of coherent, interdependent work, a single capable model with tools and external checks does better work, at a fraction of the cost.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 13820,
+     "cost": 0.032188
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false. Anthropic's multi-agent research post did report that token usage alone explained about 80% of performance variance on BrowseComp. It also said multi-agent systems used roughly 15x the tokens of chat interactions. The same post says multi-agent systems suit breadth-first, parallelizable tasks and fit poorly with domains that need shared context or have many inter-agent dependencies. It names most coding tasks as an example. Cognition's recommendation to share full context and traces is described accurately. Compaction, summarization, external memory and clearing tool results are real single-agent context-management techniques. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The Anthropic figures (token usage explaining about 80% of BrowseComp variance, about 15x the tokens of chat) match Anthropic's multi-agent research post. So does its caveat that tasks with heavy shared context or dependencies, including most coding, fit multi-agent systems poorly. Cognition's recommendation is characterized fairly, and the single-agent context-management techniques named are real."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6577,
+     "cost": 0.024196
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent is right that interdependent work shouldn't be split into parallel threads, but that only rules out one team design. The **writer-reviewer** pattern doesn't fragment judgment. One agent owns the line of reasoning, and another, with a fresh context, checks it. Anthropic's own Claude Code guidance recommends exactly this for coding: have one Claude write code while another reviews or tests it. The reason is the same Huang et al. (2023) paper my opponent cited, which found that a model's *intrinsic* self-correction often fails and can even make answers worse. A single agent re-reading its own transcript is anchored by everything it already wrote. A reviewer that sees only the output and the spec is not. On compute, the debate question is which setup does *better work*, not which is cheapest. And Anthropic's 80% figure is that *token usage alone* explained about 80% of variance, with tool-call count and model choice accounting for more. Team structure is one of the few reliable ways to turn extra tokens into results rather than a bloated context.\n\n**My next argument: separating roles makes work more trustworthy, not just more accurate.** A single agent that reads untrusted web pages, emails or documents while also holding permission to send messages, run code or edit files is exposed to prompt injection. One malicious instruction hidden in the input can hijack everything it is allowed to do. Teams allow least-privilege design. In the \"dual LLM\" pattern Simon Willison proposed, a quarantined agent processes untrusted content with no tool access, while a privileged agent acts without ever seeing the raw input. Google DeepMind's CaMeL (2025) builds on this separation. To be candid, this reduces risk rather than eliminating it, and it adds engineering overhead. But it is a structural benefit a single model cannot replicate by prompting itself more carefully. For high-stakes work, output you can trust not to have been hijacked is better work.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 16315,
+     "cost": 0.04058
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false. Anthropic's Claude Code best-practices guidance does recommend having one Claude write code while another reviews or tests it. Huang et al. (2023) found that intrinsic self-correction often fails and can make answers worse. Anthropic's post said token usage alone explained about 80% of the variance, with tool-call count and model choice as the other factors. Simon Willison's dual-LLM pattern is described correctly: a quarantined model handles untrusted content without tools, and a privileged model never sees the raw input. Google DeepMind's CaMeL (2025) does build on that pattern. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. These are accurate: the Claude Code guidance to have one Claude write and another review or test, Huang et al. (2023) on intrinsic self-correction failing, the 80% token-usage variance figure with tool calls and model choice as additional factors, Willison's dual-LLM pattern, and CaMeL (2025) building on it."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6560,
+     "cost": 0.029408
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** The writer-reviewer pattern is my opponent's best example, but it supports my point. Huang et al. found that self-correction fails *without external feedback*. A fresh-context reviewer of the same model still has no external feedback, so it has the same knowledge and blind spots, just less anchoring. That is a modest gain, and a single agent can get it by clearing context and re-reading its output against the spec. Where writer-reviewer clearly wins, as in Claude Code, the decisive signal is running tests, which is external ground truth again. The security argument is stronger, but look at where CaMeL's protection comes from. The quarantined model has no tools and barely counts as an \"agent.\" The guarantees are enforced by a custom interpreter that tracks data flow and checks it against security policies. That is system design and sandboxing, not a team doing better work. CaMeL also completed fewer AgentDojo tasks than an undefended system, so it buys trust at the cost of capability. Meanwhile, ordinary multi-agent setups *widen* the attack surface: every message between agents is a new channel for injected instructions to spread.\n\n**My strongest remaining argument: the team advantage shrinks as single models get better.** Wang et al. (2024), \"Rethinking the Bounds of LLM Reasoning: Are Multi-Agent Discussions the Key?\", found that a single agent with a strong prompt and demonstrations performed about as well as multi-agent discussion. Multi-agent setups helped mainly when the single agent was poorly prompted. This pattern runs through the debate. Each claimed team benefit turns out to come from something a single model can also use: more compute, external tests, a cleaner context, or sandboxed tools. Teams add their own costs on top: coordination failures, compounding errors, more attack surface, harder debugging, and many times the tokens. Some designs do help, such as parallel research on wide tasks and narrowly scoped review. But the topic claims teams do better work in general, and the evidence shows something narrower. Good engineering around a capable model does better work, and splitting it into a \"team\" is only sometimes the right engineering.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 18727,
+     "cost": 0.049976
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false. Huang et al. (2023) found that intrinsic self-correction fails without external feedback. CaMeL does use a quarantined LLM with no tool access, plus a custom interpreter that tracks data flow and enforces security policies. It also completed fewer AgentDojo tasks than the undefended baseline. Wang et al. (2024), \"Rethinking the Bounds of LLM Reasoning,\" found that a single agent with strong prompts and demonstrations performed comparably to multi-agent discussion, with multi-agent setups helping mainly when demonstrations were absent. The point that inter-agent messages can spread injected instructions is a fair characterization. It passes.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The Huang et al. (2023) self-correction finding, CaMeL's design (quarantined LLM with no tools, custom interpreter with data-flow tracking) and its lower AgentDojo task completion, and the Wang et al. (2024) finding on single-agent versus multi-agent discussion are all accurately described."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6356,
+     "cost": 0.03218
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Against wins. Both sides were factually clean and argued well, but Against did more to explain where the evidence for teams comes from. That decided it, given the topic's broad wording.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Both debaters were strong. Every factual claim passed fact-checking, and each side conceded fairly where it had to, so the decision rests on argument quality. For opened with a sound principle, that independent checking catches errors, and added real points across the rounds: clean context, the writer-reviewer pattern, and least-privilege security designs like the dual-LLM pattern and CaMeL. Against won because it kept doing one thing well. Each time For presented a benefit, Against traced it to a cause other than the team structure. The debate gains matched self-consistency at equal compute (Huang, Smit). The coding gains came from running tests, which is external ground truth. Anthropic's 90% figure came alongside about 15x the tokens, and token usage alone explained about 80% of the variance. CaMeL's protection came from a custom interpreter that enforces security policies, and it completed fewer tasks than an undefended system. For did answer some of this. It noted that structure can be the way extra compute becomes useful, and that tool-call count and model choice also mattered. These replies reduced Against's points but did not overturn them. Against also built its own case well. It showed that coordination failures and context fragmentation are real costs, and that Cognition's recommended fix brings back the crowded context teams were meant to avoid. It used Anthropic's own admission that multi-agent systems suit breadth-first, separable tasks and fit poorly with interdependent work like most coding. Wang et al. (2024) then supported its claim that well-prompted single agents close much of the gap. For's late security argument was its most original, but Against answered it convincingly. The topic claims teams do better work in general. For ended up defending specific, well-designed team setups, while Against showed that the benefits come mostly from compute, verification and system design rather than from having multiple agents. Against therefore argued the more logically complete case."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 9713,
+     "cost": 0.033692
+    }
+   ],
+   "ms": 130281,
+   "cost": 0.355264,
+   "tokens": {
+    "input": 32141,
+    "output": 11335
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-2",
+   "version": "checked",
+   "started": "2026-11-08T20:45:03.885538+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** A team of AI agents does better work for the same reason human teams do: no single mind, however capable, is good at checking its own blind spots. A single model that makes an error early in its reasoning tends to build on it, because the mistake is invisible from inside its own context. A team breaks that loop. One agent drafts, another critiques, a third verifies, and errors that would have compounded get caught. Research supports this. Multi-agent debate setups (e.g., Du et al., 2023) improved factual accuracy and math reasoning over a single model answering alone. Anthropic reported that its multi-agent research system, with a lead agent coordinating parallel subagents, substantially outperformed a single agent on complex research tasks. Teams also overcome a hard physical limit: one model has one context window, while a team can split a large problem so each agent works on a focused piece and explores it in depth, in parallel. To be honest, teams cost more compute and add coordination overhead. On simple tasks, one model is often enough. But \"better work\" means better results on the problems that matter, the large, complex, error-prone ones. There, independent verification, specialization, and parallel exploration give teams a structural advantage that a lone model cannot replicate.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 6826,
+     "cost": 0.011464
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims and found no material errors. Du et al. (2023), 'Improving Factuality and Reasoning in Language Models through Multiagent Debate', reported gains in math reasoning and factual accuracy when several model instances debated, compared with a single model. Anthropic's write-up on its multi-agent research system describes a lead agent coordinating parallel subagents and reports that it beat a single-agent setup by a wide margin (about 90% on its internal research evaluation). Anthropic also noted much higher token use, which matches the speaker's point about compute cost. The claim that a single model struggles to catch its own errors is framed as argument, but research on LLM self-correction without external feedback broadly supports it. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Du et al. 2023 multi-agent debate did improve factuality and math reasoning over single-model baselines. Anthropic reported its multi-agent research system substantially outperformed a single agent on complex research tasks, at higher token cost. The remaining statements are reasonable argument or accurate general characterizations."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6893,
+     "cost": 0.014732
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** The evidence my opponent cites shows that *more compute* does better work, not that *teams* do. Anthropic's own write-up found that token usage alone explained about 80% of the performance variance on its browsing evaluation, and its multi-agent system used roughly 15 times the tokens of a normal chat. Debate results look similar under scrutiny. When researchers give a single model the same budget, for example by sampling many answers and taking a majority vote, the advantage of debate largely shrinks or disappears (Huang et al., 2023; Smit et al., 2023). The \"blind spot\" argument also has a flaw. Agents built on the same model share the same training, biases, and gaps, so their errors are correlated, not independent. In debate, agents often converge through conformity, and a confident wrong answer can win the group over. A second copy of the same mind is not an independent auditor.\n\n**My strongest argument:** Splitting a task fragments the context, and good work depends on coherence. Every piece of a real project rests on many small, unstated decisions about assumptions, style, and edge cases. When subagents work in parallel, each makes those decisions separately, and the results often don't fit together. Anthropic itself acknowledged that multi-agent systems suit tasks that are broad and easy to parallelize, and are a poor fit for tasks with tight dependencies or a need for shared context, which it said includes most coding. Cognition Labs reached the same conclusion from building coding agents. A study of multi-agent failures (Cemri et al., 2025) traced many breakdowns to coordination problems: agents misreading each other, ignoring input, or losing track of the goal. A single model holding the whole problem in one context avoids that entire category of failure. As context windows grow and single models get better at extended reasoning and checking their own work, the \"team\" increasingly looks like an expensive workaround for limits that are already disappearing.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14125,
+     "cost": 0.027192
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims in the rebuttal and found no material errors. Anthropic's multi-agent research write-up does say token usage alone explained about 80% of performance variance on BrowseComp. It also says multi-agent systems used about 15 times more tokens than chats. Huang et al. (2023) found that multi-agent debate did not beat self-consistency (majority voting) when the number of responses was matched. Smit et al. (2023) similarly found that debate methods do not reliably outperform simpler ensembling. Anthropic did write that tasks needing shared context or with many dependencies between agents are a poor fit, and that most coding tasks are less parallelizable than research. Cognition published 'Don't Build Multi-Agents', which makes the context-fragmentation argument. Cemri et al. (2025) built a taxonomy of multi-agent failures that includes inter-agent misalignment and coordination breakdowns. The points about correlated errors, conformity in debate, and context windows 'already disappearing' are argument or mild extrapolation, not invented facts. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "All cited facts check out: Anthropic's 80% variance and ~15x token figures, Huang et al. 2023 and Smit et al. 2023 on debate versus majority voting at matched budgets, Anthropic's caveat about coding and shared-context tasks, Cognition's 'Don't Build Multi-Agents' post, and Cemri et al. 2025 on coordination failures. The remaining statements are argument or reasonable extrapolation."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 9841,
+     "cost": 0.026256
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's fragmentation point is real but describes a bad team design, not teams as such. A drafter-and-reviewer pipeline doesn't fragment anything: the reviewer reads the finished whole, which is exactly where incoherence becomes visible. The \"it's just compute\" argument cuts my way too. A single model can't usefully absorb 15 times the tokens in one context, because performance degrades as contexts grow long (Liu et al., 2023, \"Lost in the Middle\"). Splitting work across agents is how that extra compute becomes better results instead of noise. Even the majority-voting baseline my opponent prefers is itself an ensemble of independent attempts, which is a team without conversation.\n\n**My strongest remaining argument:** The correlated-errors objection only applies to teams of identical copies, and the best teams aren't built that way. Teams can combine *different* models, prompts, and tools, so their errors are genuinely decorrelated. Mixture-of-Agents (Wang et al., 2024) layered several open-source models and scored 65.1% on AlpacaEval 2.0, beating GPT-4o's 57.5%. That ensemble outperformed a single stronger model that none of its members could match alone. Teams can also include agents whose job is to check work against reality rather than opinion, such as running tests or querying sources. That is an independent auditor no lone model has.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 11124,
+     "cost": 0.026032
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found no material errors. Liu et al. (2023), 'Lost in the Middle', is a real paper. It found that models used relevant information worse when it sat in the middle of long contexts, and that performance often fell as contexts grew. That supports the speaker's general point, though the paper's specific finding is about where information sits. Wang et al. (2024), 'Mixture-of-Agents', did report a 65.1% length-controlled win rate on AlpacaEval 2.0 using only open-source models, against 57.5% for GPT-4o. The claims that majority voting is 'a team without conversation' and that only teams have 'an independent auditor' are framing. The second is an overstatement, since a single agent can also run tests or query sources with tools, but it is argument rather than a false fact. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. 'Lost in the Middle' (Liu et al., 2023) is accurately cited in substance. The Mixture-of-Agents figures (65.1% LC win rate on AlpacaEval 2.0 vs. GPT-4o's 57.5%, using open-source models) match Wang et al. (2024). The claim that a lone model lacks a reality-checking auditor overstates things, since single agents can use tools, but it is argument, not an invented fact."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8300,
+     "cost": 0.024672
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's best evidence for diversity actually supports my side. A follow-up study, \"Rethinking Mixture-of-Agents\" (Li et al., 2025), found that *Self-MoA*, which combines many outputs from a single top model, beat the original mixed-model MoA by about 6.6% on AlpacaEval 2.0. Mixing different models often lowered quality, because the weaker members diluted the strongest one. So the gain came from extra samples, not from a team of different minds. AlpacaEval is also an LLM-judged chat-preference benchmark, not a test of complex work.\n\nThe \"independent auditor\" point concedes my case. As the fact-checker noted, a single agent can run tests and query sources itself. Checking work against reality is a tool, not a team. Agentless (Xia et al., 2024), a simple non-agentic pipeline, was competitive with elaborate agent frameworks on SWE-bench. Calling majority voting \"a team without conversation\" also proves my point. If you strip out the conversation and coordination, which are what make a team a team, the benefit remains. That suggests the conversation wasn't the source of it.\n\nOn drafter-reviewer setups: a reviewer that sees only the output has lost the reasoning behind it. Splitting work to avoid \"Lost in the Middle\" just moves the information loss into the handoffs between agents.\n\n**My strongest remaining argument:** The trend in AI is to absorb the team into the model. Reasoning models like OpenAI's o1/o3 and DeepSeek-R1 were trained to draft, critique, backtrack, and verify inside one continuous chain of thought. They made large jumps on math and coding benchmarks that multi-agent debate never matched. This gives you the benefits a team promises without the costs. Nothing is lost in handoffs. Agents can't misread each other. Compute isn't wasted re-explaining context. And no one has to work out which agent caused a failure. Every handoff in a team is another chance for error, and those chances add up. One model that thinks longer keeps a single coherent understanding of the problem from start to finish. Where teams still win today, it is mostly on broad, easily parallelized searches, and they win by spending far more compute. That is a narrow niche, not proof that teams do better work.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 19135,
+     "cost": 0.043128
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found no material errors. Li et al. (2025), 'Rethinking Mixture-of-Agents: Is Mixing Different LLMs Beneficial?', did introduce Self-MoA, which aggregates multiple outputs from a single top model. It reported a 6.6% improvement over the original MoA on AlpacaEval 2.0. The paper also found that MoA performance is sensitive to the quality of the models mixed, and that adding weaker models can lower the average quality. AlpacaEval 2.0 is a chat-preference benchmark judged by an LLM (GPT-4 Turbo). Agentless (Xia et al., 2024) is a simple, fixed localize-repair-validate pipeline. It reported results on SWE-bench Lite that were competitive with, and sometimes better than, the agent frameworks available then. The speaker correctly cites my earlier note that a single agent can use tools to run tests or query sources. OpenAI's o1/o3 and DeepSeek-R1 were trained with reinforcement learning to produce long chains of thought that include self-verification and backtracking, and they made large gains on math and coding benchmarks. The claim that multi-agent debate 'never matched' those gains is a broad comparison across different eras and base models, so it is closer to argument than a precise fact, but it is not materially false. Statements that teams win 'mostly on broad, easily parallelized searches' and that handoff errors 'add up' are argument, consistent with the earlier-cited Anthropic and Cemri et al. sources. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Self-MoA's ~6.6% AlpacaEval 2.0 gain over MoA (Li et al., 2025), the finding that mixing in weaker models can hurt quality, AlpacaEval being LLM-judged, Agentless being competitive on SWE-bench, and reasoning models (o1/o3, DeepSeek-R1) doing self-verification in their chain of thought are all accurate. The claim that debate 'never matched' reasoning-model gains, and the characterizations of handoff errors and the niche where teams win, are argument or mild generalization."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 11564,
+     "cost": 0.0375
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** Reasoning models don't replace teams. They make better team members, and their own makers still put them in teams to get the best results. OpenAI's o1 announcement reported 74% on AIME with a single sample, 83% with consensus across 64 samples, and 93% when a learned scoring function reranked 1,000 samples. The strongest single reasoner improved substantially once its attempts were pooled and judged by a separate verifier. Google describes Gemini Deep Think as using parallel thinking, and xAI markets Grok 4 Heavy as a multi-agent setup. Both are premium modes built on top of their reasoning models. Self-MoA fits this pattern as well: several proposer calls feed a separate aggregator call, so it is still a team, just one whose members share a model. My opponent says the benefit survives once you \"strip out the conversation.\" I never claimed chatter was the active ingredient. The structure is: independent attempts, then a separate judgment of them. On the reviewer who sees only the output, that is a feature. A reviewer who never followed the author's reasoning isn't anchored by it, which is why human code review works.\n\n**My strongest remaining argument:** The most impressive AI work so far has come from teams. DeepMind's AlphaEvolve combines several Gemini models (Flash for breadth, Pro for depth) with automated evaluators in an evolutionary loop. It found a way to multiply 4×4 complex matrices using 48 scalar multiplications, improving on a record that had stood since Strassen in 1969. It also recovered measurable compute across Google's data centers. Those are new contributions, not benchmark scores. A single chain of thought, however long, follows one path. Discovery needs many divergent attempts plus something independent to sort the good from the bad, and that is a team. I grant that teams cost more and suit some tasks better than others. But when the goal is the best possible work rather than the cheapest adequate work, the frontier keeps choosing teams.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 15779,
+     "cost": 0.043404
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found no material errors. OpenAI's o1 announcement reported 74% on AIME 2024 with one sample, 83% with consensus across 64 samples, and 93% when reranking 1,000 samples with a learned scoring function. Google described Gemini 2.5 Deep Think as using parallel thinking, and xAI presented Grok 4 Heavy as running multiple agents in parallel. Both are premium tiers. In Self-MoA, several proposer outputs feed an aggregation step, so describing it as proposers plus an aggregator is accurate. DeepMind's AlphaEvolve does combine Gemini Flash and Gemini Pro with automated evaluators in an evolutionary loop. It found a 48-multiplication method for 4×4 complex-valued matrices, improving on Strassen's 1969 result of 49 in that setting. It also recovered about 0.7% of Google's worldwide compute through better data-center scheduling. One framing note: calling o1's consensus voting and reranking a 'team' is the speaker's interpretation. OpenAI described them as sampling and reranking techniques, not multi-agent systems. The claims that a single chain of thought 'follows one path,' that discovery requires a team, and that 'the frontier keeps choosing teams' are argument, not factual assertions. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The o1 AIME figures (74/83/93%), Gemini Deep Think's parallel thinking, Grok 4 Heavy's multi-agent design, the Self-MoA proposer/aggregator structure, and the AlphaEvolve details (Flash plus Pro with evaluators, 48 multiplications for 4×4 complex matrices beating Strassen's 1969 result, recovered data-center compute) are all accurate. Calling o1's sampling and reranking a 'team' is framing rather than a false fact."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 11594,
+     "cost": 0.0425
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent has stretched \"team\" to cover nearly everything. If one model sampling 64 answers and voting counts as a team, the topic becomes true by definition and says nothing. The fact-checker noted that OpenAI calls this sampling and reranking, not a multi-agent system. My opponent now agrees that conversation isn't the active ingredient. What remains is \"more attempts plus a good scorer,\" and that describes compute and verification, not teamwork.\n\nAlphaEvolve makes my point. Its engine is the *automated evaluator*: code that scores each candidate objectively and cheaply. The language models act as mutation operators inside an evolutionary search. DeepMind frames the system as suited to problems where progress can be evaluated automatically. Most real work, like a legal brief, a strategy memo, or a refactor with unclear requirements, has no such oracle.\n\nDeep Think and Grok Heavy reach users as a single model in a premium compute tier, and Google says it trained Deep Think to use parallel thinking. That is the team being absorbed into the model, which was my argument. On code review, human reviewers help because they bring different knowledge. Another instance of the same model brings the same blind spots.\n\n**My strongest remaining argument:** The fair test is equal budget, and on that test teams don't reliably win. Matched-sample studies (Huang, Smit) erased debate's advantage. Self-MoA beat mixed teams. Anthropic attributed most of its multi-agent gain to token spend. What teams do reliably add is unpredictability. Anthropic's write-up notes that errors compound across stateful agents and that small changes to a lead agent can unpredictably change how subagents behave, which makes debugging harder. Cemri et al. catalog the coordination failures that follow. \"Better work\" should mean results that are correct, consistent, and traceable when something goes wrong, not just a higher peak score on a lucky run. I grant that teams shine on broad, parallel searches with an objective verifier. Outside that niche, a single strong model given the same budget does work that is as good and easier to trust.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 17740,
+     "cost": 0.050712
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found no material errors. It correctly cites my earlier note that OpenAI described o1's consensus and reranking as sampling techniques, not a multi-agent system. DeepMind describes AlphaEvolve as an evolutionary loop: Gemini models propose code changes, and automated evaluators score each candidate. DeepMind also says it suits problems where progress can be measured automatically, so calling the language models 'mutation operators' is a fair paraphrase. Google did say it used new reinforcement learning techniques to get Gemini Deep Think to use parallel thinking. Anthropic's write-up says agents are stateful and errors compound. It also says minor changes to the lead agent can unpredictably change how subagents behave, which makes debugging harder. The write-up attributes about 80% of performance variance on BrowseComp to token usage alone, which supports 'most of its multi-agent gain.' Self-MoA did outperform mixed-model MoA, and Cemri et al. do catalog coordination failures. Two framing notes. First, saying matched-sample studies 'erased' debate's advantage is a slight overstatement: Huang et al. found debate did not beat majority voting at a matched number of responses, and Smit et al. found debate did not reliably beat simpler ensembling. Second, describing Grok 4 Heavy as reaching users 'as a single model' is interpretation, since xAI itself markets it as running multiple agents in parallel. The claims that teams add unpredictability and that a single model 'does work as good' outside the niche are argument. Pass.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The AlphaEvolve, Deep Think, Anthropic (token variance, compounding errors, unpredictable subagent behavior), Self-MoA, Huang/Smit and Cemri references are accurate or fair paraphrases. 'Erased' slightly overstates the debate findings, and calling Grok 4 Heavy a single model is framing, since xAI markets it as multi-agent."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 12487,
+     "cost": 0.046956
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Against wins. Both sides were well sourced and every factual claim passed fact-checking, so this came down to how the arguments held up. Against reframed the debate around a fair test, equal compute, and For never fully answered it. When For leaned on sampling and reranking to defend teams, Against showed that this stretched 'team' until the resolution meant very little.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Both debaters were careful and accurate, and the fact-checker passed every round, so the decision rests on argument quality. For opened well with a clear mechanism: independent verification catches errors one model cannot see in its own reasoning. For backed this with Du et al. and Anthropic's research system, and honestly admitted the extra cost. Against's first rebuttal was the turning point. It argued that the evidence showed more compute helps, not that teams help, citing Anthropic's finding that token usage explained about 80% of the variance and the matched-budget results of Huang and Smit. It also showed that copies of the same model make correlated errors, and that splitting work fragments context. For's replies were clever but kept giving ground. Mixture-of-Agents was undercut by Self-MoA, where many outputs from one strong model beat the mixed-model team. The 'independent auditor' point was answered by the fact that a single agent can also use tools. Calling majority voting 'a team without conversation' let Against argue that once coordination is removed, the remaining benefit is just more samples. In the final round, For's o1 sampling figures and AlphaEvolve were strong examples. But Against fairly pointed out that the fact-checker described o1's voting and reranking as sampling, not a multi-agent system, and that AlphaEvolve depends on an automated evaluator that most real work lacks. Against had some weak spots: it overstated that matched-budget studies 'erased' debate's advantage, its description of Grok 4 Heavy as a single model was contestable, and AlphaEvolve's real discoveries were never fully explained away. Against also conceded that teams do well on broad, parallel searches with an objective verifier. Still, Against kept a consistent standard of equal budget throughout, while For's case increasingly depended on widening what counts as a team. That makes Against's case more logically disciplined and more persuasive overall."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 11027,
+     "cost": 0.044076
+    }
+   ],
+   "ms": 158108,
+   "cost": 0.438624,
+   "tokens": {
+    "input": 39066,
+    "output": 14118
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-3",
+   "version": "checked",
+   "started": "2026-11-08T20:47:44.766628+00:00",
+   "model": "anthropic/claude-opus-5-5",
+   "topic": "A team of AI agents does better work than a single AI model",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Opening argument:** The core advantage of a team is *error correction through independent perspectives*, the same reason we use peer review, code review, and second medical opinions. A single model generating an answer in one pass has no built-in way to catch its own blind spots. Its mistakes tend to be self-consistent, so it confidently follows a flawed line of reasoning to the end. A team breaks that pattern. One agent drafts, another critiques, a third verifies against sources or runs the code. The evidence supports this. Du et al. (2023) found that having multiple model instances debate and refine their answers improved factual accuracy and math reasoning over a single model answering alone. \"Mixture-of-agents\" setups, where several models' outputs are aggregated and refined, have outperformed their strongest individual member on benchmarks like AlpacaEval. Teams also allow specialization: a planner, a researcher, a coder, and a tester can each work with a focused context instead of one model juggling everything in a crowded context window. I'll grant that teams cost more compute and can fail through poor coordination. But on the question of *better work*, structured collaboration lets AI systems do what one model cannot do reliably: check itself.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 6497,
+     "cost": 0.010124
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims in this opening and found nothing materially false, so it passes. Du et al. (2023) is a real paper showing multi-agent debate improved factuality and math reasoning over a single model. Mixture-of-Agents (Wang et al., 2024) did score above its individual member models on AlpacaEval 2.0. The other points, such as specialization and the costs of compute and coordination, are general arguments rather than factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The Du et al. (2023) multiagent debate result is accurately described. The claim that Mixture-of-Agents outperformed its strongest individual member on AlpacaEval matches Wang et al. (2024). Everything else is reasoned argument, not factual assertion."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 4580,
+     "cost": 0.011332
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's case rests on *independent* perspectives, but copies of the same model aren't independent. They share training data, biases, and blind spots, so their errors are correlated. When one instance confidently follows a flawed line of reasoning, its \"critic\" usually finds that reasoning plausible too. Peer review works because reviewers have different minds; three instances of one model are closer to one reviewer reading the same paper three times. The evidence is also weaker than presented, because the key question is whether teams beat a single model *given the same compute*:\n\n- **Du et al.** compared debate against a single model answering once. Smit et al. (2023, \"Should we be going MAD?\") benchmarked debate methods more broadly and found they don't reliably outperform simpler single-model strategies like self-consistency.\n- **Wang et al. (2024, \"Rethinking the Bounds of LLM Reasoning\")** found that a single agent with a strong prompt roughly matched multi-agent discussion.\n- **Self-checking isn't exclusive to teams.** A single model can run code, query sources, and revise its own drafts. Much of what looks like the benefit of \"a team\" is really the benefit of tool use and extra inference steps.\n\n**My strongest argument:** Teams introduce a failure mode a single model doesn't have: losing information at the handoffs. Each agent works from a partial, summarized slice of the task, so decisions get made without the full picture. Agents then produce subtly incompatible outputs, like a coder assuming one interface while a tester assumes another, or a researcher dropping the caveat the writer needed. Cemri et al. (2025, \"Why Do Multi-Agent LLM Systems Fail?\") studied popular multi-agent frameworks and found that a large share of failures came from poor task specification and misalignment between agents, not from any agent's individual ability. Practitioners such as Cognition have publicly advised against multi-agent architectures for this reason: fragmented context produces fragile, inconsistent work.\n\nI'll grant that teams can help on genuinely parallel tasks, like broad research that splits cleanly into separate pieces. But for most work that requires coherence, one model holding the whole problem in view does better work than several models each holding a piece.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14395,
+     "cost": 0.027136
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false, so it passes. Smit et al. (2023, \"Should we be going MAD?\") is a real paper. It found that multi-agent debate does not reliably beat simpler strategies like self-consistency. Wang et al. (2024, \"Rethinking the Bounds of LLM Reasoning: Are Multi-Agent Discussions the Key?\") found that a single agent with strong prompting roughly matched multi-agent discussion. Cemri et al. (2025, \"Why Do Multi-Agent LLM Systems Fail?\") identified specification problems and inter-agent misalignment as major failure categories. Cognition did publish a post advising against multi-agent architectures because of context fragmentation (\"Don't Build Multi-Agents\"). The description of Du et al.'s comparison is a fair simplification. The points about correlated errors and handoff losses are arguments, not factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Smit et al. (2023), Wang et al. (2024), Cemri et al. (2025), and Cognition's post against multi-agent architectures are real and accurately characterized. The summary of Du et al.'s single-model baseline is a reasonable simplification."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8641,
+     "cost": 0.024512
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal and new argument:** My opponent's handoff argument assumes one model can actually hold the whole problem in view, but long contexts degrade too. Liu et al. (2023, \"Lost in the Middle\") found that models miss information buried mid-context. Cemri et al.'s failures were largely *specification* problems, which are design flaws that can be fixed rather than inherent limits, much as a badly managed human team doesn't prove that teams are worse than individuals. On correlated errors, I agree that copies of one model share blind spots. That is a reason to build *heterogeneous* teams, and Mixture-of-Agents gained its edge precisely by combining different models. That leads to my strongest point: on hard, open-ended work, well-designed teams have beaten strong single agents. Anthropic reported (2025) that its multi-agent research system, a lead agent directing parallel subagents, outperformed a single-agent setup by about 90% on its internal research evaluation. Each subagent explored a separate thread in a clean context and returned a condensed result, giving the system more total working context than any single window. Anthropic also found that token usage explained most of the performance difference and that the system used roughly 15× the tokens of a chat. So I'll concede my opponent's compute point: much of a team's advantage comes from spending more. But the debate is about *better work*, and a team structure is how you usefully spend that extra compute at scale. Simply giving one model a longer context does not achieve the same thing.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 11422,
+     "cost": 0.027704
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this speech and found nothing materially false, so it passes. Liu et al. (2023), \"Lost in the Middle,\" is a real paper. It found that models use information in the middle of long contexts worse than information at the start or end. Cemri et al. did name specification and system-design issues as a major failure category. Calling those failures \"largely\" specification problems is a fair if slightly generous summary, since inter-agent misalignment and verification failures were also substantial. Mixture-of-Agents did combine several different models, and its authors reported that model diversity helped. Anthropic's 2025 post on its multi-agent research system supports the other figures: the multi-agent setup beat a single-agent Claude Opus 4 by about 90% on its internal research evaluation, multi-agent systems used roughly 15× the tokens of chat, and token usage explained most of the performance variance (about 80% on BrowseComp). The claims about heterogeneous teams and about how to spend extra compute are arguments, not factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Liu et al. 2023 (Lost in the Middle), Cemri et al. 2025 (specification issues as a major failure category), Mixture-of-Agents combining different models, and Anthropic's 2025 figures (about 90% improvement over a single agent on its internal eval, about 15× tokens vs. chat, token usage explaining most of the variance) are all accurate or fair simplifications."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8084,
+     "cost": 0.02536
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's best evidence supports my concession more than the motion.\n\n- **Anthropic's own post sets the limits.** The 90% gain came on breadth-first research queries, the \"genuinely parallel\" case I already granted. The same post says domains where agents must share context or have many interdependencies, including most coding tasks, are not a good fit for multi-agent systems today.\n- **Heterogeneity doesn't rescue the error-correction story.** Li et al. (2025, \"Rethinking Mixture-of-Agents\") found that \"Self-MoA,\" which aggregates multiple outputs from the single best model, beat the standard mixture of different models by about 6.6% on AlpacaEval 2.0. Diversity mostly diluted quality with weaker models. The gain came from sampling one strong model more, not from a team of distinct minds.\n- **\"Lost in the Middle\" applies to teams too.** A lead agent still has to read and reconcile every subagent's report. Each condensed summary is a lossy compression chosen by an agent that didn't know what the final synthesis would need. Teams don't escape context limits; they move the loss to places that are harder to see.\n- **\"Specification problems are fixable\" understates the issue.** Every handoff requires someone to predict in advance what the next agent will need. That burden grows with the number of agents, and Cemri et al. found it a major failure source even in purpose-built frameworks.\n\n**My strongest remaining argument:** My opponent has now conceded that token usage explains most of the performance difference. That shifts the debate. The evidence shows that more inference compute produces better work, not that teams do. When budgets are matched, the advantage largely disappears: Smit et al. found debate didn't reliably beat self-consistency, and Wang et al. found a well-prompted single agent matched multi-agent discussion. A single model can spend extra compute through longer reasoning, repeated sampling, tool calls, and self-revision, all while keeping one coherent view of the task. A team spends the same compute while adding coordination overhead and new failure points. Teams win where tasks split cleanly into independent parts. For the coherent, interdependent work that makes up most real tasks, a single model given the same resources does work that is as good or better, and more reliable.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 19458,
+     "cost": 0.044268
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false, so it passes. Anthropic's 2025 multi-agent research post does say its system is especially suited to breadth-first queries that pursue independent directions. It also says domains that require shared context or have many interdependencies, and it names most coding tasks, are not a good fit for multi-agent systems today. Li et al. (2025, \"Rethinking Mixture-of-Agents: Is Mixing Different LLMs Beneficial?\") is a real paper. It reported that Self-MoA beat standard MoA by about 6.6% on AlpacaEval 2.0 and that mixing in weaker models lowered average quality. The references to Smit et al., Wang et al., and Cemri et al. match the earlier, already-verified descriptions. The opponent did concede that token usage explained most of the performance difference. The claims about lossy summaries, handoff burden, and what makes up \"most real tasks\" are arguments, not factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Accurately described: the Anthropic post's stated limits (breadth-first strength, poor fit for interdependent tasks and most coding), Li et al. 2025 Self-MoA beating standard MoA by about 6.6% on AlpacaEval 2.0, and the earlier-verified Smit, Wang, and Cemri findings. The remaining points are argument rather than factual claims."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8279,
+     "cost": 0.030896
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal and final argument:** My opponent says matched compute erases the team advantage, but a single model cannot usefully spend unlimited compute. Self-consistency works by majority vote, which requires answers that can be compared directly, such as a number or a multiple-choice letter. For an open-ended report or a codebase there is nothing to vote on, and longer solo reasoning eventually runs into the context limits we both acknowledged. My opponent's own counterexample also cuts my way. Self-MoA is a team: several proposer calls feed a separate aggregator that synthesizes them. It shows the best team may be built from one strong model, not that teams lose. And unlike self-consistency, it handled open-ended AlpacaEval prompts. My strongest remaining point is that a model is poor at checking its own work from inside its own reasoning. Huang et al. (2023, \"Large Language Models Cannot Self-Correct Reasoning Yet\") found that intrinsic self-correction, where a model revises without external feedback, often failed to improve reasoning and sometimes made it worse. A model rereading its own chain of thought tends to accept the framing that misled it. A critic agent with a fresh context sees only the output and the requirements, so it is not anchored to that reasoning. Neither side has cited data isolating how much this separation helps on its own. But it is the mechanism behind human code review: the reviewer's value comes from not having written the code. I'll concede that for small, tightly coupled tasks a single model is often the better choice. But the hardest work is long, multi-part, and has to be checked. For that kind of work, a well-designed team is how AI turns extra compute into better results.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 14835,
+     "cost": 0.0398
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this closing and found nothing materially false, so it passes. Huang et al. (2023), \"Large Language Models Cannot Self-Correct Reasoning Yet,\" is a real paper. It found that intrinsic self-correction, meaning revision without external feedback, often failed to improve reasoning and sometimes made it worse. Self-MoA does use multiple samples from one model as proposers, which a separate aggregator call then synthesizes, and it was evaluated on open-ended AlpacaEval 2.0 prompts. Standard self-consistency does rely on a majority vote over answers that can be compared directly. Variants such as Universal Self-Consistency extend it to free-form outputs, but the basic description is accurate. The speaker is also correct that neither side has cited data isolating how much a fresh-context critic helps on its own. The claims about code review, anchoring, and what the hardest work requires are arguments, not factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. Huang et al. (2023), Self-MoA's proposer/aggregator structure and its AlpacaEval evaluation, and the description of self-consistency's majority voting are all accurate. Universal Self-Consistency does extend voting to free-form outputs, but the general characterization is fair. The rest is argument."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 6515,
+     "cost": 0.03024
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** My opponent's best new evidence turns against the motion when read in full.\n\n- **Huang et al. tested debate directly.** The same paper compared multi-agent debate with self-consistency at an equal number of responses and found debate did no better. Its broader conclusion is that self-correction works when there is *external feedback*, such as test results or ground-truth signals, not when one model instance critiques another. A fresh-context critic built from the same model gets no external signal. It is still intrinsic correction with a new prompt. What actually helps, like running tests or checking sources, is available to a single model through tools.\n- **Calling Self-MoA a team redefines the motion.** If sampling one model several times and then synthesizing counts as \"a team of agents,\" then best-of-n and self-consistency are teams too, and the motion becomes true by definition. The real debate is between a single model using inference-time compute and coordinated agents with distinct roles. Self-MoA's result favors the first: the gains came from more samples of the best model, and mixing in other agents made results worse.\n- **Open-ended outputs don't stop a single model.** As the fact-checker noted, Universal Self-Consistency extends selection to free-form answers. A single model can also draft several versions and synthesize them itself.\n- **The fresh-context point is fair but not team-specific.** I'll grant that reviewing work in a clean context can reduce anchoring. But one model can open a fresh call to review its own output. That is a single-model workflow, not a division of labor. It has none of the handoff and specification costs my opponent's architectures add.\n\n**My strongest remaining argument:** Look at where the debate has landed. My opponent now concedes that single models are often better for tightly coupled tasks, that most team gains track compute spent, and that the best \"team\" may just be one model sampled repeatedly. What remains is a narrow claim: well-designed teams win on long, decomposable, hard-to-check work. Even there, a team adds a cost a single model doesn't pay, which is compounding unreliability. Every added agent and handoff is another point where an error can enter and be passed along as settled fact. A downstream agent usually cannot tell a subagent's confident mistake from a correct finding, because it sees only the condensed report and not the reasoning behind it. Cemri et al. found these inter-agent failures across purpose-built frameworks, and Anthropic's post limits its multi-agent success to breadth-first queries. So the honest summary of the evidence is this: extra compute, external feedback, and fresh-context review make work better, and a single model can use all three. Splitting the work across agents helps only where the task splits cleanly. For most real work, which requires coherence, one model with the same resources produces work that is as good and more reliable.",
+     "output": {},
+     "model": "claude-opus-5-5",
+     "ms": 19381,
+     "cost": 0.052372
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the factual claims in this rebuttal and found nothing materially false, so it passes. Huang et al. (2023) did compare multi-agent debate with self-consistency at an equal number of responses and found debate did no better. The paper also attributes earlier self-correction gains largely to external feedback or oracle signals rather than to intrinsic critique. Li et al. (2025) did find that Self-MoA's gains came from aggregating samples of the strongest model, and that mixing in other models lowered quality on average. Universal Self-Consistency does extend selection to free-form outputs. The speaker summarizes the opponent's concessions fairly: tightly coupled tasks, token usage explaining most of the performance difference, and the best team possibly being built from one strong model. Saying Anthropic's post limits its multi-agent success to breadth-first queries is a slight overstatement. The post calls such queries especially well suited and names interdependent tasks like most coding as poor fits, so the summary is acceptable. The points about compounding unreliability, single-model fresh-context review, and what most real work requires are arguments, not factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims. The descriptions of Huang et al. (debate vs. self-consistency at equal responses, the role of external feedback), Li et al. (Self-MoA), Universal Self-Consistency, Cemri et al., and Anthropic's post are accurate. Saying Anthropic 'limits' its success to breadth-first queries is a minor overstatement; the post says such queries are especially well suited and that interdependent tasks are poor fits. The summary of the opponent's concessions is fair."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 8936,
+     "cost": 0.040392
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Against wins. They kept the debate on the decisive question, whether teams beat a single model given the same compute, and turned For's own sources (Anthropic, Self-MoA, Huang et al.) against the motion. For's fresh-context-critic point was its strongest, but it rested on mechanism rather than data and was absorbed as a single-model workflow.",
+     "output": {
+      "winner": "against",
+      "reasoning": "Against argued better because they set the decisive question early and held it: do teams beat a single model given the same compute? Each piece of For's evidence was then read more completely and turned. Du et al. compared debate against one-shot answering. Smit et al. and Wang et al. showed debate does not reliably beat well-prompted single agents or self-consistency. Anthropic's 90% gain came from breadth-first research, a case Against had already conceded, and the same post names interdependent tasks such as most coding as poor fits. Li et al. showed that Self-MoA (repeated samples of the best model) beat mixing different models, which undercut For's turn to heterogeneous teams. Huang et al., cited by For, also found debate no better than self-consistency at equal responses and credited gains to external feedback, which a single model can get through tools. For made real points. Lost in the Middle shows single contexts degrade. Majority voting needs answers that can be compared directly. The fresh-context critic is a plausible mechanism, and For openly admitted no cited data isolates its effect. But For also conceded that token usage explains most of the gains and that single models often win on tightly coupled tasks. Calling Self-MoA a team stretched the motion until it was nearly true by definition, and Against said so directly. Against has weaknesses too. The claim that 'most real work' is coherent and interdependent is asserted, not shown. Calling a fresh-context self-review a single-model workflow is itself somewhat definitional. Against also slightly overstated Anthropic's limits, which the fact-checker still found acceptable. On balance, Against's matched-compute framing and close reading of the evidence left For defending only a narrow claim: well-designed teams win on long, decomposable work. That falls short of the motion's general claim that teams do better work."
+     },
+     "model": "claude-opus-5-5",
+     "ms": 10295,
+     "cost": 0.041172
+    }
+   ],
+   "ms": 143246,
+   "cost": 0.405308,
+   "tokens": {
+    "input": 37617,
+    "output": 12742
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  }
+ ]
+}
