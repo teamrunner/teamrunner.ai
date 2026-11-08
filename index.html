@@ -57,7 +57,7 @@
 
     <div class="demo-head">
       <p class="label">Five text files → a running team <span class="soon">example: multi_agent_debate</span></p>
-      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it, then add a fact checker: one new file and a changed line, and the flow redraws.</p>
+      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it, then add a fact checker: one new file and a few new lines in <code>chair.md</code>, and the flow redraws.</p>
     </div>
     <div class="demo" id="demo">
       <div class="col">
@@ -75,25 +75,40 @@
       </div>
       <div class="col">
         <div class="cap"><span class="label">the flow, drawn from chair.md</span></div>
-        <svg class="fx" id="fx" viewBox="0 0 300 350" role="img" aria-label="The flow: three rounds of for, then against; then the judge decides.">
+        <svg class="fx" id="fx" viewBox="0 0 300 256" role="img" aria-label="The flow: three rounds of for, then against; then the judge decides.">
           <defs>
             <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker>
           </defs>
-          <g class="grp" id="R"><rect x="20" y="10" width="260" height="240" rx="10"/><text class="gl" id="rlab" x="32" y="29">rounds, 3 times</text></g>
-          <g class="nd" id="F"><rect x="88" y="48" width="124" height="30" rx="4"/><text x="150" y="68" text-anchor="middle">for</text></g>
-          <path class="e" id="eFA" d="M150 78 V176"/>
-          <g class="add">
-            <g class="nd dec" id="FC"><rect x="88" y="112" width="124" height="30" rx="4"/><text x="150" y="132" text-anchor="middle">fact_checker</text></g>
-            <path class="e" id="eFail" d="M88 127 C 50 127, 50 63, 86 63"/>
-            <text class="gl" x="40" y="98" text-anchor="middle">fail</text>
-            <text class="gl" x="158" y="163">pass</text>
-            <text class="gl" x="32" y="228">checks only</text>
-            <text class="gl" x="32" y="241">“for”</text>
+          <g class="v0">
+            <g class="grp" id="R0"><rect x="20" y="10" width="260" height="150" rx="10"/><text class="gl rlab" x="32" y="29">rounds, 3 times</text></g>
+            <g class="nd" id="F0"><rect x="88" y="48" width="124" height="30" rx="4"/><text x="150" y="68" text-anchor="middle">for</text></g>
+            <path class="e" id="eFA0" d="M150 78 V106"/>
+            <g class="nd" id="A0"><rect x="88" y="108" width="124" height="30" rx="4"/><text x="150" y="128" text-anchor="middle">against</text></g>
+            <path class="e" id="eOut0" d="M150 160 V188"/>
+            <g class="nd dec" id="J0"><rect x="78" y="190" width="144" height="32" rx="4"/><text x="150" y="211" text-anchor="middle">judge</text></g>
+            <text class="gl" x="150" y="244" text-anchor="middle">answers winner: for or against</text>
           </g>
-          <g class="nd" id="A"><rect x="88" y="178" width="124" height="30" rx="4"/><text x="150" y="198" text-anchor="middle">against</text></g>
-          <path class="e" id="eOut" d="M150 208 V278"/>
-          <g class="nd dec" id="J"><rect x="78" y="280" width="144" height="32" rx="4"/><text x="150" y="301" text-anchor="middle">judge</text></g>
-          <text class="gl" x="150" y="334" text-anchor="middle">answers winner: for or against</text>
+          <g class="v1 add">
+            <g class="grp" id="R"><rect x="10" y="8" width="280" height="372" rx="10"/><text class="gl rlab" x="22" y="27">rounds, 3 times</text></g>
+            <g class="grp" id="FT"><rect x="24" y="36" width="252" height="158" rx="8"/><text class="gl" x="34" y="53">for_turn</text></g>
+            <g class="grp" id="AT"><rect x="24" y="204" width="252" height="158" rx="8"/><text class="gl" x="34" y="221">against_turn</text></g>
+            <g class="nd" id="F"><rect x="88" y="62" width="124" height="30" rx="4"/><text x="150" y="82" text-anchor="middle">for</text></g>
+            <path class="e" id="eF" d="M150 92 V120"/>
+            <g class="nd dec" id="FC1"><rect x="88" y="122" width="124" height="30" rx="4"/><text x="150" y="142" text-anchor="middle">fact_checker</text></g>
+            <path class="e" id="eFail1" d="M88 137 C 54 137, 54 77, 86 77"/>
+            <text class="gl" x="40" y="111" text-anchor="middle">fail</text>
+            <path class="e" id="ePass1" d="M150 152 V228"/>
+            <text class="gl" x="158" y="176">pass</text>
+            <g class="nd" id="A"><rect x="88" y="230" width="124" height="30" rx="4"/><text x="150" y="250" text-anchor="middle">against</text></g>
+            <path class="e" id="eA" d="M150 260 V288"/>
+            <g class="nd dec" id="FC2"><rect x="88" y="290" width="124" height="30" rx="4"/><text x="150" y="310" text-anchor="middle">fact_checker</text></g>
+            <path class="e" id="eFail2" d="M88 305 C 54 305, 54 245, 86 245"/>
+            <text class="gl" x="40" y="279" text-anchor="middle">fail</text>
+            <path class="e" id="eOut" d="M150 320 V410"/>
+            <text class="gl" x="158" y="344">pass</text>
+            <g class="nd dec" id="J"><rect x="78" y="412" width="144" height="32" rx="4"/><text x="150" y="433" text-anchor="middle">judge</text></g>
+            <text class="gl" x="150" y="466" text-anchor="middle">answers winner: for or against</text>
+          </g>
         </svg>
       </div>
       <div class="bar">
@@ -106,7 +121,7 @@ answers, real decisions and loops. Free, and it needs no key.
 In your terminal it is one line:  teamrunner run debate --rehearse</pre>
       </div>
     </div>
-    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Only the side arguing <i>for</i> is checked. Does that help it win, or hurt? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
+    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
   </div>
 
   <!-- 2 · Why -->
@@ -415,21 +430,27 @@ seed: 42</pre>
     {n:'against.md',tag:'worker',k:'worker',hl:'A',t:'---\ndescription: Argues against the topic\n---\nYou are debating against this topic:\n\n> {{topic}}\n\nEach round, rebut your opponent\'s most recent point, then make your\nstrongest remaining argument against the topic in one short paragraph.\nBe persuasive but honest.'},
     {n:'judge.md',tag:'decider',k:'decider',hl:'J',t:'---\ndescription: Decides who argued better\noutput:\n  winner: [for, against]\n  reasoning: ""\n---\nYou have watched a three-round debate on:\n\n> {{topic}}\n\nDecide which side argued better: judge argument quality and logical\nclarity, not your own opinion of the topic. Announce the winner and\nexplain your decision in one paragraph.'}
   ];
-  var FC={n:'fact_checker.md',tag:'new',k:'decider · new file',hl:'FC',t:'---\ndescription: Checks the factual claims in the latest speech\noutput:\n  verdict: [pass, fail]\n  reasons: ""\n---\nYou are a neutral fact checker. Check the factual claims in the latest\nspeech. Minor exaggeration is fine; invented statistics and false claims\nare not.\n\nSet verdict to fail only if a claim is materially false, and list each\nfalse claim with a one-line correction in reasons. Otherwise, pass.'};
+  var FC={n:'fact_checker.md',tag:'new',k:'decider · new file',hl:'FC1 FC2',t:'---\ndescription: Checks the factual claims in the latest speech\noutput:\n  verdict: [pass, fail]\n  reasons: ""\n---\nYou are a neutral fact checker. Check the factual claims in the latest\nspeech. Minor exaggeration is fine; invented statistics and false claims\nare not.\n\nSet verdict to fail only if a claim is materially false, and list each\nfalse claim with a one-line correction in reasons. Otherwise, pass.'};
   var CHAIR_OFF=document.getElementById('view').innerHTML;
   var CHAIR_ON='<span class="cm"># Three rounds, each side speaking in turn,\n# then the judge decides.</span>\n\n'
     +'<span class="cl" data-k="R eOut J">  rounds(*3) -> judge</span>\n\n'
-    +'<span class="cl del" data-k="F eFA A">- rounds = for -> against</span>\n'
-    +'<span class="cl ins" data-k="F FC A eFA">+ rounds = for -> fact_checker -> against</span>\n'
-    +'<span class="cl ins" data-k="FC eFail F">+          fact_checker --fail--> for</span>\n'
-    +'<span class="cl ins" data-k="FC eFA A">+          fact_checker --pass,*3--> against</span>';
+    +'<span class="cl del" data-k="F A">- rounds = for -> against</span>\n'
+    +'<span class="cl ins" data-k="FT AT ePass1">+ rounds = for_turn -> against_turn</span>\n'
+    +'<span class="cl ins">+</span>\n'
+    +'<span class="cl ins" data-k="FT F eF FC1">+ for_turn = for -> fact_checker</span>\n'
+    +'<span class="cl ins" data-k="FC1 eFail1 F">+            fact_checker --fail--> for</span>\n'
+    +'<span class="cl ins" data-k="FC1 ePass1">+            fact_checker --pass,*3--> done</span>\n'
+    +'<span class="cl ins">+</span>\n'
+    +'<span class="cl ins" data-k="AT A eA FC2">+ against_turn = against -> fact_checker</span>\n'
+    +'<span class="cl ins" data-k="FC2 eFail2 A">+                fact_checker --fail--> against</span>\n'
+    +'<span class="cl ins" data-k="FC2 eOut">+                fact_checker --pass,*3--> done</span>';
   var on=false, FILES=BASE.slice(), cur=1;
   var view=document.getElementById('view'), list=document.getElementById('files'), fx=document.getElementById('fx');
   var esc=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
   var playing=false, timer=null;
   function mark(keys){
     fx.querySelectorAll('.on').forEach(function(e){e.classList.remove('on')});
-    (keys||'').split(' ').forEach(function(k){var e=k&&document.getElementById(k);if(e)e.classList.add('on')});
+    (keys||'').split(' ').forEach(function(k){var e=k&&document.getElementById(on?k:k+'0');if(e)e.classList.add('on')});
   }
   function bindLines(){
     view.querySelectorAll('.cl').forEach(function(l){
@@ -470,23 +491,19 @@ seed: 42</pre>
     on=!on;
     FILES=on?BASE.concat([FC]):BASE.slice();
     fx.classList.toggle('with',on);
-    document.getElementById('eFA').setAttribute('d',on?'M150 142 V176':'M150 78 V176');
-    fx.setAttribute('aria-label',on?'The flow: three rounds of for, then the fact checker, which sends a failed speech back to for, up to three tries, then against; then the judge decides.':'The flow: three rounds of for, then against; then the judge decides.');
+    fx.setAttribute('viewBox',on?'0 0 300 478':'0 0 300 256');
+    fx.setAttribute('aria-label',on?'The flow: three rounds. In each, for speaks and the fact checker passes or fails the speech, sending a failed one back, up to three tries; then against, checked the same way. Then the judge decides.':'The flow: three rounds of for, then against; then the judge decides.');
     add.setAttribute('aria-pressed',on?'true':'false');
     add.textContent=on?'− Remove the fact checker':'+ Add a fact checker';
     foot.hidden=!on;
     drawList(); open(1);
-    log.textContent=on?'Added fact_checker.md and changed one line of chair.md.\nRehearse it: a failed speech goes back to “for”, up to three tries.':
+    log.textContent=on?'Added fact_checker.md, and chair.md now sends every speech to it.\nA failed speech goes back to its speaker, up to three tries. Rehearse it.':
       'Back to the plain debate. Rehearse it again, or add the fact checker back.';
   });
-  /* In the eFA edge's "with" form it runs fact_checker → against; the for → fact_checker hop: */
-  var hop=document.createElementNS('http://www.w3.org/2000/svg','path');
-  hop.setAttribute('class','e');hop.setAttribute('id','eFF');hop.setAttribute('d','M150 78 V110');
-  fx.querySelector('.add').appendChild(hop);
-
   /* A rehearsal in the page: the same steps `teamrunner run debate --rehearse` takes,
      with random answers like the real one. */
-  var btn=document.getElementById('play'), log=document.getElementById('log'), rlab=document.getElementById('rlab');
+  var btn=document.getElementById('play'), log=document.getElementById('log'), rlabs=fx.querySelectorAll('.rlab');
+  function rl(t){rlabs.forEach(function(e){e.textContent=t})}
   function pad(s,n){while(s.length<n)s+=' ';return s}
   function row(who,what){return pad('  '+who,28)+pad(what||'',24)+'0.0s   $0.0000'}
   function plan(){
@@ -494,20 +511,21 @@ seed: 42</pre>
     S.push({k:'',t:'rehearsal · no model is called; the words are placeholders and the answers random'});
     for(var r=1;r<=3;r++){
       S.push({k:'R',t:'rounds '+r+' of 3',r:r});
-      if(!on){S.push({k:'F',t:row('for')});turns++}
-      else for(var tr=1;tr<=3;tr++){
-        S.push({k:'F'+(tr>1?' eFail':''),t:row('for',tr>1?'try '+tr+' of 3':'')});
-        var pass=Math.random()<.6; turns+=2;
-        S.push({k:'eFF FC',t:row('fact_checker',pass?'pass':'fail')});
-        if(pass||tr===3)break;
-      }
-      S.push({k:'eFA A',t:row('against')});turns++;
+      if(!on){S.push({k:'F',t:row('for')});S.push({k:'eFA A',t:row('against')});turns+=2;continue}
+      [['for','FT F','eF FC1','eFail1'],['against','AT ePass1 A','eA FC2','eFail2']].forEach(function(s){
+        for(var tr=1;tr<=3;tr++){
+          S.push({k:s[1]+(tr>1?' '+s[3]:''),t:row(s[0],tr>1?'try '+tr+' of 3':'')});
+          var pass=Math.random()<.6; turns+=2;
+          S.push({k:s[2],t:row('fact_checker',pass?'pass':'fail')});
+          if(pass||tr===3)break;
+        }
+      });
     }
     S.push({k:'eOut J',t:pad('judge',28)+pad('winner = '+(Math.random()<.5?'for':'against'),24)+'0.0s   $0.0000'});turns++;
     S.push({k:'',t:'\ncompleted · '+turns+' turns · 0.0s · ≈ $0.0000',end:true});
     return S;
   }
-  function stop(){clearTimeout(timer);playing=false;btn.textContent='▶ Rehearse it again';rlab.textContent='rounds, 3 times';mark(FILES[cur].hl)}
+  function stop(){clearTimeout(timer);playing=false;btn.textContent='▶ Rehearse it again';rl('rounds, 3 times');mark(FILES[cur].hl)}
   btn.addEventListener('click',function(){
     if(playing){stop();return}
     playing=true;btn.textContent='■ Stop';log.textContent='';
@@ -516,9 +534,9 @@ seed: 42</pre>
       if(!playing)return;
       var s=S[i++];
       mark(s.k);
-      if(s.r)rlab.textContent='rounds · '+s.r+' of 3';
+      if(s.r)rl('rounds · '+s.r+' of 3');
       log.textContent+=(log.textContent?'\n':'')+s.t;log.scrollTop=log.scrollHeight;
-      if(s.end){playing=false;btn.textContent='▶ Rehearse it again';rlab.textContent='rounds, 3 times';setTimeout(function(){if(!playing)mark(FILES[cur].hl)},1200);return}
+      if(s.end){playing=false;btn.textContent='▶ Rehearse it again';rl('rounds, 3 times');setTimeout(function(){if(!playing)mark(FILES[cur].hl)},1200);return}
       timer=setTimeout(step,fast?120:560);
     })();
   });

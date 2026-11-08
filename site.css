@@ -387,3 +387,4 @@ h2.hook em{font-style:italic;color:var(--accent)}
 .demo-foot b{color:var(--ink)}
 @media (max-width:980px){.demo .btns{flex-direction:row;flex-wrap:wrap}}
 .demo .bar .btn.ghost{background:transparent}
+.fx.with .v0{display:none}
