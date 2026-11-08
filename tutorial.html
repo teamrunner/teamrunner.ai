@@ -4,12 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tutorial — TeamRunner</title>
-<meta name="description" content="Nine steps on the teams that ship with TeamRunner: a free rehearsal, a first real run, rounds, decisions, tools, private information and a first experiment. No code.">
+<meta name="description" content="Nine steps on the teams that ship with TeamRunner, in your browser or in a terminal: a free rehearsal, a first real run, rounds, decisions, tools, private information and a first experiment. No code.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
 </head>
 <body>
 <header class="top">
@@ -39,13 +44,22 @@
 <main class="doc">
 <p class="label">Tutorial</p>
 <h1>Nine steps, from a free rehearsal to your first experiment</h1>
-<p class="lede">Every step starts from a team that ships with TeamRunner and adds one idea. No code: each step is a few words changed in a text file and one command.</p>
-<div class="aside"><p><b>Before you start,</b> <a href="index.html#install">install TeamRunner</a>. You need a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> and any text editor. Step 1 needs no key and costs nothing, and every later step can be <b>rehearsed</b> for free before you spend anything. Commands marked with a real run cost a fraction of a cent each.</p></div>
+<p class="lede">Every step starts from a team that ships with TeamRunner and adds one idea. No code: each step is a few words changed in a text file, and a click or a command.</p>
+<div class="aside"><p><b>Before you start,</b> <a href="index.html#install">install TeamRunner</a> (version 0.0.4 or later for the browser). Follow each step <b>in your browser</b>, on TeamRunner's own page, or <b>in a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a></b> with any text editor: the switch at each step changes them all. The files you write are the same either way. Step 1 needs no key and costs nothing, and every later step can be <b>rehearsed</b> for free before you spend anything. A real run costs a fraction of a cent.</p></div>
 <nav class="toc" aria-label="Steps"><ol><li><a href="#rehearse">Rehearse a team, for free</a></li><li><a href="#first-run">Your first real run</a></li><li><a href="#prose">Edit the words</a></li><li><a href="#flow">Take control of the flow</a></li><li><a href="#decisions">Typed answers and decisions</a></li><li><a href="#tools">Tools, through a toolkeeper</a></li><li><a href="#private">Private information</a></li><li><a href="#experiment">A first experiment, by hand</a></li><li><a href="#bigger">Bigger organizations</a></li></ol></nav>
 <h2 id="rehearse"><span class="stepno">Step 1</span>Rehearse a team, for free</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<div class="via" data-via="browser">
+<p>Open a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> in the folder where you want to keep your teams, and open TeamRunner's page. This is the one command you need:</p>
+<code class="cmd" data-run="skip">teamrunner ui</code>
+<p>A tab opens in your browser. Keep the terminal open while you work; <code>Ctrl+C</code> there closes the page. The page works only on your computer, on the files in that folder.</p>
+<p>Copy the simplest example, <code>round_robin</code>, into a new team called <code>hello</code>: choose <b class="ui">New team</b>, type <code>hello</code>, pick <code>round_robin</code> under <b class="ui">Start from</b> and choose <b class="ui">Continue</b>.</p>
+</div>
+<div class="via" data-via="terminal">
 <p>Open a terminal in any folder and copy the simplest example, <code>round_robin</code>, into a new team called <code>hello</code>:</p>
 <code class="cmd" data-run data-expect="hello">teamrunner new hello --from round_robin</code>
-<p><code>hello</code> is a folder of four text files. <code>team.yaml</code> says what the team is for, and each <code>.md</code> file is one agent: a debater for the topic, one against, and a judge. Open <code>hello/02_against.md</code> in your text editor:</p>
+</div>
+<p><code>hello</code> is a folder of four text files. <code>team.yaml</code> says what the team is for, and each <code>.md</code> file is one agent: a debater for the topic, one against, and a judge. Open <code>hello/02_against.md</code>, on the left of the page or in your text editor:</p>
 <div class="panel"><div class="cap"><span class="label">hello/02_against.md</span><span class="label">part of it</span></div><pre>---
 description: Argues against the topic
 …
@@ -58,7 +72,12 @@ You speak once, after your opponent. Rebut their main point, then make
 your strongest case against the topic, in one paragraph.
 </pre></div>
 <p>Between the two <code>---</code> lines are the agent's settings (its <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent&#x27;s file: a description, which model, what answer it must give.">frontmatter</a>). Below them are its instructions, in plain words. <code>{{topic}}</code> is filled in with the topic in <code>team.yaml</code>.</p>
-<p>Now <b>rehearse</b> the team: run all of it with no model. Each agent says placeholder words, and the judge's answer is picked at random. It costs nothing and needs no key, and it shows whether the team runs the way you meant:</p>
+<p>Now <b>rehearse</b> the team: run all of it with no model. Each agent says placeholder words, and the judge's answer is picked at random. It costs nothing and needs no key, and it shows whether the team runs the way you meant.</p>
+<div class="via" data-via="browser">
+<p>Choose <b class="ui">Run…</b>, keep <b class="ui">Rehearse (free, no model)</b> ticked, and choose <b class="ui">Rehearse team</b>. The conversation appears turn by turn, and stays under <b class="ui">Runs</b> afterwards:</p>
+<figure class="shot"><img src="img/ui-conversation.png" alt="TeamRunner&#x27;s page showing a rehearsal of hello: completed, 3 turns, $0.0000, and the first turn, for, with placeholder words" width="1240" height="780" loading="lazy"><figcaption>A rehearsal in <b class="ui">Runs</b>: every turn, what each member could read, and the cost.</figcaption></figure>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="completed">teamrunner run hello --rehearse</code>
 <div class="panel out"><div class="cap"><span class="label">what you see</span></div><pre>run · hello · default input topic: &quot;Remote work makes teams more productive&quot;
 rehearsal · no model is called; the words are placeholders and the answers random
@@ -71,9 +90,16 @@ judge                       winner = for                     0.0s   $0.0000
 
 completed · 3 turns · 0.0s · ≈ $0.0000
 hello/runs/2026-11-05_093012_hello</pre></div>
+</div>
 <p>There is no file saying who speaks when, so each member takes one turn, in the order of their file names: <code>01_for</code>, <code>02_against</code>, <code>03_judge</code>. The numbers set the order and are not part of the names.</p>
 <h2 id="first-run"><span class="stepno">Step 2</span>Your first real run</h2>
-<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>. <code>explain</code> shows it beside each member:</p>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>.</p>
+<div class="via" data-via="browser">
+<p>Select <code>team.yaml</code> to see it. Then try a real run: choose <b class="ui">Run…</b>, clear <b class="ui">Rehearse (free, no model)</b> and choose <b class="ui">Run with models</b>. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs.</p>
+</div>
+<div class="via" data-via="terminal">
+<p><code>explain</code> shows it beside each member:</p>
 <code class="cmd" data-run data-expect="for">teamrunner explain hello</code>
 <p>Try a real run. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs:</p>
 <code class="cmd" data-run="skip">teamrunner run hello</code>
@@ -82,28 +108,59 @@ hello/runs/2026-11-05_093012_hello</pre></div>
                        which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
                        your shell or the package
                        add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env</pre></div>
-<p>The examples run on Gemma 4 through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. Make an account there, add a few dollars of credit, create a key, and put it in TeamRunner's key file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. One key is all you need.</p>
+</div>
+<p>The examples run on Gemma 4 through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. Make an account there, add a few dollars of credit and create a key. TeamRunner keeps keys in one file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. One key is all you need.</p>
+<div class="via" data-via="browser">
+<p>Choose <b class="ui">Set up keys</b>, pick <code>OPENROUTER_API_KEY</code>, paste the key into <b class="ui">New key</b> and choose <b class="ui">Save key</b>. The page writes it to that file and never shows it again; <b class="ui">Check keys and models online</b> checks that it works.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Put your key in it:</p>
 <div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENROUTER_API_KEY=sk-or-...
 </pre></div>
+</div>
+<div class="via" data-via="browser">
+<p>Run it again, and this time give it your own topic: in <b class="ui">Run…</b>, choose <b class="ui">A message</b> under <b class="ui">What to give the team</b> and type <code>Four-day weeks make teams more productive</code>. The message fills in <code>{{topic}}</code>. Tick <b class="ui">Rehearse (free, no model)</b> to try a message for free.</p>
+</div>
+<div class="via" data-via="terminal">
 <p>Run it again, and this time give it your own topic. <code>--message</code> fills in <code>{{topic}}</code>:</p>
 <code class="cmd" data-run="skip">teamrunner run hello --message &quot;Four-day weeks make teams more productive&quot;</code>
 <p>You can rehearse with a message too, for free:</p>
 <code class="cmd" data-run data-expect="Four-day weeks">teamrunner run hello --rehearse --message &quot;Four-day weeks make teams more productive&quot;</code>
-<p>Every run is kept in <code>hello/runs/</code>, one folder each, named for when it ran. Open the newest one's <code>output.md</code> in your text editor: it is what the team produced. Next to it, <code>events.jsonl</code> holds every turn, with every prompt, reply, model, token and cost. To list the runs, newest first, with each verdict:</p>
+</div>
+<p>Every run is kept in <code>hello/runs/</code>, one folder each, named for when it ran. Its <code>output.md</code> is what the team produced. Next to it, <code>events.jsonl</code> holds every turn, with every prompt, reply, model, token and cost.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Runs</b> lists them, newest first, with each verdict. Select one to read its <b class="ui">Conversation</b>, its <b class="ui">Output</b> and its <b class="ui">Record</b>; the links beside them open the files themselves.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Open the newest one's <code>output.md</code> in your text editor. To list the runs, newest first, with each verdict:</p>
 <code class="cmd" data-run data-expect="winner">teamrunner runs hello</code>
 <p>And to see the newest one again, as it printed:</p>
 <code class="cmd" data-run data-expect="judge">teamrunner runs hello latest</code>
-<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and put that provider's key in the same file instead. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
-<div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It costs a cent or two, and you can rehearse what it wrote for free:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
+</div>
+<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and add that provider's key instead. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
+<div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It costs a cent or two, and you can rehearse what it wrote for free. In a terminal:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
 <h2 id="prose"><span class="stepno">Step 3</span>Edit the words</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
 <p>Everything an agent does comes from its words. Make the critic more aggressive: in <code>hello/02_against.md</code>, replace the last two lines with these. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>.</p>
 <div class="panel"><div class="cap"><span class="label">hello/02_against.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="hello/02_against.md"><div class="m">- You speak once, after your opponent. Rebut their main point, then make</div><div class="m">- your strongest case against the topic, in one paragraph.</div><div class="p">+ You speak once, after your opponent. Attack their weakest claim</div><div class="p">+ directly and without hedging: name it, say why it fails, and give</div><div class="p">+ the strongest counter-evidence you know. Then make your case against</div><div class="p">+ the topic, in one forceful paragraph.</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b> (Ctrl+S, or ⌘S on a Mac). Rehearse to check nothing broke, then run it with models on the same message as before.</p>
+<p>Now compare. In <b class="ui">Runs</b>, tick the two real runs and choose <b class="ui">Compare selected runs</b>: their outputs side by side, and under <b class="ui">Member versions</b>, the paragraph you changed.</p>
+<figure class="shot"><img src="img/ui-compare.png" alt="Two runs of hello compared: for and judge unchanged, against changed from version 1 to version 2, with the removed and added lines" width="1240" height="780" loading="lazy"><figcaption>Two runs compared: TeamRunner numbers each member's versions and shows what changed.</figcaption></figure>
+</div>
+<div class="via" data-via="terminal">
 <p>Rehearse to check nothing broke, then run it for real on the same topic as before:</p>
 <code class="cmd" data-run data-expect="completed">teamrunner run hello --rehearse</code>
 <code class="cmd" data-run="skip">teamrunner run hello --message &quot;Four-day weeks make teams more productive&quot;</code>
-<p>Now compare. <code>teamrunner runs hello</code> lists both real runs with their verdicts. Open the two <code>output.md</code> files side by side: same team, same topic, one paragraph changed. Did the judge decide differently? With one run of each you can't tell whether the words did it or chance did; models are random. Step 8 deals with that.</p>
+<p>Now compare. <code>teamrunner runs hello</code> lists both real runs with their verdicts. Open the two <code>output.md</code> files side by side: same team, same topic, one paragraph changed.</p>
+</div>
+<p>Did the judge decide differently? With one run of each you can't tell whether the words did it or chance did; models are random. Step 8 deals with that.</p>
 <h2 id="flow"><span class="stepno">Step 4</span>Take control of the flow</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
 <p>A real debate has rounds. Who acts when is the job of the team's <b>chair</b>, a file called <code>chair.md</code> holding the meeting's script. Make <code>hello/chair.md</code> with these lines:</p>
+<div class="via" data-via="browser">
+<p>With a file of <code>hello</code> selected, choose <b class="ui">New member</b>, name it <code>chair.md</code>, and replace what is in it with the lines below.</p>
+</div>
 <div class="panel"><div class="cap"><span class="label">hello/chair.md</span></div><pre data-file="hello/chair.md"># Three rounds of for and against, then the judge decides.
 
 rounds(*3) -&gt; judge
@@ -111,14 +168,26 @@ rounds(*3) -&gt; judge
 rounds = for -&gt; against
 </pre></div>
 <p><code>a -> b</code> means one after the other, <code>rounds(*3)</code> repeats a step three times, and <code>rounds = …</code> says what that step is. Lines starting with <code>#</code> are notes for people. Rehearse it: seven turns now, where there were three.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>, then rehearse with <b class="ui">Run…</b>. <b class="ui">Flow diagram</b> draws the flow, and reads the team back in plain words below it:</p>
+<figure class="shot"><img src="img/ui-flow.png" alt="The flow diagram of hello/chair.md: for then against, three times, then judge" width="1240" height="780" loading="lazy"><figcaption>The chair's script as a picture. Save an edit and it is redrawn.</figcaption></figure>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="7 turns">teamrunner run hello --rehearse</code>
 <p><code>explain</code> reads the team back in plain words, or draws the flow in your browser:</p>
 <code class="cmd" data-run data-expect="rounds">teamrunner explain hello</code>
 <code class="cmd" data-run="skip">teamrunner explain hello --diagram</code>
-<p>The debaters' words still say they speak once. The example <code>multi_agent_debate</code> is this team finished, with words written for rounds. Copy it, and the next step builds on it:</p>
+</div>
+<p>The debaters' words still say they speak once. The example <code>multi_agent_debate</code> is this team finished, with words written for rounds. Copy it into a team called <code>debate</code>; the next step builds on it.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>debate</code>, from <code>multi_agent_debate</code>, and look at its <b class="ui">Flow diagram</b>.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="debate">teamrunner new debate --from multi_agent_debate</code>
 <code class="cmd" data-run data-expect="rounds">teamrunner explain debate</code>
+</div>
 <h2 id="decisions"><span class="stepno">Step 5</span>Typed answers and decisions</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
 <p>Look at the top of <code>debate/judge.md</code>:</p>
 <div class="panel"><div class="cap"><span class="label">debate/judge.md</span><span class="label">its settings</span></div><pre>---
 description: Decides who argued better
@@ -129,21 +198,37 @@ output:
 ---</pre></div>
 <p><code>output:</code> makes the judge's verdict a fact you can count: <code>winner</code> is one of the names in the brackets, and <code>reasoning</code> is text. TeamRunner never guesses from free text what an agent decided. Allow a tie:</p>
 <div class="panel"><div class="cap"><span class="label">debate/judge.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="debate/judge.md"><div class="m">-   winner: [for, against]</div><div class="p">+   winner: [for, against, tie]</div></div></div>
-<p><code>validate</code> reads every file and points at any mistake, with the line and a fix, before a single token is spent. Then rehearse:</p>
+<p>TeamRunner <b>validates</b> a team: it reads every file and points at any mistake, with the line and a fix, before a single token is spent. Then rehearse.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>, and the page validates for you: any problem appears under <b class="ui">Validation</b>, and selecting it opens the file at that line. Then rehearse with <b class="ui">Run…</b>.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="OK">teamrunner validate debate</code>
 <code class="cmd" data-run data-expect="winner">teamrunner run debate --rehearse</code>
-<p>A typed answer can also <b>decide what happens next</b>. The example <code>fact_checked</code> is the debate with a fact checker, whose answer is <code>verdict: [pass, fail]</code>. Copy it:</p>
+</div>
+<p>A typed answer can also <b>decide what happens next</b>. The example <code>fact_checked</code> is the debate with a fact checker, whose answer is <code>verdict: [pass, fail]</code>. Copy it into a team called <code>checked</code>:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>checked</code>, from <code>fact_checked</code>.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="checked">teamrunner new checked --from fact_checked</code>
+</div>
 <p>In its <code>chair.md</code>, each speech goes to the fact checker, and a failed speech goes back to its speaker:</p>
 <div class="panel"><div class="cap"><span class="label">checked/chair.md</span><span class="label">part of it</span></div><pre>for_turn = for -&gt; fact_checker
            fact_checker --fail--&gt; for
            fact_checker --pass,*3--&gt; done</pre></div>
 <p><code>--fail--> for</code> sends a failed speech back. <code>--pass,*3--> done</code> reads “on pass, or the third time, this turn is done”: every loop needs a limit, so a debate always ends. Give each speaker one retry instead of two. The same line appears for both sides, and the change applies to both:</p>
 <div class="panel"><div class="cap"><span class="label">checked/chair.md</span><span class="label">in both places</span></div><div class="diff" data-edit="checked/chair.md"><div class="m">- fact_checker --pass,*3--&gt; done</div><div class="p">+ fact_checker --pass,*2--&gt; done</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>, check <b class="ui">Validation</b>, and rehearse.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="OK">teamrunner validate checked</code>
 <code class="cmd" data-run data-expect="completed">teamrunner run checked --rehearse</code>
-<div class="aside"><p>Mistype an answer, say <code>--puss--></code>, and <code>validate</code> stops you: “<code>puss</code> is not one of <code>fact_checker</code>'s options; did you mean <code>pass</code>?”</p></div>
+</div>
+<div class="aside"><p>Mistype an answer, say <code>--puss--></code>, and validation stops you: “<code>puss</code> is not one of <code>fact_checker</code>'s options; did you mean <code>pass</code>?”</p></div>
 <h2 id="tools"><span class="stepno">Step 6</span>Tools, through a toolkeeper</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
 <p>Agents never hold tools themselves. A tool sits with a <a class="t" tabindex="0" data-tip="A member with no model that holds one tool and decides who may use it and how often, like the attendant at a factory&#x27;s tool crib.">toolkeeper</a>: a member with no model that checks who is asking and enforces the limits, like the attendant at a tool crib. In <code>checked</code>, <code>web.md</code> holds the web, and its <code>access:</code> list says who may use it:</p>
 <div class="panel"><div class="cap"><span class="label">checked/web.md</span><span class="label">part of its settings</span></div><pre>kind: toolkeeper
 …
@@ -152,13 +237,24 @@ access:
   judge: standard</pre></div>
 <p>The fact checker may use it three times a turn; the judge on the standard terms; the debaters, not listed, argue from what they know. Give the side arguing <i>for</i> the web too, once a turn, and the debate is no longer even:</p>
 <div class="panel"><div class="cap"><span class="label">checked/web.md</span><span class="label">add a line</span></div><div class="diff" data-edit="checked/web.md"><div class="x">  access:</div><div class="p">+   for: {calls_per_turn: 1}</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>. The plain-words summary under <b class="ui">Flow diagram</b> says who may use what, on which terms. Then rehearse.</p>
+</div>
+<div class="via" data-via="terminal">
 <p><code>explain</code> prints who may use what, on which terms:</p>
 <code class="cmd" data-run data-expect="for may use it">teamrunner explain checked</code>
 <code class="cmd" data-run data-expect="completed">teamrunner run checked --rehearse</code>
+</div>
 <p>Every request, the toolkeeper's yes or no, and what came back are kept in the run. <code>checked</code> also has a second toolkeeper, <code>sandbox.md</code>, which runs Python so the fact checker can check the sums in a claim.</p>
 <h2 id="private"><span class="stepno">Step 7</span>Private information</h2>
-<p>So far everyone knows the same things. The example <code>hiring_committee</code> is a committee choosing a Director of Operations, where each member also knows two facts the others don't. Copy it:</p>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>So far everyone knows the same things. The example <code>hiring_committee</code> is a committee choosing a Director of Operations, where each member also knows two facts the others don't. Copy it into a team called <code>committee</code>:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>committee</code>, from <code>hiring_committee</code>.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="committee">teamrunner new committee --from hiring_committee</code>
+</div>
 <p>What everyone has read, the application packet, is in <code>team.yaml</code>. What only one member knows is written into that member's own file:</p>
 <div class="panel"><div class="cap"><span class="label">committee/chen.md</span><span class="label">part of it</span></div><pre>You also sat in on the reference calls, and your notes say:
 
@@ -168,42 +264,91 @@ access:
   they had worked with.
 
 The others have not seen your notes.</pre></div>
-<p>The others learn Chen's notes only if Chen says them in the meeting. Each member answers <code>preferred</code> every turn, whom they would hire right now, so you can see when minds change; the clerk records the <code>decision</code>. Rehearse it, then run it for real:</p>
+<p>The others learn Chen's notes only if Chen says them in the meeting. Each member answers <code>preferred</code> every turn, whom they would hire right now, so you can see when minds change; the clerk records the <code>decision</code>. Rehearse it, then run it for real.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Run…</b> twice: once rehearsed, once <b class="ui">Run with models</b>. <b class="ui">Runs</b> shows each run's decision.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="completed">teamrunner run committee --rehearse</code>
 <code class="cmd" data-run="skip">teamrunner run committee</code>
 <code class="cmd" data-run data-expect="decision">teamrunner runs committee</code>
+</div>
 <p>The packet makes Avery look best; the six private facts together make Blake the clear choice. In 1985 Stasser and Titus found that human groups mostly discuss what they all already know, and pick Avery. What did your committee do?</p>
 <h2 id="experiment"><span class="stepno">Step 8</span>A first experiment, by hand</h2>
-<p>A known fix is to have everyone report what they know before anyone gives an opinion. Compare it with open discussion: make two copies of the committee, one for each way of running the meeting.</p>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>A known fix is to have everyone report what they know before anyone gives an opinion. Compare it with open discussion: make two copies of the committee, <code>open</code> and <code>share_first</code>, one for each way of running the meeting.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b> twice, both from <code>hiring_committee</code>: <code>open</code> and <code>share_first</code>.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="open">teamrunner new open --from hiring_committee</code>
 <code class="cmd" data-run data-expect="share_first">teamrunner new share_first --from hiring_committee</code>
+</div>
 <p>Both ways are already written in <code>chair.md</code>, one turned off with a <code>#</code>. In <code>share_first/chair.md</code>, swap them: put a <code>#</code> in front of the first line and take it off the second.</p>
 <div class="panel"><div class="cap"><span class="label">share_first/chair.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="share_first/chair.md"><div class="m">- meeting(*3) -&gt; clerk:record</div><div class="p">+ # meeting(*3) -&gt; clerk:record</div><div class="x">  #</div><div class="x">  # Share first: the chair asks each member to report what they know</div><div class="x">  # before anyone gives an opinion, then two rounds of discussion. Put a</div><div class="x">  # `#` in front of the line above and remove it from the line below.</div><div class="m">- # chen:share_facts -&gt; diaz:share_facts -&gt; okafor:share_facts -&gt; meeting(*2) -&gt; clerk:record</div><div class="p">+ chen:share_facts -&gt; diaz:share_facts -&gt; okafor:share_facts -&gt; meeting(*2) -&gt; clerk:record</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>, check <b class="ui">Validation</b>, and rehearse both teams.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="OK">teamrunner validate share_first</code>
 <code class="cmd" data-run data-expect="10 turns">teamrunner run open --rehearse</code>
 <code class="cmd" data-run data-expect="share_facts">teamrunner run share_first --rehearse</code>
-<p>Models are random, so one run of each proves nothing. Run each five times. On a Mac or Linux:</p>
+</div>
+<p>Models are random, so one run of each proves nothing. Run each five times, then tally: count how often each committee chose Blake. Ten real runs cost a few cents.</p>
+<div class="via" data-via="browser">
+<p>The page runs one team at a time, so start each run when the last one has finished: <b class="ui">Run…</b> with models, five times on <code>open</code> and five on <code>share_first</code>. Then, in <b class="ui">Runs</b>, pick each team under <b class="ui">Team</b> and count the decisions.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>On a Mac or Linux:</p>
 <code class="cmd">for i in 1 2 3 4 5; do teamrunner run open; teamrunner run share_first; done</code>
 <p>In PowerShell on Windows:</p>
 <code class="cmd">1..5 | % { teamrunner run open; teamrunner run share_first }</code>
-<p>Then tally. Each list shows every run's decision; count how often each committee chose Blake. Ten real runs cost a few cents.</p>
+<p>Each list shows every run's decision:</p>
 <code class="cmd" data-run data-expect="decision">teamrunner runs open</code>
 <code class="cmd" data-run data-expect="decision">teamrunner runs share_first</code>
+</div>
 <div class="aside"><p><b>Coming soon: experiments.</b> One file will name both versions and how many runs of each, and TeamRunner will run them all and give you one CSV for R, Stata or pandas. <a href="index.html#research">What it will look like</a>.</p></div>
 <h2 id="bigger"><span class="stepno">Step 9</span>Bigger organizations</h2>
-<p>Two larger examples show how far the same few ideas go. <code>orchestrators_lite</code> is five engineers reviewing code with planted bugs, in rounds, one of them writing the report. All five share one model profile in <code>models/</code>, so changing the model there changes it for everyone.</p>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>Two larger examples show how far the same few ideas go. <code>orchestrators_lite</code> is five engineers reviewing code with planted bugs, in rounds, one of them writing the report. All five share one model profile in <code>models/</code>, so changing the model there changes it for everyone. Copy it into a team called <code>review</code>, read it back and rehearse it:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>review</code>, from <code>orchestrators_lite</code>; then <b class="ui">Flow diagram</b> and a rehearsal.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="review">teamrunner new review --from orchestrators_lite</code>
 <code class="cmd" data-run data-expect="emma">teamrunner explain review</code>
 <code class="cmd" data-run data-expect="completed">teamrunner run review --rehearse</code>
-<p><code>reference_check</code> checks every reference in a paper: that it exists, that its details are right, and that the cited paper says what the citing sentence claims. Seven members and three toolkeepers, which read the paper and look references up in public catalogues:</p>
+</div>
+<p><code>reference_check</code> checks every reference in a paper: that it exists, that its details are right, and that the cited paper says what the citing sentence claims. Seven members and three toolkeepers, which read the paper and look references up in public catalogues. Copy it into a team called <code>refs</code>, and give it a paper of your own, as a link or a PDF:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>refs</code>, from <code>reference_check</code>. Then <b class="ui">Run…</b>, choose <b class="ui">A file</b> under <b class="ui">What to give the team</b>, and pick your PDF.</p>
+</div>
+<div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="refs">teamrunner new refs --from reference_check</code>
 <code class="cmd" data-run data-expect="toolkeeper">teamrunner explain refs</code>
-<p>Give it a paper of your own, as a link or a PDF:</p>
 <code class="cmd" data-run="skip">teamrunner run refs --file my_paper.pdf</code>
+</div>
 <p>Rehearsing it may end early: the reader's answer, whether it could read the whole paper, is random in a rehearsal, and the team stops when it can't. That is the flow working.</p>
 <h2 id="next">Where to go next</h2>
 <ul><li><b>Start from the example closest to yours.</b> <a href="index.html#examples">All six</a>, with what each adds.</li><li><b>Read the reference.</b> Every file and every word a team may use is in the <a href="https://github.com/teamrunner/teamrunner#readme">documentation</a>. Unsure of a word? See the <a href="index.html#glossary">glossary</a>.</li><li><b>See what's coming,</b> and ask to hear when experiments arrive: <a href="index.html#coming">what's coming</a>.</li><li><b>Tell us what you found.</b> <a href="https://github.com/teamrunner/teamrunner/issues/new/choose">Open an issue</a>, or write to hello@teamrunner.ai.</li></ul>
 <div class="nextprev"><a href="index.html">← Home</a><a href="index.html#examples">The examples →</a></div>
 </main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  mark();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+    });
+  });
+})();
+</script>
 </body>
 </html>

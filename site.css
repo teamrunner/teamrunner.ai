@@ -268,3 +268,16 @@ details.yaml .panel{margin-top:10px}
 @media (max-width:880px){
   .trio,.ladder,.coming,.gloss{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Tutorial: each step in the browser or in a terminal (D137) */
+.via-switch{display:inline-flex;margin-top:18px;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--panel)}
+.via-switch span{font-family:var(--f-mono);font-size:.75rem;color:var(--ink-2);padding:7px 10px;border-right:1px solid var(--rule)}
+.via-switch button{font:inherit;font-size:var(--s1);background:none;border:0;padding:6px 12px;color:var(--ink-2);cursor:pointer}
+.via-switch button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:500}
+html[data-via="browser"] .via[data-via="terminal"],html[data-via="terminal"] .via[data-via="browser"]{display:none}
+.via{border-left:2px solid var(--rule);padding-left:14px;margin-top:14px}
+.via>:first-child{margin-top:0}
+.doc b.ui{font-weight:600;white-space:nowrap}
+.shot{margin:18px 0 0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--panel)}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{padding:8px 12px;border-top:1px solid var(--rule);font-size:var(--s1);color:var(--ink-2)}

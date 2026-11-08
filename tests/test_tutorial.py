@@ -9,6 +9,8 @@ Commands are <code class="cmd" data-run>: run there, and each must succeed; with
 data-expect="text", its output must also contain that text. data-run="skip" marks
 a command that costs money or opens a browser: shown on the page, not replayed.
 Every run is a rehearsal, so no model is called and no key is needed.
+The Browser version of each step names the page's buttons as <b class="ui">; each of
+those labels must appear in the installed `teamrunner ui`'s own files (D137 (6)).
 
     python tests/test_tutorial.py                 # the tutorial.html beside tests/
     python tests/test_tutorial.py path/to/tutorial.html
@@ -39,6 +41,8 @@ class Steps(html.parser.HTMLParser):
         self._open: tuple[str, str, str | None] | None = None
         self._text: list[str] = []
         self._edit: dict | None = None  # inside <div data-edit>: its path, lines, and the line open now
+        self.labels: list[str] = []  # <b class="ui"> labels: the page's buttons, by name
+        self._label: list[str] | None = None
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -46,7 +50,9 @@ class Steps(html.parser.HTMLParser):
             if tag == "div":
                 self._edit["line"] = [(a.get("class") or "x").split()[0], []]
             return
-        if tag == "div" and "data-edit" in a:
+        if tag == "b" and a.get("class") == "ui":
+            self._label = []
+        elif tag == "div" and "data-edit" in a:
             self._edit = {"path": a["data-edit"], "lines": [], "line": None}
         elif tag == "pre" and "data-file" in a:
             self._open, self._text = ("file", a["data-file"], None), []
@@ -54,12 +60,18 @@ class Steps(html.parser.HTMLParser):
             self._open, self._text = ("run", "", a.get("data-expect")), []
 
     def handle_data(self, data):
+        if self._label is not None:
+            self._label.append(data)
         if self._edit is not None and self._edit["line"] is not None:
             self._edit["line"][1].append(data)
         elif self._open:
             self._text.append(data)
 
     def handle_endtag(self, tag):
+        if tag == "b" and self._label is not None:
+            self.labels.append("".join(self._label))
+            self._label = None
+            return
         if self._edit is not None and tag == "div":
             e = self._edit
             if e["line"] is not None:  # a line of the diff ends
@@ -84,6 +96,32 @@ def teamrunner() -> list[str]:
     return [found] if found else [sys.executable, "-m", "teamrunner"]
 
 
+def ui_files() -> str | None:
+    """The text of the installed `teamrunner ui` page and scripts, from the Python that runs
+    `teamrunner` (this one, or the one named in the script's first line)."""
+    pythons = [sys.executable]
+    found = shutil.which("teamrunner")
+    if found:
+        try:
+            first = Path(found).read_text(encoding="utf-8", errors="replace").splitlines()[0]
+            if first.startswith("#!"):
+                pythons.insert(0, first[2:].strip())
+        except (OSError, IndexError):
+            pass
+    ask = ("import pathlib, teamrunner; print(pathlib.Path(teamrunner.__file__).parent "
+           "/ 'ui' / 'static')")
+    for python in pythons:
+        try:
+            done = subprocess.run([python, "-c", ask], capture_output=True, text=True, encoding="utf-8")
+        except OSError:
+            continue
+        static = Path(done.stdout.strip())
+        if done.returncode == 0 and static.is_dir():
+            return "\n".join(f.read_text(encoding="utf-8", errors="replace")
+                             for f in sorted(static.iterdir()) if f.suffix in (".html", ".js"))
+    return None
+
+
 def main() -> int:
     # Windows consoles default to a code page with no ✓ or ✗; print UTF-8 everywhere
     for stream in (sys.stdout, sys.stderr):
@@ -97,6 +135,16 @@ def main() -> int:
     if not files or not runs:
         print(f"{page}: no marked files or commands found")
         return 1
+
+    page_text = ui_files()
+    if page_text is None:
+        print("  ✗ could not find the installed teamrunner ui's files to check the button names")
+        return 1
+    missing = sorted({label for label in parser.labels if label not in page_text})
+    if missing:
+        print("  ✗ the tutorial names buttons teamrunner ui does not have: " + ", ".join(missing))
+        return 1
+    print(f"  ✓ {len(set(parser.labels))} button names on the page are in teamrunner ui")
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8", "NO_COLOR": "1"}
     with tempfile.TemporaryDirectory() as tmp:

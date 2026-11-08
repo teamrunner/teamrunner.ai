@@ -211,7 +211,7 @@ teamrunner runs share_first</pre>
           <div class="txt">
             <p class="label">Try it in 5 minutes</p>
             <h2>Rehearse a team first. No key, no cost.</h2>
-            <p>Install, copy an example, and rehearse it. A rehearsal runs the whole team with no model, so it is free and needs no account anywhere. You need only a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a>.</p>
+            <p>Install TeamRunner, open it in your browser, copy an example and rehearse it. A rehearsal runs the whole team with no model, so it is free and needs no account anywhere. You need a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> only to install TeamRunner and start it; the rest happens in your browser, on your own computer.</p>
             <p>The installer, uv, fetches the right version of Python on its own, so you don't need Python first.</p>
           </div>
           <div class="panel">
@@ -225,34 +225,39 @@ teamrunner runs share_first</pre>
               <ol>
                 <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”) and install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
                 <li>Close Terminal, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
+                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
               </ol>
             </div>
             <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
               <ol>
                 <li>Open <b>PowerShell</b> from the Start menu and install uv:<code class="cmd">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></li>
                 <li>Close PowerShell, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
+                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
               </ol>
             </div>
             <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
               <ol>
                 <li>In a terminal, install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
                 <li>Open a new terminal, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
+                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
               </ol>
             </div>
             <div class="tabpane" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>
               <ol>
                 <li>With Python 3.10 or later:<code class="cmd">pip install teamrunner</code></li>
-                <li>Copy an example team into a folder called <code>hello</code>:<code class="cmd">teamrunner new hello --from round_robin</code></li>
-                <li>Rehearse it. If you see <code>completed</code>, it works:<code class="cmd">teamrunner run hello --rehearse</code></li>
+                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
+                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
               </ol>
             </div>
-            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">what you see</span><span class="label">free</span></div>
+            <figure class="shot" style="margin:0;border-width:1px 0 0;border-radius:0"><img src="img/ui-home.png" alt="TeamRunner's page in a browser: the hello team's files on the left, an agent's instructions open in the editor" width="1240" height="780" loading="lazy"><figcaption>Your team's files, open in your browser. Same files, same TeamRunner.</figcaption></figure>
+            <div class="tabpane" style="border-top:1px solid var(--rule)">
+              <p style="margin:0;font-size:var(--s2)"><b>Or stay in the terminal.</b> The same two steps, as commands:</p>
+              <div><code class="cmd">teamrunner new hello --from round_robin</code><code class="cmd">teamrunner run hello --rehearse</code></div>
+            </div>
+            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">what you see in the terminal</span><span class="label">free</span></div>
 <pre style="color:var(--ink-2)">rehearsal · no model is called; the words are placeholders and the answers random
 for                                       0.0s   $0.0000
     “[rehearsal] placeholder words, turn 1.”
@@ -263,7 +268,7 @@ judge          winner = for               0.0s   $0.0000
 
 completed · 3 turns · 0.0s · ≈ $0.0000</pre>
             <div class="defects" style="font-size:var(--s2)">
-              <div style="grid-template-columns:minmax(0,1fr)"><span><b style="color:var(--ink);font-family:var(--f-body);font-weight:600">Ready for a real run?</b> Drop <code>--rehearse</code>. If the model needs a key you haven't given, TeamRunner stops before spending anything and says which key, and where to put it: <code>~/.teamrunner/.env</code>, a file in your home folder, never inside a team. One key is enough. The <a href="tutorial.html#first-run">tutorial</a> walks you through it.</span></div>
+              <div style="grid-template-columns:minmax(0,1fr)"><span><b style="color:var(--ink);font-family:var(--f-body);font-weight:600">Ready for a real run?</b> Untick <b>Rehearse</b>, or drop <code>--rehearse</code>. If the model needs a key you haven't given, TeamRunner stops before spending anything and says which key. In the browser, <b>Set up keys</b> saves it; in the terminal, put it in <code>~/.teamrunner/.env</code>, a file in your home folder, never inside a team. One key is enough. The <a href="tutorial.html#first-run">tutorial</a> walks you through it.</span></div>
             </div>
           </div>
         </div>
@@ -417,6 +422,7 @@ seed: 42</pre>
         <a href="https://github.com/teamrunner/teamrunner"><i>GitHub</i><b>Source code</b><span>The code, the examples and their licences</span></a>
         <a href="https://github.com/teamrunner/teamrunner/issues/new/choose"><i>GitHub</i><b>Questions and bugs</b><span>A short form for each, or write to hello@teamrunner.ai</span></a>
         <a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md"><i>GitHub</i><b>Security</b><span>Report a problem privately</span></a>
+        <div class="refcard"><i>your browser</i><b>TeamRunner's page</b><span>Type <code>teamrunner ui</code> in a team's folder: edit, validate, run and compare runs</span></div>
         <div class="refcard"><i>your terminal</i><b>Commands</b><span>Type <code>teamrunner --help</code>, or <code>--help</code> after any command</span></div>
       </div>
 
