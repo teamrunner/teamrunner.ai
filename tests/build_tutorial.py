@@ -136,7 +136,7 @@ parts.append('<h1>Nine steps, from a free rehearsal to your first experiment</h1
 parts.append('<p class="lede">Every step starts from a team that ships with TeamRunner and adds '
              'one idea. No code: each step is a few words changed in a text file, and a click or '
              'a command.</p>')
-aside('<p><b>Before you start,</b> <a href="index.html#install">install TeamRunner</a> (version '
+aside('<p><b>Before you start,</b> <a href="install.html">install TeamRunner</a> (version '
       '0.0.4 or later for the browser). Follow each step <b>in your browser</b>, on TeamRunner\'s '
       'own page, or <b>in a ' + TERMINAL + '</b> with any text editor: the switch at each step '
       'changes them all. The files you write are the same either way. Step 1 needs no key and '
@@ -488,7 +488,7 @@ with via("terminal"):
     run("teamrunner runs share_first", expect="decision")
 aside('<p><b>Coming soon: experiments.</b> One file will name both versions and how many runs '
       'of each, and TeamRunner will run them all and give you one CSV for R, Stata or pandas. '
-      '<a href="index.html#research">What it will look like</a>.</p>')
+      '<a href="index.html#coming">What it will look like</a>.</p>')
 
 # 9 ------------------------------------------------------------------------------------
 h2(9, "Bigger organizations", "bigger")
@@ -583,9 +583,10 @@ page = (head
       teamrunner
     </a>
     <nav aria-label="Main">
-      <a href="index.html#install">Try it</a>
+      <a href="index.html#why">Why</a>
+      <a href="install.html">Install</a>
       <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
-      <a href="index.html#examples">Examples</a>
+      <a href="index.html#examples">Example</a>
       <a href="index.html#coming">What’s coming</a>
       <a href="index.html#reference">Reference</a>
     </nav>

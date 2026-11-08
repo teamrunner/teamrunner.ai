@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TeamRunner — build a team of AI agents from text files</title>
-<meta name="description" content="Build a team of AI agents from text files. Change one line, run it again, and keep every prompt, reply and cost. Rehearse for free, with no key. For people who study organizations.">
+<meta name="description" content="Build a team of AI agents from text files. Experiment. Improve. Each agent is a plain-words file, a team is a folder, and one file says who speaks when. Rehearse for free, then run it and keep every prompt, reply and cost.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="TeamRunner">
-<meta property="og:description" content="Build a team of AI agents from text files. Change one line. Run it again.">
+<meta property="og:description" content="Build a team of AI agents from text files. Experiment. Improve.">
 <meta property="og:url" content="https://teamrunner.ai/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,9 +27,10 @@
       teamrunner
     </a>
     <nav aria-label="Main">
-      <a href="#install">Try it</a>
-      <a href="tutorial.html">Tutorial</a>
-      <a href="#examples">Examples</a>
+      <a href="#why">Why</a>
+      <a href="install.html">Install</a>
+      <a href="#tutorial">Tutorial</a>
+      <a href="#examples">Example</a>
       <a href="#coming">What’s coming</a>
       <a href="#reference">Reference</a>
     </nav>
@@ -41,100 +42,214 @@
 </header>
 
 <main id="top">
-  <div class="wrap hero">
-    <div>
-      <p class="label">Teams of AI agents, for people who study organizations</p>
-      <h1 style="margin-top:14px">Build a team of AI agents from <em>text files</em>. Change one line. Run it again.</h1>
-      <p class="lede">Each agent is a text file in plain words, and a team is a folder. No code and no framework to learn. Try the whole flow for free in a <a class="t" tabindex="0" data-tip="A run with no model: each agent says placeholder words and each answer is picked at random. It costs nothing, needs no key, and shows whether the flow goes where you meant.">rehearsal</a>, then run it for real and keep every prompt, reply and cost.</p>
-      <div class="hinstall">
-        <div class="tabs" role="tablist" aria-label="How to install">
-          <button role="tab" id="h-uv" aria-selected="true" aria-controls="hp-uv">With uv</button>
-          <button role="tab" id="h-py" aria-selected="false" aria-controls="hp-py">I have Python</button>
-        </div>
-        <div role="tabpanel" id="hp-uv" aria-labelledby="h-uv">
-          <div class="install"><code id="cmd-uv">uv tool install teamrunner</code><button class="copy" type="button" data-target="cmd-uv">Copy</button></div>
-          <p class="hint">No uv yet? It is one command, and it fetches Python for you. <a href="#install">Install steps for your system</a>.</p>
-        </div>
-        <div role="tabpanel" id="hp-py" aria-labelledby="h-py" hidden>
-          <div class="install"><code id="cmd-py">pip install teamrunner</code><button class="copy" type="button" data-target="cmd-py">Copy</button></div>
-          <p class="hint">Python 3.10 or later.</p>
-        </div>
-      </div>
+  <!-- 1 · Hero: what TeamRunner is, shown on a real example -->
+  <div class="wrap">
+    <div class="hero2">
+      <p class="label">Team engineering for AI agents</p>
+      <h1 style="margin-top:14px">Build a team of AI agents from <em>text files</em>. Experiment. Improve.</h1>
+      <p class="lede">Each agent is a text file of plain instructions. A team is a folder. One more file, the <a class="t" tabindex="0" data-tip="The file chair.md: the meeting's script, saying who speaks when. With no chair, members take one turn each, in name order.">chair</a>, says who speaks when. TeamRunner runs the team, keeps every word, decision and cost, and lets you change one line and run it again.</p>
       <div class="ctas">
-        <a class="btn primary" href="#install">Try it free in 5 minutes</a>
-        <a class="btn ghost" href="tutorial.html">Start the tutorial</a>
+        <a class="btn primary" href="install.html">Install in two commands</a>
+        <a class="btn ghost" href="#why">Why a team?</a>
       </div>
-      <p class="note">Mac, Windows and Linux. Works with OpenAI, Anthropic, Gemini, OpenRouter and free local models through Ollama.</p>
+      <p class="note">Mac, Windows and Linux. OpenAI, Anthropic, Gemini, OpenRouter, or free local models through Ollama. No code.</p>
     </div>
 
-    <div class="panel tree" aria-label="An example team folder">
-      <div class="cap"><span class="label">hiring_committee/</span><span class="label">a team</span></div>
-<pre><span class="d">hiring_committee/</span>
-├── team.yaml   <span class="c">← the job, and the packet everyone reads</span>
-├── chair.md    <span class="c">← how the meeting is run</span>
-├── chen.md     <span class="c">← a member, written in plain words</span>
-├── diaz.md     <span class="c">← each knows something the others don't</span>
-├── okafor.md
-├── clerk.md    <span class="c">← records the decision</span>
-├── <span class="d">models/</span>
-│   └── member.yaml  <span class="c">← one model for the whole committee</span>
-└── <span class="d">runs/</span>       <span class="c">← every run, kept here</span></pre>
+    <div class="demo-head">
+      <p class="label">Eight text files → a running team <span class="soon">example: fact_checked</span></p>
+      <p>Two debaters, a fact checker that can send a speech back, and a judge who reads sources before ruling. Open any file. Point at a line of <code>chair.md</code> to see its part of the flow, or rehearse the whole team right here.</p>
+    </div>
+    <div class="demo" id="demo">
+      <div class="col">
+        <div class="cap"><span class="label">fact_checked/</span></div>
+        <ul class="files" role="tablist" aria-label="Files in the team" id="files"></ul>
+      </div>
+      <div class="col viewer">
+        <div class="cap"><span class="label" id="vname">chair.md</span><span class="label" id="vkind">who speaks when</span></div>
+<pre id="view" aria-live="polite"><span class="cm"># Three rounds. Each speech is fact-checked;
+# a failed speech gets two more tries.
+# Then the judge checks sources and rules.</span>
+
+<span class="cl" data-k="R ePass2 JR eJR JW eJW JV">rounds(*3) -> judge:research -> web -> judge:verdict</span>
+
+<span class="cl" data-k="FT AT ePass1">rounds = for_turn -> against_turn</span>
+
+<span class="cl" data-k="F eF FC1">for_turn = for -> fact_checker</span>
+<span class="cl" data-k="FC1 eFail1 F">           fact_checker --fail--> for</span>
+<span class="cl" data-k="FC1 ePass1">           fact_checker --pass,*3--> done</span>
+
+<span class="cl" data-k="A eA FC2">against_turn = against -> fact_checker</span>
+<span class="cl" data-k="FC2 eFail2 A">           fact_checker --fail--> against</span>
+<span class="cl" data-k="FC2 ePass2">           fact_checker --pass,*3--> done</span></pre>
+      </div>
+      <div class="col">
+        <div class="cap"><span class="label">the flow, drawn from chair.md</span></div>
+        <svg class="fx" id="fx" viewBox="0 0 380 600" role="img" aria-label="The flow: three rounds; in each, for speaks and the fact checker passes or fails the speech, up to three tries, then against does the same. Then the judge researches, the web toolkeeper reads a source, and the judge gives a verdict. The fact checker may also ask the web and sandbox toolkeepers on its own.">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker>
+          </defs>
+          <g class="grp" id="R"><rect x="10" y="8" width="252" height="372" rx="10"/><text class="gl" id="rlab" x="22" y="27">rounds, 3 times</text></g>
+          <g class="grp" id="FT"><rect x="24" y="36" width="224" height="158" rx="8"/><text class="gl" x="34" y="53">for_turn</text></g>
+          <g class="grp" id="AT"><rect x="24" y="204" width="224" height="158" rx="8"/><text class="gl" x="34" y="221">against_turn</text></g>
+
+          <g class="nd" id="F"><rect x="96" y="62" width="124" height="30" rx="4"/><text x="158" y="82" text-anchor="middle">for</text></g>
+          <path class="e" id="eF" d="M158 92 V120"/>
+          <g class="nd dec" id="FC1"><rect x="96" y="122" width="124" height="30" rx="4"/><text x="158" y="142" text-anchor="middle">fact_checker</text></g>
+          <path class="e" id="eFail1" d="M96 137 C 62 137, 62 77, 94 77"/>
+          <text class="gl" x="46" y="111" text-anchor="middle">fail</text>
+          <path class="e" id="ePass1" d="M158 152 V228"/>
+          <text class="gl" x="166" y="176">pass</text>
+
+          <g class="nd" id="A"><rect x="96" y="230" width="124" height="30" rx="4"/><text x="158" y="250" text-anchor="middle">against</text></g>
+          <path class="e" id="eA" d="M158 260 V288"/>
+          <g class="nd dec" id="FC2"><rect x="96" y="290" width="124" height="30" rx="4"/><text x="158" y="310" text-anchor="middle">fact_checker</text></g>
+          <path class="e" id="eFail2" d="M96 305 C 62 305, 62 245, 94 245"/>
+          <text class="gl" x="46" y="279" text-anchor="middle">fail</text>
+          <path class="e" id="ePass2" d="M158 320 V410"/>
+          <text class="gl" x="166" y="344">pass</text>
+
+          <g class="nd" id="JR"><rect x="96" y="412" width="124" height="30" rx="4"/><text x="158" y="432" text-anchor="middle">judge:research</text></g>
+          <path class="e" id="eJR" d="M158 442 V470"/>
+          <g class="nd tk" id="JW"><rect x="96" y="472" width="124" height="30" rx="15"/><text x="158" y="492" text-anchor="middle">web</text></g>
+          <text class="gl" x="228" y="491">toolkeeper</text>
+          <path class="e" id="eJW" d="M158 502 V530"/>
+          <g class="nd dec" id="JV"><rect x="86" y="532" width="144" height="32" rx="4"/><text x="158" y="553" text-anchor="middle">judge:verdict</text></g>
+          <text class="gl" x="158" y="584" text-anchor="middle">answers winner: for or against</text>
+
+          <text class="gl" x="322" y="100" text-anchor="middle">side trips</text>
+          <g class="nd tk" id="TW"><rect x="284" y="120" width="76" height="28" rx="14"/><text x="322" y="139" text-anchor="middle">web</text></g>
+          <g class="nd tk" id="TS"><rect x="284" y="236" width="76" height="28" rx="14"/><text x="322" y="255" text-anchor="middle">sandbox</text></g>
+          <path class="side" id="s1" d="M220 136 L284 134"/>
+          <path class="side" id="s2" d="M220 140 L284 248"/>
+          <path class="side" id="s3" d="M220 302 L284 138"/>
+          <path class="side" id="s4" d="M220 306 L284 252"/>
+          <text class="gl" x="322" y="286" text-anchor="middle">fact_checker only,</text>
+          <text class="gl" x="322" y="300" text-anchor="middle">when it chooses</text>
+        </svg>
+      </div>
+      <div class="bar">
+        <button class="btn primary" type="button" id="play">▶ Rehearse it</button>
+        <pre class="log" id="log" aria-live="polite">A rehearsal runs the whole team with no model: placeholder words, random
+answers, real decisions and loops. Free, and it needs no key.
+In your terminal it is one line:  teamrunner run fact_checked --rehearse</pre>
+      </div>
     </div>
   </div>
 
-  <section class="band" id="describe">
+  <!-- 2 · Why -->
+  <section class="band" id="why">
     <div class="wrap">
       <div class="intro">
-        <p class="label">Start from a sentence</p>
-        <h2>Describe your team in a sentence, and TeamRunner writes the files</h2>
-        <p>Say who is on the team and how they work together. A model writes the files, TeamRunner checks them and has any mistakes fixed, then shows you the team and draws its flow. Every file is plain text you can read and change.</p>
+        <p class="label">Why a team, and not one big prompt?</p>
+        <h2>For the same reasons organizations don’t hire one person to do everything</h2>
+        <p>A single agent with every instruction, every tool and every document piles it all into one prompt. Splitting the work across agents lets you give each one a narrow job, the right model, only the tools it needs, and a place in a flow you can read. Each reason below comes with the organizational idea it borrows and the research behind it.</p>
       </div>
-      <div class="trio">
-        <div class="panel">
-          <div class="cap"><span class="label">1 · you write</span></div>
-          <p class="say">“A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go.”</p>
-          <div class="foot"><code>teamrunner new launch --describe "…"</code></div>
-        </div>
-        <div class="panel tree">
-          <div class="cap"><span class="label">2 · it writes</span></div>
-<pre><span class="d">launch/</span>
-├── team.yaml   <span class="c">← the feature</span>
-├── chair.md    <span class="c">← who speaks when</span>
-├── pm.md
-├── engineer.md
-├── designer.md
-└── ceo.md      <span class="c">← decides</span></pre>
-          <div class="foot">Open any file and change the words.</div>
-        </div>
-        <div class="panel">
-          <div class="cap"><span class="label">3 · it draws</span></div>
-          <svg class="flow" viewBox="0 0 240 304" role="img" aria-label="The flow: pm, then twice engineer, designer and pm, then the ceo decides">
-            <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>
-            <g class="node"><rect x="60" y="8" width="120" height="30" rx="4"/><text x="120" y="28" text-anchor="middle">pm</text></g>
-            <path class="edge" d="M120 38 V60"/>
-            <rect class="group" x="28" y="62" width="184" height="168" rx="8"/>
-            <text class="gl" x="40" y="80">pushback, 2 times</text>
-            <g class="node"><rect x="60" y="90" width="120" height="30" rx="4"/><text x="120" y="110" text-anchor="middle">engineer</text></g>
-            <path class="edge" d="M120 120 V138"/>
-            <g class="node"><rect x="60" y="140" width="120" height="30" rx="4"/><text x="120" y="160" text-anchor="middle">designer</text></g>
-            <path class="edge" d="M120 170 V188"/>
-            <g class="node"><rect x="60" y="190" width="120" height="30" rx="4"/><text x="120" y="210" text-anchor="middle">pm</text></g>
-            <path class="edge" d="M120 230 V256"/>
-            <g class="node decide"><rect x="50" y="258" width="140" height="34" rx="4"/><text x="120" y="280" text-anchor="middle">ceo · go / no_go</text></g>
-          </svg>
-          <div class="foot"><code>teamrunner explain launch --diagram</code></div>
-        </div>
+      <div class="whys">
+        <article>
+          <p class="no">01</p>
+          <h3>One job per agent</h3>
+          <p class="org">A job description, not “other duties as assigned”</p>
+          <p>Each agent’s file holds one objective in plain words. A fact checker that only checks facts can’t drift into arguing, and its instructions are short enough to read, test and fix on their own.</p>
+          <p class="src">Anthropic’s research agent splits work across subagents with “clearly divided responsibilities”: <a href="https://www.anthropic.com/engineering/multi-agent-research-system">How we built our multi-agent research system</a>, 2025.</p>
+        </article>
+        <article>
+          <p class="no">02</p>
+          <h3>Smaller contexts, steadier behaviour</h3>
+          <p class="org">A briefing, not the whole archive</p>
+          <p>Models get less reliable as their input grows, even on simple tasks, and miss what sits in the middle of a long prompt. In a team each agent carries only its own instructions, and a tool’s answer goes only to whoever asked: a 20,000-character web page the fact checker reads never lands in the debaters’ prompts.</p>
+          <p class="src"><a href="https://trychroma.com/research/context-rot">Context Rot</a>, Chroma, 2025, 18 models; <a href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a>, Liu et al., 2023.</p>
+        </article>
+        <article>
+          <p class="no">03</p>
+          <h3>The right model for each job</h3>
+          <p class="org">You don’t staff every desk with a senior partner</p>
+          <p>The team names one model in <code>team.yaml</code>, and any agent can name its own with a <code>model:</code> line. Put the judge on a strong model and the drafters on a cheap or free local one, or mix providers in one team.</p>
+          <p class="src">Sending only the hard calls to the strong model cut cost by over 2× with little loss in quality: <a href="https://arxiv.org/abs/2406.18665">RouteLLM</a>, Ong et al., 2024.</p>
+        </article>
+        <article>
+          <p class="no">04</p>
+          <h3>Costs you can see, and bound</h3>
+          <p class="org">A budget line for each department</p>
+          <p>Every turn records its tokens and cost, by agent. Every loop must carry a count, so a run always ends. A toolkeeper caps calls per turn. A missing key stops the run before anything is spent, and a rehearsal costs nothing at all.</p>
+          <p class="src">Teams of agents can burn through tokens fast, and token use alone explained 80% of the variance in Anthropic’s results, so measure it: <a href="https://www.anthropic.com/engineering/multi-agent-research-system">Anthropic</a>, 2025.</p>
+        </article>
+        <article>
+          <p class="no">05</p>
+          <h3>Guardrails where the tools are</h3>
+          <p class="org">The tool crib, not a power drill on every desk</p>
+          <p>Agents never hold tools. A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> does, with a plain access list: who may use it, how often, with what limits. The sandbox runs Python with no internet. TeamRunner enforces the terms, not the agent’s good behaviour.</p>
+          <p class="src">Least privilege for agents is the standard fix for “excessive agency”: <a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">OWASP Top 10 for LLM Applications, LLM06</a>, 2025.</p>
+        </article>
+        <article>
+          <p class="no">06</p>
+          <h3>A flow you can read, control and change</h3>
+          <p class="org">The meeting rules, written down</p>
+          <p>Who acts next is a script in <code>chair.md</code>, drawn as a diagram. Decisions are typed answers, like <code>pass</code> or <code>fail</code>, and there are no hidden if-statements. To change how the team works, you change a line.</p>
+          <p class="src">Most failures of multi-agent systems trace to how the system is designed, specs and hand-offs, not only to the model: <a href="https://arxiv.org/abs/2503.13657">Why Do Multi-Agent LLM Systems Fail?</a>, Cemri et al., NeurIPS 2025.</p>
+        </article>
+        <article>
+          <p class="no">07</p>
+          <h3>Checks and balances</h3>
+          <p class="org">Separation of duties: the writer isn’t the editor</p>
+          <p>The agent that makes a claim isn’t the one that checks it. A fact checker can send a speech back; a judge hears both sides and the checker’s verdicts before ruling.</p>
+          <p class="src">Models that debate and check each other got more factual and reasoned better: <a href="https://arxiv.org/abs/2305.14325">Improving Factuality and Reasoning through Multiagent Debate</a>, Du et al., 2023.</p>
+        </article>
+        <article>
+          <p class="no">08</p>
+          <h3>Information where it belongs</h3>
+          <p class="org">Need to know</p>
+          <p>A fact can live in one member’s own file, so only that member knows it until they choose to share it. That is how the hiring committee below works. Sealing whole conversations from some members is <a href="#coming">coming next</a>.</p>
+          <p class="src">The classic hidden-profile study of groups: Stasser &amp; Titus, 1985.</p>
+        </article>
+        <article>
+          <p class="no">09</p>
+          <h3>Every step on the record</h3>
+          <p class="org">Minutes for every meeting</p>
+          <p>Each run keeps its own folder on your disk: every prompt and reply, every decision about who acts next, every tool call, the model that answered, tokens, time and cost. Compare two runs side by side. No agent can read or change the record.</p>
+          <p class="src">You can only fix a hand-off you can see. Plain files, no dashboard to log in to.</p>
+        </article>
+        <article>
+          <p class="no">10</p>
+          <h3>Improve by experiment, not by hunch</h3>
+          <p class="org">Pilot it, then make it policy</p>
+          <p>A team isn’t automatically better than one agent; studies find the gains are often small. So treat the structure as a hypothesis: change one line, rehearse for free, run both versions a few times, and compare.</p>
+          <p class="src">Gains over single agents “often remain minimal” on popular benchmarks: <a href="https://arxiv.org/abs/2503.13657">Cemri et al.</a>, 2025. That is the case for testing.</p>
+        </article>
       </div>
-      <p style="margin-top:18px;color:var(--ink-2);font-size:var(--s2)">Writing the team calls a model, so it needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider (OpenAI, Anthropic, OpenRouter…) that lets TeamRunner use its models. The provider bills you for what you use, usually a fraction of a cent a run.">API key</a> and costs a cent or two. Rehearsing the team it wrote is free.</p>
     </div>
   </section>
 
+  <!-- 3 · Tutorial ladder, starting with install -->
+  <section class="band" id="tutorial">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Tutorial</p>
+        <h2>Install, then nine steps, each on a team that ships with TeamRunner</h2>
+        <p>Each step starts from a working example and adds one idea. Follow it in your browser or in a terminal. Every step can be rehearsed for free before you spend anything; a real run costs a fraction of a cent.</p>
+      </div>
+      <ol class="ladder">
+        <li class="start"><a href="install.html"><span class="no">0</span><b>Install<span class="free">two commands</span></b><span>uv, then TeamRunner. Mac, Windows or Linux; you don’t need Python first. Ends with a free rehearsal to check it works.</span></a></li>
+        <li><a href="tutorial.html#rehearse"><span class="no">1</span><b>Rehearse<span class="free">free</span></b><span>Copy <code>round_robin</code> and run it with no model.</span></a></li>
+        <li><a href="tutorial.html#first-run"><span class="no">2</span><b>Your first real run</b><span>Add a key, give it your own topic, open what it kept.</span></a></li>
+        <li><a href="tutorial.html#prose"><span class="no">3</span><b>Edit the words</b><span>Make the critic aggressive, run again, compare the two runs.</span></a></li>
+        <li><a href="tutorial.html#flow"><span class="no">4</span><b>Take control of the flow</b><span>Add a chair and rounds, and see the flow drawn.</span></a></li>
+        <li><a href="tutorial.html#decisions"><span class="no">5</span><b>Typed answers and decisions</b><span>The judge’s winner, then a fact checker that sends a speech back.</span></a></li>
+        <li><a href="tutorial.html#tools"><span class="no">6</span><b>Tools</b><span>Reading the web, through a toolkeeper, on terms you set.</span></a></li>
+        <li><a href="tutorial.html#private"><span class="no">7</span><b>Private information</b><span>The hiring committee: facts only one member knows.</span></a></li>
+        <li><a href="tutorial.html#experiment"><span class="no">8</span><b>A first experiment, by hand</b><span>Open discussion vs. share first, five runs each, and a tally.</span></a></li>
+        <li><a href="tutorial.html#bigger"><span class="no">9</span><b>Bigger organizations</b><span>A code review by five engineers, and a reference checker.</span></a></li>
+      </ol>
+      <p class="aside-line">Rather not write files at all? Describe the team in a sentence and a model writes them for you: <code>teamrunner new launch --describe "a PM pitches, an engineer and a designer push back twice, the CEO decides"</code>. It checks its own work and draws the flow.</p>
+    </div>
+  </section>
+
+  <!-- 4 · The big example -->
   <section class="band" id="examples">
     <div class="wrap">
       <div class="intro">
-        <p class="label">A question from the study of groups</p>
-        <p class="q">When the key facts are spread across a committee, does it pick the best candidate?</p>
-        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents does the same, and what fixes it. It ships as an example, so you can run it today.</p>
+        <p class="label">The big example · <code style="text-transform:none">hiring_committee</code></p>
+        <h2 class="hook">Every fact the committee needs is in the room. <em>Does it find them?</em></h2>
+        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents falls into the same trap, and what gets it out. It ships as an example, so you can run it today.</p>
       </div>
 
       <div class="steps">
@@ -142,7 +257,7 @@
           <div class="txt">
             <span class="stepno">The task</span>
             <h3>Three members, three candidates, and facts no one person has</h3>
-            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don't, written into that member's own file.</p>
+            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don’t, written into that member’s own file.</p>
             <p>Alone, each member would still choose Avery. With all six facts on the table, Blake is the clear choice.</p>
           </div>
           <div class="panel">
@@ -152,7 +267,7 @@
               <div class="cand"><b>Blake</b><span>6 years, at one food bank · promoted twice · never managed more than $3M · halting interview</span></div>
               <div class="cand"><b>Casey</b><span>9 years in retail logistics · bilingual · no nonprofit experience</span></div>
             </div>
-            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">What only one member knows</span><span class="label">each member's own file</span></div>
+            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">What only one member knows</span><span class="label">each member’s own file</span></div>
             <div class="private">
               <div><p class="who">chen.md <i>reference calls</i></p><p><span class="neg">Avery</span> Former manager would not say whether they would rehire.</p><p><span class="pos">Blake</span> “The best operations person I have worked with.”</p></div>
               <div><p class="who">diaz.md <i>finance office</i></p><p><span class="neg">Avery</span> Part of one under-budget year came from a one-time grant.</p><p><span class="pos">Blake</span> Cost per meal delivered fell 18% in two years.</p></div>
@@ -165,7 +280,7 @@
           <div class="txt">
             <span class="stepno">The change</span>
             <h3>Change how the meeting is run: swap one line for another</h3>
-            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>, the team's <a class="t" tabindex="0" data-tip="The file chair.md: the meeting's script, saying who speaks when. With no chair, members take one turn each, in name order.">chair</a>. Both versions are already written there. Put a <code>#</code> in front of one and take it off the other. Nothing else changes.</p>
+            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>. Both versions are already written there. Put a <code>#</code> in front of one and take it off the other. Nothing else changes.</p>
           </div>
           <div class="panel">
             <div class="cap"><span class="label">chair.md</span><span class="label">open discussion → share first</span></div>
@@ -186,8 +301,8 @@
           <div class="txt">
             <span class="stepno">The run</span>
             <h3>Run both versions, a few times each, and compare</h3>
-            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. Models are random, so run each version more than once; <code>teamrunner runs</code> lists every run with the committee's decision.</p>
-            <p>Running each version 25 times and getting one table is <a href="#research">coming soon</a>.</p>
+            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. Models are random, so run each version more than once; <code>teamrunner runs</code> lists every run with the committee’s decision.</p>
+            <p>Running each version 25 times and getting one table is <a href="#coming">coming soon</a>. <a href="tutorial.html#experiment">Tutorial step 8</a> does it by hand today.</p>
           </div>
           <div class="panel">
             <div class="cap"><span class="label">in your terminal</span><span class="label">works today</span></div>
@@ -201,100 +316,6 @@ teamrunner runs share_first</pre>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="band" id="install">
-    <div class="wrap">
-      <div class="steps" style="margin-top:0">
-        <div class="step">
-          <div class="txt">
-            <p class="label">Try it in 5 minutes</p>
-            <h2>Rehearse a team first. No key, no cost.</h2>
-            <p>Install TeamRunner, open it in your browser, copy an example and rehearse it. A rehearsal runs the whole team with no model, so it is free and needs no account anywhere. You need a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> only to install TeamRunner and start it; the rest happens in your browser, on your own computer.</p>
-            <p>The installer, uv, fetches the right version of Python on its own, so you don't need Python first.</p>
-          </div>
-          <div class="panel">
-            <div class="tabs" role="tablist" aria-label="Operating system">
-              <button role="tab" id="t-mac" aria-selected="true" aria-controls="p-mac">macOS</button>
-              <button role="tab" id="t-win" aria-selected="false" aria-controls="p-win">Windows</button>
-              <button role="tab" id="t-lin" aria-selected="false" aria-controls="p-lin">Linux</button>
-              <button role="tab" id="t-py" aria-selected="false" aria-controls="p-py">I have Python</button>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-mac" aria-labelledby="t-mac">
-              <ol>
-                <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”) and install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
-                <li>Close Terminal, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
-                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
-              <ol>
-                <li>Open <b>PowerShell</b> from the Start menu and install uv:<code class="cmd">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></li>
-                <li>Close PowerShell, open it again, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
-                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
-              <ol>
-                <li>In a terminal, install uv:<code class="cmd">curl -LsSf https://astral.sh/uv/install.sh | sh</code></li>
-                <li>Open a new terminal, then install TeamRunner:<code class="cmd">uv tool install teamrunner</code></li>
-                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
-                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
-              </ol>
-            </div>
-            <div class="tabpane" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>
-              <ol>
-                <li>With Python 3.10 or later:<code class="cmd">pip install teamrunner</code></li>
-                <li>Open TeamRunner in your browser:<code class="cmd">teamrunner ui</code></li>
-                <li>Choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>. If it says <code>completed</code>, it works.</li>
-              </ol>
-            </div>
-            <figure class="shot" style="margin:0;border-width:1px 0 0;border-radius:0"><img src="img/ui-home.png" alt="TeamRunner's page in a browser: the hello team's files on the left, an agent's instructions open in the editor" width="1240" height="780" loading="lazy"><figcaption>Your team's files, open in your browser. Same files, same TeamRunner.</figcaption></figure>
-            <div class="tabpane" style="border-top:1px solid var(--rule)">
-              <p style="margin:0;font-size:var(--s2)"><b>Or stay in the terminal.</b> The same two steps, as commands:</p>
-              <div><code class="cmd">teamrunner new hello --from round_robin</code><code class="cmd">teamrunner run hello --rehearse</code></div>
-            </div>
-            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">what you see in the terminal</span><span class="label">free</span></div>
-<pre style="color:var(--ink-2)">rehearsal · no model is called; the words are placeholders and the answers random
-for                                       0.0s   $0.0000
-    “[rehearsal] placeholder words, turn 1.”
-against                                   0.0s   $0.0000
-    “[rehearsal] placeholder words, turn 2.”
-judge          winner = for               0.0s   $0.0000
-    “[rehearsal] placeholder words, turn 3.”
-
-completed · 3 turns · 0.0s · ≈ $0.0000</pre>
-            <div class="defects" style="font-size:var(--s2)">
-              <div style="grid-template-columns:minmax(0,1fr)"><span><b style="color:var(--ink);font-family:var(--f-body);font-weight:600">Ready for a real run?</b> Untick <b>Rehearse</b>, or drop <code>--rehearse</code>. If the model needs a key you haven't given, TeamRunner stops before spending anything and says which key. In the browser, <b>Set up keys</b> saves it; in the terminal, put it in <code>~/.teamrunner/.env</code>, a file in your home folder, never inside a team. One key is enough. The <a href="tutorial.html#first-run">tutorial</a> walks you through it.</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="tutorial">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">Tutorial</p>
-        <h2>Nine steps, each on a team that ships with TeamRunner</h2>
-        <p>Each step starts from a working example and adds one idea. The first is free; after that, every step can still be rehearsed for free before you spend anything.</p>
-      </div>
-      <ol class="ladder">
-        <li><a href="tutorial.html#rehearse"><span class="no">1</span><b>Rehearse<span class="free">free</span></b><span>Copy <code>round_robin</code> and run it with no model.</span></a></li>
-        <li><a href="tutorial.html#first-run"><span class="no">2</span><b>Your first real run</b><span>Add a key, give it your own topic, open what it kept.</span></a></li>
-        <li><a href="tutorial.html#prose"><span class="no">3</span><b>Edit the words</b><span>Make the critic aggressive, run again, compare the two runs.</span></a></li>
-        <li><a href="tutorial.html#flow"><span class="no">4</span><b>Take control of the flow</b><span>Add a chair and rounds, and see the flow drawn.</span></a></li>
-        <li><a href="tutorial.html#decisions"><span class="no">5</span><b>Typed answers and decisions</b><span>The judge’s winner, then a fact checker that sends a speech back.</span></a></li>
-        <li><a href="tutorial.html#tools"><span class="no">6</span><b>Tools</b><span>Reading the web, through a toolkeeper, on terms you set.</span></a></li>
-        <li><a href="tutorial.html#private"><span class="no">7</span><b>Private information</b><span>The hiring committee: facts only one member knows.</span></a></li>
-        <li><a href="tutorial.html#experiment"><span class="no">8</span><b>A first experiment, by hand</b><span>Open discussion vs. share first, five runs each, and a tally.</span></a></li>
-        <li><a href="tutorial.html#bigger"><span class="no">9</span><b>Bigger organizations</b><span>A code review by five engineers, and a reference checker.</span></a></li>
-      </ol>
-      <p style="margin-top:24px"><a class="btn primary" href="tutorial.html">Start the tutorial</a></p>
 
       <div class="intro" style="margin-top:72px">
         <p class="label">All six examples</p>
@@ -304,7 +325,7 @@ completed · 3 turns · 0.0s · ≈ $0.0000</pre>
       <div class="exlist">
         <div class="ex"><code>round_robin</code><p>The simplest team: three members and no chair, one turn each in name order, and a typed verdict.</p></div>
         <div class="ex"><code>multi_agent_debate</code><p>A chair: the debate as a script, with a repeated block of rounds.</p></div>
-        <div class="ex"><code>fact_checked</code><p>The debate with a fact checker that reads the web, and a Python sandbox to check the sums.</p></div>
+        <div class="ex"><code>fact_checked</code><p>The debate at the top of this page: a fact checker that reads the web, and a Python sandbox to check the sums.</p></div>
         <div class="ex"><code>hiring_committee</code><p>The committee above: facts only one member knows, kept in that member’s own file.</p></div>
         <div class="ex"><code>orchestrators_lite</code><p>Five engineers review code against planted bugs, sharing one model profile.</p></div>
         <div class="ex"><code>reference_check</code><p>Checks every reference in a paper: that it exists, that its details are right, and that it says what the citing sentence claims.</p></div>
@@ -312,58 +333,22 @@ completed · 3 turns · 0.0s · ≈ $0.0000</pre>
     </div>
   </section>
 
-  <section class="band" id="concepts">
+  <!-- 5 · What's coming -->
+  <section class="band" id="coming">
     <div class="wrap">
       <div class="intro">
-        <p class="label">Concepts</p>
-        <h2>Five ideas cover the whole format</h2>
+        <p class="label">What’s coming</p>
+        <h2>Planning a study? Here is what comes next</h2>
+        <p>Nothing on this list is in TeamRunner yet, and none of it is in the tutorial. What you build today keeps working as these arrive.</p>
       </div>
-      <div class="ideas">
-        <div class="idea"><h3>An agent is a Markdown file</h3><p>Settings at the top, between two <code style="border:0;padding:0;background:none">---</code> lines (the <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent's file: a description, which model, what answer it must give.">frontmatter</a>), and below them the agent’s instructions in plain words. Edit it in any text editor.</p><code>judge.md</code></div>
-        <div class="idea"><h3>A folder is a team</h3><p>Any folder with a <code style="border:0;padding:0;background:none">team.yaml</code> is a team, and the file browser is the org chart. <a class="t" tabindex="0" data-tip="A plain-text format for settings: one “name: value” per line, with indents for things inside things. team.yaml is a YAML file.">YAML</a> is just settings, one per line.</p><code>team.yaml</code></div>
-        <div class="idea"><h3>Every team has a chair</h3><p>Someone always decides who speaks next: the script in <code style="border:0;padding:0;background:none">chair.md</code>, or, with no chair file, members in name order. Every decision is logged.</p><code>chair.md</code></div>
-        <div class="idea"><h3>Tools sit with a toolkeeper</h3><p>A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> holds a tool, such as reading the web, and decides who may use it, on what terms. Agents never hold tools themselves.</p><code>web.md</code></div>
-        <div class="idea"><h3>Every run is kept</h3><p>Each run gets its own folder on your disk with everything that happened, so two runs can be compared line by line.</p><code>runs/</code></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="runs">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">What every run keeps</p>
-        <h2>A run folder is a full record, on your own disk</h2>
-        <p>Plain files you can open and compare. No dashboard you have to log in to, and no agent can read or change the record.</p>
-      </div>
-      <div class="runs">
-        <div class="panel tree">
-          <div class="cap"><span class="label">runs/2026-10-12_143201_debate/</span></div>
-<pre><span class="d">runs/2026-10-12_143201_debate/</span>
-├── output.md     <span class="c">← what the team produced: open this first</span>
-├── run.json      <span class="c">← when, what, versions, cost</span>
-├── events.jsonl  <span class="c">← every turn, one line each</span>
-├── <span class="d">inputs/</span>       <span class="c">← copies of files it was given</span>
-└── <span class="d">work/</span>         <span class="c">← what its code wrote</span></pre>
-        </div>
-        <dl>
-          <div><dt>Every prompt and every reply</dt><dd>Exactly what each agent could read, what it said, which model answered, tokens, cost and time.</dd></div>
-          <div><dt>Every decision about who acts next</dt><dd>Who made it and why. There are no hidden if-statements.</dd></div>
-          <div><dt>Every tool call</dt><dd>Who asked, whether the toolkeeper said yes, and what came back.</dd></div>
-          <div><dt>The exact version that ran</dt><dd>Your 2026 study can be rerun in 2028. Put the team folder in <a class="t" tabindex="0" data-tip="Version control: it keeps every saved version of a folder, so you can go back, see what changed, or share it on GitHub.">git</a> or zip it, and it is a replication package.</dd></div>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="research">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">Built for research <span class="soon">Coming soon</span></p>
-        <h2>Describe both versions in one file, run each 25 times, get one CSV</h2>
-        <p>One run is an anecdote, because models are random. Soon an experiment file will sit beside your team, name the versions to compare, and say how many <a class="t" tabindex="0" data-tip="How many times each version is run. 25 replications of two versions is 50 runs in all.">replications</a> of each to run, with one <a class="t" tabindex="0" data-tip="A number that fixes the random choices TeamRunner makes, such as the order of runs, so the same seed gives the same plan.">seed</a>. Each version is a <a class="t" tabindex="0" data-tip="A small change applied to a copy of the team for one version, leaving the team itself as it was.">patch</a>, and the file is an <a class="t" tabindex="0" data-tip="A file that sits outside a team and changes it for one study, without editing the team.">overlay</a>: your team stays clean and runnable. You get one CSV for R, Stata or pandas.</p>
+      <div class="coming">
+        <div id="research"><h3>Designed experiments</h3><p>One file names the versions to compare and how many runs of each. TeamRunner runs them all, seeded, and gives you one CSV for R, Stata or pandas.</p></div>
+        <div><h3>Who sees what</h3><p>Seal reviewers from each other, or pass work along a chain where each person hears only the one before. One line each, in a whiteboard file.</p></div>
+        <div><h3>Managers</h3><p>An AI that runs the meeting and decides who speaks next, in place of a fixed script, so script vs. judgment can itself be compared.</p></div>
+        <div><h3>Subteams</h3><p>A folder inside a folder: a subcommittee that deliberates on its own and reports back, so the org chart is the directory tree.</p></div>
       </div>
       <details class="yaml">
-        <summary>Show the experiment file</summary>
+        <summary>Show what an experiment file will look like</summary>
         <div class="panel">
           <div class="cap"><span class="label">experiment.yaml</span><span class="label">coming soon</span></div>
 <pre>base: ../hiring_committee
@@ -377,23 +362,6 @@ replications: 25      # 25 runs of each version, 50 in all
 seed: 42</pre>
         </div>
       </details>
-      <p style="margin-top:18px;color:var(--ink-2);font-size:var(--s2)">Until then, <a href="tutorial.html#experiment">step 8 of the tutorial</a> runs the same comparison by hand.</p>
-    </div>
-  </section>
-
-  <section class="band" id="coming">
-    <div class="wrap">
-      <div class="intro">
-        <p class="label">What’s coming</p>
-        <h2>Planning a study? Here is what comes next</h2>
-        <p>Nothing on this list is in TeamRunner yet, and none of it is in the tutorial. What you build today keeps working as these arrive.</p>
-      </div>
-      <div class="coming">
-        <div><h3>Designed experiments</h3><p>One file names the versions to compare and how many runs of each. TeamRunner runs them all, seeded, and gives you one CSV.</p></div>
-        <div><h3>Who sees what</h3><p>Seal reviewers from each other, or pass work along a chain where each person hears only the one before. One line each, in a whiteboard file.</p></div>
-        <div><h3>Managers</h3><p>An AI that runs the meeting and decides who speaks next, in place of a fixed script, so script vs. judgment can itself be compared.</p></div>
-        <div><h3>A run browser</h3><p>Open a run, or two side by side, and read it turn by turn in your browser. The files on your disk stay the record.</p></div>
-      </div>
       <form class="notify" id="notify">
         <label for="notify-email" class="label" style="flex-basis:100%">Tell me when experiments arrive</label>
         <input id="notify-email" type="email" placeholder="you@university.edu" autocomplete="email" required>
@@ -403,6 +371,7 @@ seed: 42</pre>
     </div>
   </section>
 
+  <!-- 6 · Reference -->
   <section class="band" id="reference">
     <div class="wrap">
       <div class="intro">
@@ -411,9 +380,9 @@ seed: 42</pre>
         <p>During the preview, the full documentation is the README on GitHub. This site will take over more of it.</p>
       </div>
       <div class="refs">
+        <a href="install.html"><i>this site</i><b>Install</b><span>uv or pip, on Mac, Windows or Linux</span></a>
         <a href="tutorial.html"><i>this site</i><b>Tutorial</b><span>Nine steps, each on a shipped example</span></a>
         <a href="#glossary"><i>this site</i><b>Glossary</b><span>The words this site uses, in plain English</span></a>
-        <a href="#coming"><i>this site</i><b>What’s coming</b><span>What comes next, and how to hear about it</span></a>
         <a href="https://github.com/teamrunner/teamrunner#readme"><i>GitHub</i><b>Documentation</b><span>Everything TeamRunner does today, on one page</span></a>
         <a href="https://github.com/teamrunner/teamrunner#appendix-a-file-reference-at-a-glance"><i>GitHub</i><b>File reference</b><span>Every file a team may hold, and what it means</span></a>
         <a href="https://github.com/teamrunner/teamrunner#what-lands-in-a-run-folder"><i>GitHub</i><b>Run folder</b><span>What a run keeps, event by event</span></a>
@@ -422,7 +391,6 @@ seed: 42</pre>
         <a href="https://github.com/teamrunner/teamrunner"><i>GitHub</i><b>Source code</b><span>The code, the examples and their licences</span></a>
         <a href="https://github.com/teamrunner/teamrunner/issues/new/choose"><i>GitHub</i><b>Questions and bugs</b><span>A short form for each, or write to hello@teamrunner.ai</span></a>
         <a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md"><i>GitHub</i><b>Security</b><span>Report a problem privately</span></a>
-        <div class="refcard"><i>your browser</i><b>TeamRunner's page</b><span>Type <code>teamrunner ui</code> in a team's folder: edit, validate, run and compare runs</span></div>
         <div class="refcard"><i>your terminal</i><b>Commands</b><span>Type <code>teamrunner --help</code>, or <code>--help</code> after any command</span></div>
       </div>
 
@@ -433,17 +401,17 @@ seed: 42</pre>
       <dl class="gloss">
         <div><dt>API key</dt><dd>A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use. Rehearsals need none.</dd></div>
         <div><dt>chair</dt><dd>The file <code>chair.md</code>: the meeting’s script, saying who speaks when. With no chair, members take one turn each, in name order.</dd></div>
+        <div><dt>context</dt><dd>Everything a model reads before it answers: its instructions plus what has been said. Smaller is cheaper and usually steadier.</dd></div>
         <div><dt>diff</dt><dd>A view of what changed between two versions of a file: removed lines in red, added lines in green.</dd></div>
         <div><dt>frontmatter</dt><dd>The settings block between the two <code>---</code> lines at the top of an agent’s file.</dd></div>
         <div><dt>git</dt><dd>Version control: it keeps every saved version of a folder, so you can go back, see what changed, or share it. Optional.</dd></div>
         <div><dt>Markdown</dt><dd>Plain text with light formatting, in a file ending <code>.md</code>. An agent is one.</dd></div>
-        <div><dt>overlay</dt><dd>A file that sits outside a team and changes it for one study, without editing the team. Coming soon.</dd></div>
-        <div><dt>patch</dt><dd>A small change applied to a copy of the team for one version of an experiment. Coming soon.</dd></div>
         <div><dt>rehearsal</dt><dd>A run with no model: placeholder words and random answers. Free, needs no key, and shows whether the flow goes where you meant.</dd></div>
         <div><dt>replications</dt><dd>How many times each version is run. Models are random, so one run is an anecdote.</dd></div>
-        <div><dt>seed</dt><dd>A number that fixes the random choices TeamRunner makes, so the same seed gives the same plan.</dd></div>
+        <div><dt>side trip</dt><dd>A member asking a toolkeeper during its own turn, when it chooses. Not a step in the flow; the answer goes to that member alone.</dd></div>
         <div><dt>terminal</dt><dd>The window where you type commands: Terminal on a Mac, PowerShell on Windows.</dd></div>
         <div><dt>toolkeeper</dt><dd>A member with no model that holds one tool, such as reading the web, and decides who may use it and how often.</dd></div>
+        <div><dt>uv</dt><dd>A single program that installs Python for you and runs Python tools, each in its own space. It is how we suggest installing TeamRunner.</dd></div>
         <div><dt>YAML</dt><dd>A plain-text format for settings, one <code>name: value</code> per line. <code>team.yaml</code> is one.</dd></div>
       </dl>
     </div>
@@ -457,7 +425,7 @@ seed: 42</pre>
       <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
       <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
     </div>
-    <div><h4>Learn</h4><ul><li><a href="#install">Try it</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="#examples">Examples</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#glossary">Glossary</a></li></ul></div>
+    <div><h4>Learn</h4><ul><li><a href="#why">Why a team</a></li><li><a href="install.html">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="#examples">Example</a></li><li><a href="#glossary">Glossary</a></li></ul></div>
     <div><h4>Reference</h4><ul><li><a href="https://github.com/teamrunner/teamrunner#readme">Documentation</a></li><li><a href="#coming">What’s coming</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><a href="mailto:hello@teamrunner.ai">hello@teamrunner.ai</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
   </div>
@@ -465,23 +433,103 @@ seed: 42</pre>
 
 <script>
 (function(){
-  document.querySelectorAll('.copy').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var el=document.getElementById(btn.dataset.target);
-      var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500)};
-      try{navigator.clipboard.writeText(el.textContent).then(done,function(){selectText(el)})}catch(e){selectText(el)}
+  /* The fact_checked team, as it ships (comments in chair.md shortened). */
+  var FILES=[
+    {n:'team.yaml',k:'the job',hl:'',t:'name: fact_checked\ndescription: A debate with a fact checker, a web toolkeeper\n  and a sandbox toolkeeper\n\ndefault_model: openrouter/google/gemma-4-31b-it\n\ndefault_inputs:\n  topic: "Remote work makes teams more productive"'},
+    {n:'chair.md',k:'who speaks when',hl:'R'},
+    {n:'for.md',k:'worker',hl:'F',t:'---\ndescription: Argues in favor of the topic\n---\nYou are debating in favor of this topic:\n\n> {{topic}}\n\nMake your strongest case in one paragraph. Every speech is fact-checked:\nif the fact checker rejects it, correct or drop the claims it lists and\nspeak again.'},
+    {n:'against.md',k:'worker',hl:'A',t:'---\ndescription: Argues against the topic\n---\nYou are debating against this topic:\n\n> {{topic}}\n\nRebut your opponent\'s main point, then make your strongest case against\nthe topic, in one paragraph. Every speech is fact-checked: if the fact\nchecker rejects it, correct or drop the claims it lists and speak again.'},
+    {n:'fact_checker.md',k:'decider',hl:'FC1 FC2',t:'---\ndescription: Checks the factual claims in the latest speech\noutput:\n  verdict: [pass, fail]\n  reasons: ""\n---\nYou are a neutral fact checker. Examine the latest speech for checkable\nfactual claims and verify them against public sources (ask the web toolkeeper).\nLook up relevant research through Crossref, or read known source pages.\nMost speeches need one or two reads. If evidence is unavailable, say the\nclaim is unverified; never treat a failed lookup as proof it is false.\nWhen a claim rests on a calculation, check it by running it (ask the\nsandbox toolkeeper).\nMinor exaggeration is fine; invented statistics and false claims are\nnot.\n\nSet verdict to fail only if a claim is materially false, and list each\nfalse claim with a one-line correction in reasons. Otherwise set it to\npass.'},
+    {n:'judge.md',k:'decider',hl:'JR JV',t:'---\ndescription: Decides who argued better\noutput:\n  winner: [for, against]\n  reasoning: ""\n---\nYou have heard a fact-checked debate on:\n\n> {{topic}}\n\nWhen your stage is "research": pick the most disputed factual claims\nin the debate and ask the web toolkeeper to read a relevant source URL\nor a Crossref query URL.\n\nWhen your stage is "verdict": read the source evidence, then decide which\nside argued better: argument quality and logical clarity, not your own\nopinion of the topic. Do not treat an unavailable source as verification.\nWeigh the fact checker\'s verdicts: a speech it failed three times still\nstands, but on claims it found false. Announce\nthe winner and explain your decision in one paragraph.'},
+    {n:'web.md',k:'toolkeeper',hl:'JW TW s1 s3',t:'---\ndescription: The web toolkeeper, reads public research records and source pages\nkind: toolkeeper\ntools:\n  read_page: {max_chars: 20000, calls_per_turn: 2}\naccess:\n  fact_checker: {calls_per_turn: 3}\n  judge: standard\n---\nI read public web pages and research records. Send me a URL and I return\nits text. The fact checker gets three reads a turn, the judge two.\n\nTo find research, use Crossref\'s public API, with URL-encoded words.\nChange the query to match the claim. Do not invent source URLs.\nA title or search match alone is not evidence that a claim is true.\nIf a page is unavailable or the evidence is insufficient, say so.'},
+    {n:'sandbox.md',k:'toolkeeper',hl:'TS s2 s4',t:'---\ndescription: The sandbox toolkeeper, runs Python to check the numbers in a claim\nkind: toolkeeper\ntools:\n  run_code: {timeout: 10, network: false, calls_per_turn: 2}\naccess:\n  fact_checker: standard     # only the fact checker does sums\n---\nI run short Python programs. Send me a complete program and I return\nwhat it prints and any errors. Use me to check a calculation in a\nclaim (a percentage, a total, a growth rate) rather than doing it in\nyour head. Ten seconds a run, no internet.'}
+  ];
+  var view=document.getElementById('view'), chairHTML=view.innerHTML;
+  var list=document.getElementById('files'), fx=document.getElementById('fx');
+  var esc=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
+  function mark(keys){
+    fx.querySelectorAll('.on').forEach(function(e){e.classList.remove('on')});
+    (keys||'').split(' ').forEach(function(k){var e=k&&document.getElementById(k);if(e)e.classList.add('on')});
+  }
+  function bindLines(){
+    view.querySelectorAll('.cl').forEach(function(l){
+      l.addEventListener('mouseenter',function(){if(!playing)mark(l.dataset.k)});
+      l.addEventListener('mouseleave',function(){if(!playing)mark('')});
     });
+  }
+  function open(i){
+    var f=FILES[i];
+    list.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-selected',j===i?'true':'false');b.tabIndex=j===i?0:-1});
+    document.getElementById('vname').textContent=f.n;
+    document.getElementById('vkind').textContent=f.k;
+    if(f.n==='chair.md'){view.innerHTML=chairHTML;bindLines()}
+    else if(f.t.indexOf('---\n')===0){ // dim the settings, so the plain-words part reads first
+      var cut=f.t.indexOf('\n---\n',4)+4;
+      view.innerHTML='<span class="cm">'+esc(f.t.slice(0,cut))+'</span>'+esc(f.t.slice(cut));
+    }
+    else view.innerHTML=esc(f.t);
+    if(!playing)mark(f.hl);
+  }
+  FILES.forEach(function(f,i){
+    var li=document.createElement('li'), b=document.createElement('button');
+    b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-controls','view');
+    b.innerHTML='<span>'+f.n+'</span><span class="k">'+(f.k==='who speaks when'?'chair':f.k==='the job'?'team':f.k)+'</span>';
+    b.addEventListener('click',function(){open(i)});
+    b.addEventListener('keydown',function(e){
+      var d=e.key==='ArrowDown'||e.key==='ArrowRight'?1:e.key==='ArrowUp'||e.key==='ArrowLeft'?-1:0;
+      if(d){e.preventDefault();var j=(i+d+FILES.length)%FILES.length;open(j);list.querySelectorAll('button')[j].focus()}
+    });
+    li.appendChild(b);list.appendChild(li);
   });
-  function selectText(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
-  document.querySelectorAll('[role=tablist]').forEach(function(list){
-    var tabs=list.querySelectorAll('[role=tab]');
-    tabs.forEach(function(t){t.addEventListener('click',function(){
-      tabs.forEach(function(o){o.setAttribute('aria-selected',o===t?'true':'false');document.getElementById(o.getAttribute('aria-controls')).hidden=(o!==t)});
-    })});
+  open(1);
+
+  /* A rehearsal in the page: the same steps `teamrunner run fact_checked --rehearse` takes,
+     with random pass/fail like the real one. */
+  var playing=false, timer=null, btn=document.getElementById('play'), log=document.getElementById('log');
+  var rlab=document.getElementById('rlab');
+  function pad(s,n){while(s.length<n)s+=' ';return s}
+  function plan(){
+    var S=[],turn=0,line=function(who,what,extra){turn++;return pad('  '+who,28)+pad(what||'',24)+'0.0s   $0.0000'+(extra?'\n'+extra:'')};
+    S.push({k:'',t:'rehearsal · no model is called; the words are placeholders and the answers random'});
+    for(var r=1;r<=3;r++){
+      S.push({k:'R',t:'rounds '+r+' of 3',r:r});
+      [['for','F','FC1','eF','eFail1','ePass1','TW s1','TS s2'],['against','A','FC2','eA','eFail2','ePass2','TW s3','TS s4']].forEach(function(s){
+        for(var tr=1;tr<=3;tr++){
+          S.push({k:s[1]+(tr>1?' '+s[4]:''),t:line(s[0],tr>1?'try '+tr+' of 3':'')});
+          var side=Math.random(), extra='', sk='';
+          if(side<.25){extra='    └ web   read “[rehearsal] url”   ✓ 1 of 3';sk=' '+s[6]}
+          else if(side<.38){extra='    └ sandbox   run “[rehearsal] code”   ✓ 1 of 2';sk=' '+s[7]}
+          var pass=Math.random()<.55||tr===3&&Math.random()<.5, v=pass?'pass':'fail';
+          S.push({k:s[3]+' '+s[2]+sk,t:line('fact_checker',v,extra)});
+          if(pass||tr===3){S.push({k:s[5],t:'',quiet:true});break}
+        }
+      });
+    }
+    S.push({k:'JR ePass2',t:pad('judge:research',52)+'0.0s   $0.0000'});
+    S.push({k:'eJR JW',t:'  └ judge → web   read “[rehearsal] url”   ✓ 1 of 2'});
+    var w=Math.random()<.5?'for':'against';
+    S.push({k:'eJW JV',t:pad('judge:verdict',28)+pad('winner = '+w,24)+'0.0s   $0.0000'});
+    S.push({k:'',t:'\ncompleted · '+(turn+2)+' turns · 0.0s · ≈ $0.0000',end:true});
+    return S;
+  }
+  function stop(){clearTimeout(timer);playing=false;btn.textContent='▶ Rehearse it again';rlab.textContent='rounds, 3 times';mark('')}
+  btn.addEventListener('click',function(){
+    if(playing){stop();return}
+    playing=true;btn.textContent='■ Stop';log.textContent='';
+    var S=plan(),i=0;
+    var fast=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    (function step(){
+      if(!playing)return;
+      var s=S[i++];
+      mark(s.k);
+      if(s.r)rlab.textContent='rounds · '+s.r+' of 3';
+      if(!s.quiet){log.textContent+=(log.textContent?'\n':'')+s.t;log.scrollTop=log.scrollHeight}
+      if(s.end){playing=false;btn.textContent='▶ Rehearse it again';rlab.textContent='rounds, 3 times';setTimeout(function(){if(!playing)mark('')},1200);return}
+      timer=setTimeout(step,fast?120:s.quiet?260:520);
+    })();
   });
-  var ua=navigator.userAgent||'';
-  if(/Windows/i.test(ua)) document.getElementById('t-win').click();
-  else if(/Linux/i.test(ua)&&!/Android/i.test(ua)) document.getElementById('t-lin').click();
+
+  /* What's coming: notify by email */
   document.getElementById('notify').addEventListener('submit',function(e){
     e.preventDefault();
     var who=document.getElementById('notify-email').value;

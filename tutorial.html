@@ -29,9 +29,10 @@ document.documentElement.setAttribute('data-via',v)})();
       teamrunner
     </a>
     <nav aria-label="Main">
-      <a href="index.html#install">Try it</a>
+      <a href="index.html#why">Why</a>
+      <a href="install.html">Install</a>
       <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
-      <a href="index.html#examples">Examples</a>
+      <a href="index.html#examples">Example</a>
       <a href="index.html#coming">What’s coming</a>
       <a href="index.html#reference">Reference</a>
     </nav>
@@ -45,7 +46,7 @@ document.documentElement.setAttribute('data-via',v)})();
 <p class="label">Tutorial</p>
 <h1>Nine steps, from a free rehearsal to your first experiment</h1>
 <p class="lede">Every step starts from a team that ships with TeamRunner and adds one idea. No code: each step is a few words changed in a text file, and a click or a command.</p>
-<div class="aside"><p><b>Before you start,</b> <a href="index.html#install">install TeamRunner</a> (version 0.0.4 or later for the browser). Follow each step <b>in your browser</b>, on TeamRunner's own page, or <b>in a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a></b> with any text editor: the switch at each step changes them all. The files you write are the same either way. Step 1 needs no key and costs nothing, and every later step can be <b>rehearsed</b> for free before you spend anything. A real run costs a fraction of a cent.</p></div>
+<div class="aside"><p><b>Before you start,</b> <a href="install.html">install TeamRunner</a> (version 0.0.4 or later for the browser). Follow each step <b>in your browser</b>, on TeamRunner's own page, or <b>in a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a></b> with any text editor: the switch at each step changes them all. The files you write are the same either way. Step 1 needs no key and costs nothing, and every later step can be <b>rehearsed</b> for free before you spend anything. A real run costs a fraction of a cent.</p></div>
 <nav class="toc" aria-label="Steps"><ol><li><a href="#rehearse">Rehearse a team, for free</a></li><li><a href="#first-run">Your first real run</a></li><li><a href="#prose">Edit the words</a></li><li><a href="#flow">Take control of the flow</a></li><li><a href="#decisions">Typed answers and decisions</a></li><li><a href="#tools">Tools, through a toolkeeper</a></li><li><a href="#private">Private information</a></li><li><a href="#experiment">A first experiment, by hand</a></li><li><a href="#bigger">Bigger organizations</a></li></ol></nav>
 <h2 id="rehearse"><span class="stepno">Step 1</span>Rehearse a team, for free</h2>
 <div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
@@ -307,7 +308,7 @@ The others have not seen your notes.</pre></div>
 <code class="cmd" data-run data-expect="decision">teamrunner runs open</code>
 <code class="cmd" data-run data-expect="decision">teamrunner runs share_first</code>
 </div>
-<div class="aside"><p><b>Coming soon: experiments.</b> One file will name both versions and how many runs of each, and TeamRunner will run them all and give you one CSV for R, Stata or pandas. <a href="index.html#research">What it will look like</a>.</p></div>
+<div class="aside"><p><b>Coming soon: experiments.</b> One file will name both versions and how many runs of each, and TeamRunner will run them all and give you one CSV for R, Stata or pandas. <a href="index.html#coming">What it will look like</a>.</p></div>
 <h2 id="bigger"><span class="stepno">Step 9</span>Bigger organizations</h2>
 <div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
 <p>Two larger examples show how far the same few ideas go. <code>orchestrators_lite</code> is five engineers reviewing code with planted bugs, in rounds, one of them writing the report. All five share one model profile in <code>models/</code>, so changing the model there changes it for everyone. Copy it into a team called <code>review</code>, read it back and rehearse it:</p>
