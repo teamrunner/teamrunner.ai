@@ -292,7 +292,7 @@ html[data-via="browser"] .via[data-via="terminal"],html[data-via="terminal"] .vi
 .demo-head{display:grid;gap:6px;max-width:48rem;margin-bottom:16px}
 .demo-head p:last-child{color:var(--ink-2);font-size:var(--s2)}
 .demo-head code{font-size:.88em}
-.demo{display:grid;grid-template-columns:minmax(0,14.5rem) minmax(0,1.25fr) minmax(0,1fr);background:var(--panel);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-bottom:80px;box-shadow:0 1px 0 var(--rule),0 18px 40px -28px rgba(20,32,43,.35)}
+.demo{display:grid;grid-template-columns:minmax(0,16rem) minmax(0,1.25fr) minmax(0,1fr);background:var(--panel);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-bottom:80px;box-shadow:0 1px 0 var(--rule),0 18px 40px -28px rgba(20,32,43,.35)}
 .demo .col{display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--rule)}
 .demo .col:nth-child(3){border-right:0}
 .demo .cap{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid var(--rule)}
@@ -420,3 +420,29 @@ h2.hook em{font-style:italic;color:var(--accent)}
 .turn details p{margin-top:6px}
 .txfoot{padding:12px 16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:.78rem;color:var(--ink-2);line-height:1.7}
 @media (max-width:980px){.turn.t-against{margin-left:0}.txlist{max-height:28rem}}
+
+/* Hero example: the file pane drawn as a folder tree, like an editor's explorer */
+.ftree{padding:8px 0}
+.ftree .root{display:flex;align-items:center;gap:6px;padding:7px 16px 5px 10px;font-family:var(--f-mono);font-size:.82rem;font-weight:500;color:var(--ink)}
+.ftree .caret{font-size:.7rem;color:var(--ink-2);width:.8em;text-align:center}
+.ftree .ic{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round}
+.ftree .root .ic{color:var(--ink-2)}
+.ftree .files{padding:0}
+.ftree .files li{position:relative}
+.ftree .files li::before{content:"";position:absolute;left:32px;top:0;bottom:0;border-left:1px solid var(--rule)}
+.ftree .files li:last-child::before{bottom:50%}
+.ftree .files li::after{content:"";position:absolute;left:32px;top:50%;width:9px;border-top:1px solid var(--rule)}
+.ftree .files button{padding-left:45px;align-items:center}
+.ftree .fn{display:flex;align-items:center;gap:7px;min-width:0}
+.ftree .fn .ic{color:var(--ink-2)}
+.ftree .files button[aria-selected="true"] .ic{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){.ftree .files li.added{animation:treein .4s ease-out}}
+@keyframes treein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (max-width:980px){
+  .ftree{padding:0}
+  .ftree .root{padding:10px 12px 0}
+  .ftree .files li::before,.ftree .files li::after{display:none}
+  .ftree .files{padding:8px 12px 10px}
+  .ftree .files button{padding:4px 8px}
+  .ftree .fn .ic{display:none}
+}

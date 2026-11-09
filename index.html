@@ -63,8 +63,11 @@
     </div>
     <div class="demo" id="demo">
       <div class="col">
-        <div class="cap"><span class="label">debate/</span></div>
-        <ul class="files" role="tablist" aria-label="Files in the team" id="files"></ul>
+        <div class="cap"><span class="label">The team folder</span></div>
+        <div class="ftree">
+          <div class="root"><span class="caret" aria-hidden="true">▾</span><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5v8h11l2-5.5h-11l-2 5.5M1.5 4.5v-1.5h4l1.5 1.5h5v2"/></svg><span>debate/</span></div>
+          <ul class="files" role="tablist" aria-label="Files in the debate folder" id="files"></ul>
+        </div>
       </div>
       <div class="col viewer">
         <div class="cap"><span class="label" id="vname">chair.md</span><span class="label" id="vkind">who speaks when</span></div>
@@ -573,7 +576,8 @@ seed: 42</pre>
     FILES.forEach(function(f,i){
       var li=document.createElement('li'), b=document.createElement('button');
       b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-controls','view');
-      b.innerHTML='<span>'+f.n+'</span><span class="k'+(f.tag==='new'?' new':'')+'">'+f.tag+'</span>';
+      if(f.tag==='new')li.className='added';
+      b.innerHTML='<span class="fn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 1.5h6l3 3v10h-9zM9.5 1.5v3h3"/></svg>'+f.n+'</span><span class="k'+(f.tag==='new'?' new':'')+'">'+f.tag+'</span>';
       b.addEventListener('click',function(){open(i)});
       b.addEventListener('keydown',function(e){
         var d=e.key==='ArrowDown'||e.key==='ArrowRight'?1:e.key==='ArrowUp'||e.key==='ArrowLeft'?-1:0;
