@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="site.css">
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
 </head>
 <body>
 <header class="top">
@@ -62,33 +64,33 @@
     <div class="tabpane" role="tabpanel" id="p-mac" aria-labelledby="t-mac">
       <ol>
         <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”, press Return) and install uv:
-          <div class="cmdrow"><code class="cmd" id="c1">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c1">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c1">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c1" data-count="copy-mac-uv">Copy</button></div></li>
         <li>Close Terminal and open it again, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c2">uv tool install teamrunner</code><button class="copy" type="button" data-target="c2">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c2">uv tool install teamrunner</code><button class="copy" type="button" data-target="c2" data-count="copy-mac-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
-          <div class="cmdrow"><code class="cmd" id="c3">teamrunner ui</code><button class="copy" type="button" data-target="c3">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c3">teamrunner ui</code><button class="copy" type="button" data-target="c3" data-count="copy-mac-ui">Copy</button></div></li>
       </ol>
     </div>
     <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
       <ol>
         <li>Open <b>PowerShell</b> from the Start menu and install uv:
-          <div class="cmdrow"><code class="cmd" id="c4">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code><button class="copy" type="button" data-target="c4">Copy</button></div>
+          <div class="cmdrow"><code class="cmd" id="c4">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code><button class="copy" type="button" data-target="c4" data-count="copy-win-uv">Copy</button></div>
           <p style="margin-top:6px">This is the Windows version of the same installer; <code>irm</code> is PowerShell’s download command, like <code>curl</code>.</p></li>
         <li>Close PowerShell and open it again, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c5">uv tool install teamrunner</code><button class="copy" type="button" data-target="c5">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c5">uv tool install teamrunner</code><button class="copy" type="button" data-target="c5" data-count="copy-win-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
-          <div class="cmdrow"><code class="cmd" id="c6">teamrunner ui</code><button class="copy" type="button" data-target="c6">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c6">teamrunner ui</code><button class="copy" type="button" data-target="c6" data-count="copy-win-ui">Copy</button></div></li>
       </ol>
     </div>
     <div class="tabpane" role="tabpanel" id="p-lin" aria-labelledby="t-lin" hidden>
       <ol>
         <li>In a terminal, install uv:
-          <div class="cmdrow"><code class="cmd" id="c7">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c7">Copy</button></div>
+          <div class="cmdrow"><code class="cmd" id="c7">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c7" data-count="copy-linux-uv">Copy</button></div>
           <p style="margin-top:6px">No <code>curl</code>? Use <code>wget -qO- https://astral.sh/uv/install.sh | sh</code>.</p></li>
         <li>Open a new terminal, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c8">uv tool install teamrunner</code><button class="copy" type="button" data-target="c8">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c8">uv tool install teamrunner</code><button class="copy" type="button" data-target="c8" data-count="copy-linux-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
-          <div class="cmdrow"><code class="cmd" id="c9">teamrunner ui</code><button class="copy" type="button" data-target="c9">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c9">teamrunner ui</code><button class="copy" type="button" data-target="c9" data-count="copy-linux-ui">Copy</button></div></li>
       </ol>
     </div>
   </div>
@@ -97,7 +99,7 @@
   <p class="or">or</p>
   <h2 id="pip" style="margin-top:12px;padding-top:0;border-top:0">Already have Python? Use pip</h2>
   <p>With Python 3.10 or later, one line does it. Use a virtual environment if you keep one.</p>
-  <div class="cmdrow"><code class="cmd" id="c10">pip install teamrunner</code><button class="copy" type="button" data-target="c10">Copy</button></div>
+  <div class="cmdrow"><code class="cmd" id="c10">pip install teamrunner</code><button class="copy" type="button" data-target="c10" data-count="copy-pip">Copy</button></div>
   <p>Then <code>teamrunner ui</code>, as above.</p>
 
   <h2 id="check">Check that it works, for free</h2>
@@ -105,8 +107,8 @@
   <ul>
     <li><b>In your browser,</b> on the page <code>teamrunner ui</code> opened: choose <b>New team</b>, call it <code>hello</code> and start from <code>round_robin</code>. Then <b>Run…</b> and <b>Rehearse team</b>.</li>
     <li><b>Or in the terminal:</b>
-      <div class="cmdrow"><code class="cmd" id="c11">teamrunner new hello --from round_robin</code><button class="copy" type="button" data-target="c11">Copy</button></div>
-      <div class="cmdrow"><code class="cmd" id="c12">teamrunner run hello --rehearse</code><button class="copy" type="button" data-target="c12">Copy</button></div></li>
+      <div class="cmdrow"><code class="cmd" id="c11">teamrunner new hello --from round_robin</code><button class="copy" type="button" data-target="c11" data-count="copy-check-new">Copy</button></div>
+      <div class="cmdrow"><code class="cmd" id="c12">teamrunner run hello --rehearse</code><button class="copy" type="button" data-target="c12" data-count="copy-check-rehearse">Copy</button></div></li>
   </ul>
   <p>If it ends with <code>completed</code>, you are set.</p>
   <div class="panel out">
@@ -147,6 +149,7 @@ completed · 3 turns · 0.0s · ≈ $0.0000</pre>
     <div>
       <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
       <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">Visits are counted with <a href="https://www.goatcounter.com/">GoatCounter</a>: no cookies, nothing that identifies you.</p>
     </div>
     <div><h4>Learn</h4><ul><li><a href="index.html#why">Why a team</a></li><li><a href="install.html">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="index.html#glossary">Glossary</a></li></ul></div>
     <div><h4>Reference</h4><ul><li><a href="https://github.com/teamrunner/teamrunner#readme">Documentation</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://docs.astral.sh/uv/">uv’s documentation</a></li></ul></div>
