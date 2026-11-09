@@ -1,18 +1,18 @@
 {
-  "run_id": "01M6YEXCB78KVZH5N1S992C1AV",
+  "run_id": "01M6YS6VXCSVVGV9DMB5FQJFWH",
   "teamrunner_version": "0.0.4",
   "environment": {
     "python": "3.13.5",
     "litellm": "1.106.6",
     "deno": "2.9.8"
   },
-  "started_at": "2026-11-08T20:52:02.023912+00:00",
-  "finished_at": "2026-11-08T20:53:24.372535+00:00",
+  "started_at": "2026-11-08T23:51:58.636216+00:00",
+  "finished_at": "2026-11-08T23:53:20.145624+00:00",
   "team": "debate",
   "entry": "debate",
   "inputs": {
     "topic": {
-      "value": "A team of AI agents does better work than a single AI model",
+      "value": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
       "source": "given"
     }
   },
@@ -24,14 +24,14 @@
   "reason": null,
   "turns": 7,
   "tool_calls": 0,
-  "latency_ms": 83816,
-  "cost_usd": 0.185176,
-  "cost_known_usd": 0.185176,
-  "cost_models_usd": 0.185176,
+  "latency_ms": 83144,
+  "cost_usd": 0.179468,
+  "cost_known_usd": 0.179468,
+  "cost_models_usd": 0.179468,
   "cost_tools_usd": 0,
   "tokens": {
-    "input": 12219,
-    "output": 6815
+    "input": 11467,
+    "output": 6680
   },
   "keys": {
     "ANTHROPIC_API_KEY": "key_file"
