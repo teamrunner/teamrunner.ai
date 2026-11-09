@@ -533,7 +533,7 @@ seed: 42</pre>
     {n:'against.md',tag:'agent',k:'agent',hl:'A',t:'---\ndescription: Argues against the topic\n---\nYou are debating against this topic:\n\n> {{topic}}\n\nEach round, rebut your opponent\'s most recent point, then make your\nstrongest remaining argument against the topic in one short paragraph.\nBe persuasive but honest.'},
     {n:'judge.md',tag:'agent',k:'agent',hl:'J',t:'---\ndescription: Decides who argued better\noutput:\n  winner: [for, against]\n  reasoning: ""\n---\nYou have watched a three-round debate on:\n\n> {{topic}}\n\nDecide which side argued better: judge argument quality and logical\nclarity, not your own opinion of the topic. Announce the winner and\nexplain your decision in one paragraph.'}
   ];
-  var FC={n:'fact_checker.md',tag:'new',k:'agent · new file',hl:'FC1 FC2',t:'---\ndescription: Checks the factual claims in the latest speech\noutput:\n  verdict: [pass, fail]\n  reasons: ""\n---\nYou are a neutral fact checker. Check the factual claims in the latest\nspeech. Minor exaggeration is fine; invented statistics and false claims\nare not.\n\nSet verdict to fail only if a claim is materially false, and list each\nfalse claim with a one-line correction in reasons. Otherwise, pass.'};
+  var FC={n:'fact_checker.md',tag:'agent',added:true,k:'agent · new file',hl:'FC1 FC2',t:'---\ndescription: Checks the factual claims in the latest speech\noutput:\n  verdict: [pass, fail]\n  reasons: ""\n---\nYou are a neutral fact checker. Check the factual claims in the latest\nspeech. Minor exaggeration is fine; invented statistics and false claims\nare not.\n\nSet verdict to fail only if a claim is materially false, and list each\nfalse claim with a one-line correction in reasons. Otherwise, pass.'};
   var CHAIR_OFF=document.getElementById('view').innerHTML;
   var CHAIR_ON='<span class="cm"># Three rounds, each side speaking in turn,\n# then the judge decides.</span>\n\n'
     +'<span class="cl" data-k="R eOut J">  rounds(*3) -> judge</span>\n\n'
@@ -576,8 +576,8 @@ seed: 42</pre>
     FILES.forEach(function(f,i){
       var li=document.createElement('li'), b=document.createElement('button');
       b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-controls','view');
-      if(f.tag==='new')li.className='added';
-      b.innerHTML='<span class="fn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 1.5h6l3 3v10h-9zM9.5 1.5v3h3"/></svg>'+f.n+'</span><span class="k'+(f.tag==='new'?' new':'')+'">'+f.tag+'</span>';
+      if(f.added)li.className='added';
+      b.innerHTML='<span class="fn"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 1.5h6l3 3v10h-9zM9.5 1.5v3h3"/></svg>'+f.n+'</span><span class="k'+(f.added?' new" title="new file':'')+'">'+f.tag+'</span>';
       b.addEventListener('click',function(){open(i)});
       b.addEventListener('keydown',function(e){
         var d=e.key==='ArrowDown'||e.key==='ArrowRight'?1:e.key==='ArrowUp'||e.key==='ArrowLeft'?-1:0;
