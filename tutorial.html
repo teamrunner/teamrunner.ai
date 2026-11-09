@@ -47,25 +47,45 @@ document.documentElement.setAttribute('data-via',v)})();
 <main class="doc">
 <p class="label">Tutorial</p>
 <h1>Nine steps, from a free rehearsal to your first experiment</h1>
-<p class="lede">Every step starts from a team that ships with TeamRunner and adds one idea. No code: each step is a few words changed in a text file, and a click or a command.</p>
+<p class="lede">Step 1 builds a team from nothing. Every later step starts from your team or one that ships with TeamRunner, and adds one idea. No code: each step is a few words changed in a text file, and a click or a command.</p>
 <div class="aside"><p><b>Before you start,</b> <a href="install.html">install TeamRunner</a> (version 0.0.4 or later for the browser). Follow each step <b>in your browser</b>, on TeamRunner's own page, or <b>in a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a></b> with any text editor: the switch at each step changes them all. The files you write are the same either way. Step 1 needs no key and costs nothing, and every later step can be <b>rehearsed</b> for free before you spend anything. A real run costs a fraction of a cent.</p></div>
-<nav class="toc" aria-label="Steps"><ol><li><a href="#rehearse">Rehearse a team, for free</a></li><li><a href="#first-run">Your first real run</a></li><li><a href="#prose">Edit the words</a></li><li><a href="#flow">Take control of the flow</a></li><li><a href="#decisions">Typed answers and decisions</a></li><li><a href="#tools">Tools, through a toolkeeper</a></li><li><a href="#private">Private information</a></li><li><a href="#experiment">A first experiment, by hand</a></li><li><a href="#bigger">Bigger organizations</a></li></ol></nav>
-<h2 id="rehearse"><span class="stepno">Step 1</span>Rehearse a team, for free</h2>
+<nav class="toc" aria-label="Steps"><ol><li><a href="#rehearse">Build a team, and rehearse it</a></li><li><a href="#first-run">Your first real run</a></li><li><a href="#prose">Edit the words</a></li><li><a href="#flow">Take control of the flow</a></li><li><a href="#decisions">Typed answers and decisions</a></li><li><a href="#tools">Tools, through a toolkeeper</a></li><li><a href="#private">Private information</a></li><li><a href="#experiment">A first experiment, by hand</a></li><li><a href="#bigger">Bigger organizations</a></li></ol></nav>
+<h2 id="rehearse"><span class="stepno">Step 1</span>Build a team, and rehearse it for free</h2>
 <div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>You will build a small debate from nothing: one agent for a topic, one against it, and a judge. We give you every agent's words to paste, so nothing can go wrong, but every file in the team is one you made.</p>
 <div class="via" data-via="browser">
 <p>Open a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> in the folder where you want to keep your teams, and open TeamRunner's page. This is the one command you need:</p>
 <code class="cmd" data-run="skip">teamrunner ui</code>
 <p>A tab opens in your browser. Keep the terminal open while you work; <code>Ctrl+C</code> there closes the page. The page works only on your computer, on the files in that folder.</p>
-<p>Copy the simplest example, <code>round_robin</code>, into a new team called <code>hello</code>: choose <b class="ui">New team</b>, type <code>hello</code>, pick <code>round_robin</code> under <b class="ui">Start from</b> and choose <b class="ui">Continue</b>.</p>
+<p>Make a new team called <code>hello</code>: choose <b class="ui">New team</b>, type <code>hello</code>, keep <b class="ui">Empty team</b> under <b class="ui">Start from</b> and choose <b class="ui">Continue</b>. The team's one file, <code>team.yaml</code>, opens in the editor.</p>
 </div>
 <div class="via" data-via="terminal">
-<p>Open a terminal in any folder and copy the simplest example, <code>round_robin</code>, into a new team called <code>hello</code>:</p>
-<code class="cmd" data-run data-expect="hello">teamrunner new hello --from round_robin</code>
+<p>Open a terminal in the folder where you want to keep your teams, and make a new, empty team called <code>hello</code>:</p>
+<code class="cmd" data-run data-expect="hello">teamrunner new hello</code>
+<p>Open <code>hello/team.yaml</code> in your text editor.</p>
 </div>
-<p><code>hello</code> is a folder of four text files. <code>team.yaml</code> says what the team is for, and each <code>.md</code> file is one agent: a debater for the topic, one against, and a judge. Open <code>hello/02_against.md</code>, on the left of the page or in your text editor:</p>
-<div class="panel"><div class="cap"><span class="label">hello/02_against.md</span><span class="label">part of it</span></div><pre>---
+<p><code>team.yaml</code> says what the team is for. Fill in its description and add two settings. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>. Leave the <code>id:</code> line as it is: TeamRunner uses it to keep the team's history together.</p>
+<div class="panel"><div class="cap"><span class="label">hello/team.yaml</span><span class="label">change this line</span></div><div class="diff" data-edit="hello/team.yaml"><div class="m">- description: ""   # one line: what this team does</div><div class="p">+ description: A debate, one turn each, then a judge decides</div><div class="p">+ </div><div class="p">+ default_model: openrouter/google/gemma-4-31b-it</div><div class="p">+ </div><div class="p">+ default_inputs:</div><div class="p">+   topic: "Remote work makes teams more productive"</div></div></div>
+<p><code>default_model:</code> is the model every agent uses; you'll need it in Step 2. <code>default_inputs:</code> gives the team its topic, until you give it another.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b> (Ctrl+S, or ⌘S on a Mac). Now the first agent: choose <b class="ui">New member</b>, name it <code>01_for.md</code>, and replace what is in it with these lines:</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Save. Now the first agent: make a file <code>hello/01_for.md</code> with these lines:</p>
+</div>
+<div class="panel"><div class="cap"><span class="label">hello/01_for.md</span></div><pre data-file="hello/01_for.md">---
+description: Argues in favor of the topic
+---
+You are debating in favor of this topic:
+
+&gt; {{topic}}
+
+You speak once, first. Make your strongest case in one paragraph.
+</pre></div>
+<p>Each <code>.md</code> file in a team is one agent. Between the two <code>---</code> lines are the agent's settings (its <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent&#x27;s file: a description, which model, what answer it must give.">frontmatter</a>). Below them are its instructions, in plain words. <code>{{topic}}</code> is filled in with the topic from <code>team.yaml</code>.</p>
+<p>The second agent argues against. Make <code>02_against.md</code> the same way:</p>
+<div class="panel"><div class="cap"><span class="label">hello/02_against.md</span></div><pre data-file="hello/02_against.md">---
 description: Argues against the topic
-…
 ---
 You are debating against this topic:
 
@@ -74,13 +94,30 @@ You are debating against this topic:
 You speak once, after your opponent. Rebut their main point, then make
 your strongest case against the topic, in one paragraph.
 </pre></div>
-<p>Between the two <code>---</code> lines are the agent's settings (its <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent&#x27;s file: a description, which model, what answer it must give.">frontmatter</a>). Below them are its instructions, in plain words. <code>{{topic}}</code> is filled in with the topic in <code>team.yaml</code>.</p>
-<p>Now <b>rehearse</b> the team: run all of it with no model. Each agent says placeholder words, and the judge's answer is picked at random. It costs nothing and needs no key, and it shows whether the team runs the way you meant.</p>
+<p>And the judge, <code>03_judge.md</code>:</p>
+<div class="panel"><div class="cap"><span class="label">hello/03_judge.md</span></div><pre data-file="hello/03_judge.md">---
+description: Decides who argued better
+output:
+  winner: [for, against]
+  reasoning: ""
+---
+You have heard one speech from each side on:
+
+&gt; {{topic}}
+
+Decide which side argued better — judge argument quality and logical
+clarity, not your own opinion of the topic. Announce the winner and
+explain your decision in one paragraph.
+</pre></div>
+<p>The judge has one more setting, <code>output:</code>. It makes the judge answer in a fixed form: <code>winner</code> must be <code>for</code> or <code>against</code>, so you can count verdicts later. Step 5 says more.</p>
+<p>That is the whole team: four text files you wrote. Now <b>rehearse</b> it: run all of it with no model. Each agent says placeholder words, and the judge's answer is picked at random. It costs nothing and needs no key, and it shows whether the team runs the way you meant.</p>
 <div class="via" data-via="browser">
-<p>Choose <b class="ui">Run…</b>, keep <b class="ui">Rehearse (free, no model)</b> ticked, and choose <b class="ui">Rehearse team</b>. The conversation appears turn by turn, and stays under <b class="ui">Runs</b> afterwards:</p>
+<p>Save, and look under <b class="ui">Validation</b>: if you mistyped something, it points at the line. Then choose <b class="ui">Run…</b>, keep <b class="ui">Rehearse (free, no model)</b> ticked, and choose <b class="ui">Rehearse team</b>. The conversation appears turn by turn, and stays under <b class="ui">Runs</b> afterwards:</p>
 <figure class="shot"><img src="img/ui-conversation.png" alt="TeamRunner&#x27;s page showing a rehearsal of hello: completed, 3 turns, $0.0000, and the first turn, for, with placeholder words" width="1240" height="780" loading="lazy"><figcaption>A rehearsal in <b class="ui">Runs</b>: every turn, what each member could read, and the cost.</figcaption></figure>
 </div>
 <div class="via" data-via="terminal">
+<p>Save, and check the team: <code>validate</code> reads every file and points at any mistake, with the line.</p>
+<code class="cmd" data-run data-expect="hello">teamrunner validate hello</code>
 <code class="cmd" data-run data-expect="completed">teamrunner run hello --rehearse</code>
 <div class="panel out"><div class="cap"><span class="label">what you see</span></div><pre>run · hello · default input topic: &quot;Remote work makes teams more productive&quot;
 rehearsal · no model is called; the words are placeholders and the answers random
@@ -144,7 +181,7 @@ hello/runs/2026-11-05_093012_hello</pre></div>
 <div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It costs a cent or two, and you can rehearse what it wrote for free. In a terminal:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
 <h2 id="prose"><span class="stepno">Step 3</span>Edit the words</h2>
 <div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
-<p>Everything an agent does comes from its words. Make the critic more aggressive: in <code>hello/02_against.md</code>, replace the last two lines with these. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>.</p>
+<p>Everything an agent does comes from its words. Make the critic more aggressive: in <code>hello/02_against.md</code>, replace the last two lines with these:</p>
 <div class="panel"><div class="cap"><span class="label">hello/02_against.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="hello/02_against.md"><div class="m">- You speak once, after your opponent. Rebut their main point, then make</div><div class="m">- your strongest case against the topic, in one paragraph.</div><div class="p">+ You speak once, after your opponent. Attack their weakest claim</div><div class="p">+ directly and without hedging: name it, say why it fails, and give</div><div class="p">+ the strongest counter-evidence you know. Then make your case against</div><div class="p">+ the topic, in one forceful paragraph.</div></div></div>
 <div class="via" data-via="browser">
 <p><b class="ui">Save</b> (Ctrl+S, or ⌘S on a Mac). Rehearse to check nothing broke, then run it with models on the same message as before.</p>
