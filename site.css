@@ -424,17 +424,17 @@ h2.hook em{font-style:italic;color:var(--accent)}
 /* Hero example: the file pane drawn as a folder tree, like an editor's explorer */
 .ftree{padding:8px 0}
 .ftree .root{display:flex;align-items:center;gap:6px;padding:7px 16px 5px 10px;font-family:var(--f-mono);font-size:.82rem;font-weight:500;color:var(--ink)}
-.ftree .caret{font-size:.7rem;color:var(--ink-2);width:.8em;text-align:center}
+.ftree .caret{font-size:.7rem;color:var(--ink);width:.8em;text-align:center}
 .ftree .ic{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round}
-.ftree .root .ic{color:var(--ink-2)}
+.ftree .root .ic{color:var(--ink)}
 .ftree .files{padding:0}
 .ftree .files li{position:relative}
-.ftree .files li::before{content:"";position:absolute;left:32px;top:0;bottom:0;border-left:1px solid var(--rule)}
+.ftree .files li::before{content:"";position:absolute;left:32px;top:0;bottom:0;border-left:1px solid var(--ink-2)}
 .ftree .files li:last-child::before{bottom:50%}
-.ftree .files li::after{content:"";position:absolute;left:32px;top:50%;width:9px;border-top:1px solid var(--rule)}
+.ftree .files li::after{content:"";position:absolute;left:32px;top:50%;width:9px;border-top:1px solid var(--ink-2)}
 .ftree .files button{padding-left:45px;align-items:center}
 .ftree .fn{display:flex;align-items:center;gap:7px;min-width:0}
-.ftree .fn .ic{color:var(--ink-2)}
+.ftree .fn .ic{color:var(--ink)}
 .ftree .files button[aria-selected="true"] .ic{color:var(--accent)}
 @media (prefers-reduced-motion:no-preference){.ftree .files li.added{animation:treein .4s ease-out}}
 @keyframes treein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
