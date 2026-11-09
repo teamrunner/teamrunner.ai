@@ -136,8 +136,89 @@ A real run is the same team on a real model. Watch one we recorded.</pre>
         <p class="txfoot" id="txfoot" hidden></p>
       </div>
     </div>
-    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, <i>for</i> won two of three plain debates but only one of three checked ones; the replay shows one of each. The fact checker never failed a speech, and the checked debates cost about twice as much. Three runs each is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
+    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, <i>for</i> won two of three plain debates but only one of three checked ones; the replay shows one of each. The fact checker never failed a speech, and the checked debates cost about twice as much. Three runs each is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.<br>This fact checker works only from what its model remembers. To let it check sources, <a href="#tools">give it the web</a>.</p>
   </div>
+
+  <!-- 1b · The same team, with a tool -->
+  <section class="band" id="tools">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Next: give the fact checker the web</p>
+        <h2 class="hook">Agents never hold tools. <em>One member does, and says who may use it.</em></h2>
+        <p>The fact checker above works only from what its model already remembers, so it can’t look anything up. To let it check sources, add one more file: a <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> that reads web pages. Then change two lines of the fact checker. <code>chair.md</code> doesn’t change at all.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The new file</span>
+            <h3><code>web.md</code>: the tool, and who may use it</h3>
+            <p>A toolkeeper has no model. It holds one tool, here <code>read_page</code>, and an access list. Only the fact checker may ask, three reads a turn. If the debaters or the judge ask, the request is refused.</p>
+            <p>TeamRunner enforces these terms, so you don’t rely on the agents behaving well. It needs no key, because Crossref’s research index is public.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">web.md</span><span class="label">toolkeeper · new file</span></div>
+<pre><span class="cm">---
+description: Reads public web pages and research records
+kind: toolkeeper
+tools:
+  read_page: {max_chars: 20000}   # no key needed
+access:
+  fact_checker: {calls_per_turn: 3}   # only the fact checker may ask
+---</span>
+I read public web pages and research records. Send me a URL and I
+return its text.
+
+To find research, use Crossref's public API, with URL-encoded words:
+https://api.crossref.org/works?query.bibliographic=multi+agent+llm&amp;rows=3
+Do not invent source URLs. If a page is unavailable, say so.</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The change</span>
+            <h3>Tell the fact checker it can ask</h3>
+            <p>The fact checker decides when a claim is worth looking up. A lookup is a <a class="t" tabindex="0" data-tip="A request to a toolkeeper in the middle of a turn: the agent asks, the toolkeeper answers, and the agent carries on. It is not a step in chair.md.">side trip</a> inside its own turn, not a step in the flow, which is why <code>chair.md</code> stays the same.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">fact_checker.md</span><span class="label">two lines changed</span></div>
+            <div class="diff" aria-label="What changes in fact_checker.md: it is told to check claims against public sources by asking the web toolkeeper, and to call a claim unverified, not false, when it finds no evidence">
+<div class="x">  You are a neutral fact checker. Check the factual claims in the latest</div>
+<div class="m">- speech. Minor exaggeration is fine; invented statistics and false claims</div>
+<div class="m">- are not.</div>
+<div class="p">+ speech against public sources: ask the web toolkeeper to read them.</div>
+<div class="p">+ Minor exaggeration is fine; invented statistics and false claims are</div>
+<div class="p">+ not. If you can’t find evidence, call the claim unverified, not false.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The record</span>
+            <h3>Every lookup is in the run</h3>
+            <p>Rehearse it for free and the side trips show up under the turn that made them, with the count against the limit. In a real run the record keeps each request, the toolkeeper’s yes or no, and the page that came back. That page goes only to the fact checker, so the debaters’ prompts stay short.</p>
+            <p>Want sums checked too? The <code>fact_checked</code> example adds a second toolkeeper that runs Python with no internet. See <a href="tutorial.html#tools">tutorial step 6</a>.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">teamrunner run debate --rehearse</span><span class="label">free, no model</span></div>
+<pre>rounds 1 of 3
+  for
+  fact_checker      pass
+  against
+  fact_checker      fail
+    └ web   read “[rehearsal] url”   ✓ 1 of 3
+  against           try 2 of 3
+  fact_checker      pass
+    └ web   read “[rehearsal] url”   ✓ 1 of 3
+rounds 2 of 3
+  …</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- 2 · Why -->
   <section class="band" id="why">
@@ -180,7 +261,7 @@ A real run is the same team on a real model. Watch one we recorded.</pre>
           <p class="no">05</p>
           <h3>Guardrails where the tools are</h3>
           <p class="org">The tool crib, not a power drill on every desk</p>
-          <p>Agents never hold tools. A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> does, with a plain access list: who may use it, how often, with what limits. The sandbox runs Python with no internet. TeamRunner enforces the terms, not the agent’s good behaviour.</p>
+          <p>Agents never hold tools. A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> does, with a plain access list: who may use it, how often, with what limits. The sandbox runs Python with no internet. TeamRunner enforces the terms, not the agent’s good behaviour. <a href="#tools">See it above</a>.</p>
           <p class="src">Least privilege for agents is the standard fix for “excessive agency”: <a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">OWASP Top 10 for LLM Applications, LLM06</a>, 2025.</p>
         </article>
         <article>

@@ -302,7 +302,7 @@ html[data-via="browser"] .via[data-via="terminal"],html[data-via="terminal"] .vi
 .files button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
 .files .k{font-size:.68rem;color:var(--ink-2);border:1px solid var(--rule);border-radius:3px;padding:0 5px;white-space:nowrap}
 .viewer pre{margin:0;padding:16px;font-size:.8rem;line-height:1.7;overflow:auto;white-space:pre;flex:1;max-height:36rem}
-.viewer .cm{color:var(--ink-2)}
+.viewer .cm,.panel pre .cm{color:var(--ink-2)}
 .viewer .cl{display:inline-block;min-width:100%;padding:0 6px;margin:0 -6px;border-radius:3px;cursor:crosshair}
 .viewer .cl:hover{background:var(--accent-soft);color:var(--accent)}
 .fx{display:block;width:100%;height:auto;padding:12px 10px;max-height:40rem}
