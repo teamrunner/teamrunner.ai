@@ -436,10 +436,11 @@ seed: 42</pre>
 
 <script>
 (function(){
-  /* The multi_agent_debate team as it ships (comments shortened), and the fact checker
-     the button adds. Both versions pass `teamrunner validate`. */
+  /* The multi_agent_debate team (comments shortened), with the model and motion of the
+     recorded runs below, and the fact checker the button adds. Both versions pass
+     `teamrunner validate`. */
   var BASE=[
-    {n:'team.yaml',tag:'team',k:'the job',hl:'',t:'name: multi_agent_debate\ndescription: Two debaters argue a topic for three rounds,\n  a judge decides\n\ndefault_model: openrouter/google/gemma-4-31b-it\n\ndefault_inputs:\n  topic: "Remote work makes teams more productive"'},
+    {n:'team.yaml',tag:'team',k:'the job',hl:'',t:'name: multi_agent_debate\ndescription: Two debaters argue a topic for three rounds,\n  a judge decides\n\ndefault_model: anthropic/claude-opus-5-5\n\ndefault_inputs:\n  topic: "Splitting AI work into clear roles makes it\n    safer and easier to audit and improve than\n    one prompt doing it all"'},
     {n:'chair.md',tag:'chair',k:'who speaks when',hl:'R'},
     {n:'for.md',tag:'worker',k:'worker',hl:'F',t:'---\ndescription: Argues in favor of the topic\n---\nYou are debating in favor of this topic:\n\n> {{topic}}\n\nEach round, make your strongest remaining argument in one short\nparagraph. From round two onward, also rebut your opponent\'s most\nrecent point before adding your own. Be persuasive but honest.'},
     {n:'against.md',tag:'worker',k:'worker',hl:'A',t:'---\ndescription: Argues against the topic\n---\nYou are debating against this topic:\n\n> {{topic}}\n\nEach round, rebut your opponent\'s most recent point, then make your\nstrongest remaining argument against the topic in one short paragraph.\nBe persuasive but honest.'},
