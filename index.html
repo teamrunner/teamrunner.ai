@@ -59,7 +59,7 @@
 
     <div class="demo-head">
       <p class="label">Five text files → a running team <span class="soon">example: multi_agent_debate</span></p>
-      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it for free, watch a real run we recorded on Claude Opus 5.5, then add a fact checker: one new file and a few new lines in <code>chair.md</code>, and the flow redraws.</p>
+      <p>Two debaters argue a topic for three rounds, then a judge decides. The whole flow is two lines of <code>chair.md</code>. Rehearse it for free, watch a real run we recorded on Claude Haiku 5.5, then add a fact checker: one new file and a few new lines in <code>chair.md</code>, and the flow redraws.</p>
     </div>
     <div class="demo" id="demo">
       <div class="col">
@@ -524,7 +524,7 @@ seed: 42</pre>
      recorded runs below, and the fact checker the button adds. Both versions pass
      `teamrunner validate`. */
   var BASE=[
-    {n:'team.yaml',tag:'team',k:'the job',hl:'',t:'name: multi_agent_debate\ndescription: Two debaters argue a topic for three rounds,\n  a judge decides\n\ndefault_model: anthropic/claude-opus-5-5\n\ndefault_inputs:\n  topic: "Splitting AI work into clear roles makes it\n    safer and easier to audit and improve than\n    one prompt doing it all"'},
+    {n:'team.yaml',tag:'team',k:'the job',hl:'',t:'name: multi_agent_debate\ndescription: Two debaters argue a topic for three rounds,\n  a judge decides\n\ndefault_model: anthropic/claude-haiku-5-5\n\ndefault_inputs:\n  topic: "Splitting AI work into clear roles makes it\n    safer and easier to audit and improve than\n    one prompt doing it all"'},
     {n:'chair.md',tag:'chair',k:'who speaks when',hl:'R'},
     {n:'for.md',tag:'agent',k:'agent',hl:'F',t:'---\ndescription: Argues in favor of the topic\n---\nYou are debating in favor of this topic:\n\n> {{topic}}\n\nEach round, make your strongest remaining argument in one short\nparagraph. From round two onward, also rebut your opponent\'s most\nrecent point before adding your own. Be persuasive but honest.'},
     {n:'against.md',tag:'agent',k:'agent',hl:'A',t:'---\ndescription: Argues against the topic\n---\nYou are debating against this topic:\n\n> {{topic}}\n\nEach round, rebut your opponent\'s most recent point, then make your\nstrongest remaining argument against the topic in one short paragraph.\nBe persuasive but honest.'},
@@ -668,7 +668,7 @@ seed: 42</pre>
     stopReplay(); var r=rp.run;
     txlist.querySelectorAll('.typing').forEach(function(b){b.classList.remove('typing');b.innerHTML=md(b.dataset.src)});
     var f=document.getElementById('txfoot'); f.hidden=false;
-    f.innerHTML='<b>completed</b> · '+r.turns.length+' turns · '+secs(r.ms)+' · ≈ $'+r.cost.toFixed(2)
+    f.innerHTML='<b>completed</b> · '+r.turns.length+' turns · '+secs(r.ms)+' · ≈ $'+r.cost.toFixed(r.cost<0.1?4:2)
       +' · winner: <b>'+r.winner+'</b><br>'+tally()+'<br>The record, exactly as TeamRunner wrote it: <a href="runs/'+r.name+'/events.jsonl">events.jsonl</a> · <a href="runs/'+r.name+'/run.json">run.json</a>';
     rl('rounds, 3 times'); setTimeout(function(){if(!rp.live&&!playing)mark(FILES[cur].hl)},1500);
   }
@@ -695,7 +695,7 @@ seed: 42</pre>
     })();
   }
   function tally(){ // this page replays one run of each version; this is every run we recorded on the motion
-    return 'We recorded three of each on this motion and replay one here. All six: plain debate: for 2, against 1 · with the fact checker: for 1, against 2';
+    return 'We recorded three plain debates and seven with the fact checker on this motion, and replay one of each here. All ten: plain debate: for 2, against 1 · with the fact checker: for 2, against 5';
   }
   function picker(){
     var v=on?'checked':'plain', mine=RUNS.filter(function(r){return r.version===v}), p=document.getElementById('txpick');
