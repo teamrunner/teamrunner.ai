@@ -136,7 +136,7 @@ A real run is the same team on a real model. Watch one we recorded.</pre>
         <p class="txfoot" id="txfoot" hidden></p>
       </div>
     </div>
-    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, <i>for</i> won two of three plain debates but only one of three checked ones. The fact checker never failed a speech, and the checked debates cost about twice as much. Three runs each is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
+    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, <i>for</i> won two of three plain debates but only one of three checked ones; the replay shows one of each. The fact checker never failed a speech, and the checked debates cost about twice as much. Three runs each is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial.html#experiment">tutorial step 8</a>, on a real question.</p>
   </div>
 
   <!-- 2 · Why -->
@@ -609,14 +609,12 @@ seed: 42</pre>
       else{body.classList.remove('typing');body.innerHTML=md(src);txlist.scrollTop=txlist.scrollHeight;rp.timer=setTimeout(done,700)}
     })();
   }
-  function tally(){ // winners across every recorded run, by version: the start of an experiment
-    var t={plain:{},checked:{}};RUNS.forEach(function(r){t[r.version][r.winner]=(t[r.version][r.winner]||0)+1});
-    var f=function(v){var o=t[v],n=(o['for']||0)+(o.against||0);return n?'for '+(o['for']||0)+', against '+(o.against||0)+' of '+n:'none yet'};
-    return 'All our recorded runs: plain debate: '+f('plain')+' · with the fact checker: '+f('checked');
+  function tally(){ // this page replays one run of each version; this is every run we recorded on the motion
+    return 'We recorded three of each on this motion and replay one here. All six: plain debate: for 2, against 1 · with the fact checker: for 1, against 2';
   }
   function picker(){
     var v=on?'checked':'plain', mine=RUNS.filter(function(r){return r.version===v}), p=document.getElementById('txpick');
-    p.innerHTML='';
+    p.innerHTML=''; p.hidden=mine.length<2;
     mine.forEach(function(r,i){var b=document.createElement('button');b.type='button';b.className='txbtn'+(r===rp.run?' cur':'');
       b.textContent='run '+(i+1);b.title='Replay recorded run '+(i+1);
       b.addEventListener('click',function(){pickIdx[v]=i;start(r)});p.appendChild(b)});
