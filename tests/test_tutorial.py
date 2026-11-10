@@ -1,4 +1,5 @@
-"""The tutorial, replayed: every file and command on tutorial.html, in page order.
+"""The tutorial, replayed: every file and command on tutorial.html and its step pages
+(tutorial-1.html onward), in page order.
 
 Files are <pre data-file="hello/...">: written (or replaced) in a fresh folder.
 Edits are <div class="diff" data-edit="hello/...">, shown as a diff: its "-" and
@@ -23,6 +24,7 @@ from __future__ import annotations
 
 import html.parser
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -129,7 +131,13 @@ def main() -> int:
             stream.reconfigure(encoding="utf-8", errors="replace")
     page = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1] / "tutorial.html"
     parser = Steps()
-    parser.feed(page.read_text(encoding="utf-8"))
+    text = page.read_text(encoding="utf-8")
+    parser.feed(text)
+    # The tutorial is one page per step: the contents page links tutorial-1.html onward,
+    # and they are replayed in order, as one reader working through them would.
+    for name in sorted(set(re.findall(r'href="(tutorial-\d+\.html)"', text)),
+                       key=lambda n: int(re.search(r"\d+", n).group())):
+        parser.feed((page.parent / name).read_text(encoding="utf-8"))
     files = sum(1 for s in parser.steps if s[0] in ("file", "edit"))
     runs = sum(1 for s in parser.steps if s[0] == "run")
     if not files or not runs:

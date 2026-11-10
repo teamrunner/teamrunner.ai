@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 2: Your first real run — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 2 of 9: Your first real run.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="2">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="2" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 2 of 9</span><div class="bar"><i style="width:22%"></i></div></div>
+<h2 id="first-run"><span class="stepno">Step 2</span>Your first real run</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>.</p>
+<div class="via" data-via="browser">
+<p>Select <code>team.yaml</code> to see it. Then try a real run: choose <b class="ui">Run…</b>, clear <b class="ui">Rehearse (free, no model)</b> and choose <b class="ui">Run with models</b>. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs.</p>
+</div>
+<div class="via" data-via="terminal">
+<p><code>explain</code> shows it beside each member:</p>
+<code class="cmd" data-run data-expect="for">teamrunner explain hello</code>
+<p>Try a real run. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs:</p>
+<code class="cmd" data-run="skip">teamrunner run hello</code>
+<div class="panel out"><div class="cap"><span class="label">without a key</span></div><pre>✗ the run cannot start:
+  OPENROUTER_API_KEY   for, against and judge use openrouter/google/gemma-4-31b-it,
+                       which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
+                       your shell or the package
+                       add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env</pre></div>
+</div>
+<p>The examples run on Gemma 4 through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. Make an account there, add a few dollars of credit and create a key. TeamRunner keeps keys in one file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. One key is all you need.</p>
+<div class="via" data-via="browser">
+<p>Choose <b class="ui">Set up keys</b>, pick <code>OPENROUTER_API_KEY</code>, paste the key into <b class="ui">New key</b> and choose <b class="ui">Save key</b>. The page writes it to that file and never shows it again; <b class="ui">Check keys and models online</b> checks that it works.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Put your key in it:</p>
+<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENROUTER_API_KEY=sk-or-...
+</pre></div>
+</div>
+<div class="via" data-via="browser">
+<p>Run it again, and this time give it your own topic: in <b class="ui">Run…</b>, choose <b class="ui">A message</b> under <b class="ui">What to give the team</b> and type <code>Four-day weeks make teams more productive</code>. The message fills in <code>{{topic}}</code>. Tick <b class="ui">Rehearse (free, no model)</b> to try a message for free.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Run it again, and this time give it your own topic. <code>--message</code> fills in <code>{{topic}}</code>:</p>
+<code class="cmd" data-run="skip">teamrunner run hello --message &quot;Four-day weeks make teams more productive&quot;</code>
+<p>You can rehearse with a message too, for free:</p>
+<code class="cmd" data-run data-expect="Four-day weeks">teamrunner run hello --rehearse --message &quot;Four-day weeks make teams more productive&quot;</code>
+</div>
+<p>Every run is kept in <code>hello/runs/</code>, one folder each, named for when it ran. Its <code>output.md</code> is what the team produced. Next to it, <code>events.jsonl</code> holds every turn, with every prompt, reply, model, token and cost.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Runs</b> lists them, newest first, with each verdict. Select one to read its <b class="ui">Conversation</b>, its <b class="ui">Output</b> and its <b class="ui">Record</b>; the links beside them open the files themselves.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Open the newest one's <code>output.md</code> in your text editor. To list the runs, newest first, with each verdict:</p>
+<code class="cmd" data-run data-expect="winner">teamrunner runs hello</code>
+<p>And to see the newest one again, as it printed:</p>
+<code class="cmd" data-run data-expect="judge">teamrunner runs hello latest</code>
+</div>
+<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and add that provider's key instead. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
+<div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It costs a cent or two, and you can rehearse what it wrote for free. In a terminal:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
+<div class="nextprev"><a class="tnav" href="tutorial-1.html">← Step 1: Build a team, and rehearse it</a><a class="tnav" href="tutorial-3.html">Step 3: Edit the words →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

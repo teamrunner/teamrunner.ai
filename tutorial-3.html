@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 3: Edit the words — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 3 of 9: Edit the words.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="3">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="3" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 3 of 9</span><div class="bar"><i style="width:33%"></i></div></div>
+<h2 id="prose"><span class="stepno">Step 3</span>Edit the words</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>Everything an agent does comes from its words. Make the critic more aggressive: in <code>hello/02_against.md</code>, replace the last two lines with these:</p>
+<div class="panel"><div class="cap"><span class="label">hello/02_against.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="hello/02_against.md"><div class="m">- You speak once, after your opponent. Rebut their main point, then make</div><div class="m">- your strongest case against the topic, in one paragraph.</div><div class="p">+ You speak once, after your opponent. Attack their weakest claim</div><div class="p">+ directly and without hedging: name it, say why it fails, and give</div><div class="p">+ the strongest counter-evidence you know. Then make your case against</div><div class="p">+ the topic, in one forceful paragraph.</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b> (Ctrl+S, or ⌘S on a Mac). Rehearse to check nothing broke, then run it with models on the same message as before.</p>
+<p>Now compare. In <b class="ui">Runs</b>, tick the two real runs and choose <b class="ui">Compare selected runs</b>: their outputs side by side, and under <b class="ui">Member versions</b>, the paragraph you changed.</p>
+<figure class="shot"><img src="img/ui-compare.png" alt="Two runs of hello compared: for and judge unchanged, against changed from version 1 to version 2, with the removed and added lines" width="1240" height="780" loading="lazy"><figcaption>Two runs compared: TeamRunner numbers each member's versions and shows what changed.</figcaption></figure>
+</div>
+<div class="via" data-via="terminal">
+<p>Rehearse to check nothing broke, then run it for real on the same topic as before:</p>
+<code class="cmd" data-run data-expect="completed">teamrunner run hello --rehearse</code>
+<code class="cmd" data-run="skip">teamrunner run hello --message &quot;Four-day weeks make teams more productive&quot;</code>
+<p>Now compare. <code>teamrunner runs hello</code> lists both real runs with their verdicts. Open the two <code>output.md</code> files side by side: same team, same topic, one paragraph changed.</p>
+</div>
+<p>Did the judge decide differently? With one run of each you can't tell whether the words did it or chance did; models are random. Step 8 deals with that.</p>
+<div class="nextprev"><a class="tnav" href="tutorial-2.html">← Step 2: Your first real run</a><a class="tnav" href="tutorial-4.html">Step 4: Take control of the flow →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

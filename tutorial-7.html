@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 7: Private information — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 7 of 9: Private information.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="7">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="7" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 7 of 9</span><div class="bar"><i style="width:78%"></i></div></div>
+<h2 id="private"><span class="stepno">Step 7</span>Private information</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>So far everyone knows the same things. The example <code>hiring_committee</code> is a committee choosing a Director of Operations, where each member also knows two facts the others don't. Copy it into a team called <code>committee</code>:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>committee</code>, from <code>hiring_committee</code>.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="committee">teamrunner new committee --from hiring_committee</code>
+</div>
+<p>What everyone has read, the application packet, is in <code>team.yaml</code>. What only one member knows is written into that member's own file:</p>
+<div class="panel"><div class="cap"><span class="label">committee/chen.md</span><span class="label">part of it</span></div><pre>You also sat in on the reference calls, and your notes say:
+
+- Asked whether they would hire Avery again, Avery&#x27;s former manager
+  said only that it was company policy not to comment.
+- Blake&#x27;s former manager said Blake was the best operations person
+  they had worked with.
+
+The others have not seen your notes.</pre></div>
+<p>The others learn Chen's notes only if Chen says them in the meeting. Each member answers <code>preferred</code> every turn, whom they would hire right now, so you can see when minds change; the clerk records the <code>decision</code>. Rehearse it, then run it for real.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Run…</b> twice: once rehearsed, once <b class="ui">Run with models</b>. <b class="ui">Runs</b> shows each run's decision.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="completed">teamrunner run committee --rehearse</code>
+<code class="cmd" data-run="skip">teamrunner run committee</code>
+<code class="cmd" data-run data-expect="decision">teamrunner runs committee</code>
+</div>
+<p>The packet makes Avery look best; the six private facts together make Blake the clear choice. In 1985 Stasser and Titus found that human groups mostly discuss what they all already know, and pick Avery. What did your committee do?</p>
+<div class="nextprev"><a class="tnav" href="tutorial-6.html">← Step 6: Tools, through a toolkeeper</a><a class="tnav" href="tutorial-8.html">Step 8: A first experiment, by hand →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

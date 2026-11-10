@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why a team — TeamRunner</title>
+<meta name="description" content="Ten reasons to split AI work across a team of agents, each borrowed from how organizations work, with the research behind it.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Why a team — TeamRunner">
+<meta property="og:description" content="Ten reasons to split AI work across a team of agents, each borrowed from how organizations work, with the research behind it.">
+<meta property="og:url" content="https://teamrunner.ai/why">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html" aria-current="page" style="color:var(--ink)">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main id="top">
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Why a team, and not one big prompt?</p>
+        <h2>For the same reasons organizations don’t hire one person to do everything</h2>
+        <p>A single agent with every instruction, every tool and every document piles it all into one prompt. Splitting the work across agents lets you give each one a narrow job, the right model, only the tools it needs, and a place in a flow you can read. Each reason below comes with the organizational idea it borrows and the research behind it.</p>
+      </div>
+      <div class="whys">
+        <article id="r1">
+          <p class="no">01</p>
+          <h3>One job per agent</h3>
+          <p class="org">A job description, not “other duties as assigned”</p>
+          <p>Each agent’s file holds one objective in plain words. A fact checker that only checks facts can’t drift into arguing, and its instructions are short enough to read, test and fix on their own.</p>
+          <p class="src">Anthropic’s research agent splits work across subagents with “clearly divided responsibilities”: <a href="https://www.anthropic.com/engineering/multi-agent-research-system">How we built our multi-agent research system</a>, 2025.</p>
+        </article>
+        <article id="r2">
+          <p class="no">02</p>
+          <h3>Smaller contexts, steadier behaviour</h3>
+          <p class="org">A briefing, not the whole archive</p>
+          <p>Models get less reliable as their input grows, even on simple tasks, and miss what sits in the middle of a long prompt. In a team each agent carries only its own instructions, and a tool’s answer goes only to whoever asked: a 20,000-character web page the fact checker reads never lands in the debaters’ prompts.</p>
+          <p class="src"><a href="https://trychroma.com/research/context-rot">Context Rot</a>, Chroma, 2025, 18 models; <a href="https://arxiv.org/abs/2307.03172">Lost in the Middle</a>, Liu et al., 2023.</p>
+        </article>
+        <article id="r3">
+          <p class="no">03</p>
+          <h3>The right model for each job</h3>
+          <p class="org">You don’t staff every desk with a senior partner</p>
+          <p>The team names one model in <code>team.yaml</code>, and any agent can name its own with a <code>model:</code> line. Put the judge on a strong model and the drafters on a cheap or free local one, or mix providers in one team.</p>
+          <p class="src">Sending only the hard calls to the strong model cut cost by over 2× with little loss in quality: <a href="https://arxiv.org/abs/2406.18665">RouteLLM</a>, Ong et al., 2024.</p>
+        </article>
+        <article id="r4">
+          <p class="no">04</p>
+          <h3>Costs you can see, and bound</h3>
+          <p class="org">A budget line for each department</p>
+          <p>Every turn records its tokens and cost, by agent. Every loop must carry a count, so a run always ends. A toolkeeper caps calls per turn. A missing key stops the run before anything is spent, and a rehearsal costs nothing at all.</p>
+          <p class="src">Teams of agents can burn through tokens fast, and token use alone explained 80% of the variance in Anthropic’s results, so measure it: <a href="https://www.anthropic.com/engineering/multi-agent-research-system">Anthropic</a>, 2025.</p>
+        </article>
+        <article id="r5">
+          <p class="no">05</p>
+          <h3>Guardrails where the tools are</h3>
+          <p class="org">The tool crib, not a power drill on every desk</p>
+          <p>Agents never hold tools. A <a class="t" tabindex="0" data-tip="A member with no model that holds one tool, such as reading the web, and decides who may use it and how often, like the attendant at a factory's tool crib.">toolkeeper</a> does, with a plain access list: who may use it, how often, with what limits. The sandbox runs Python with no internet. TeamRunner enforces the terms, not the agent’s good behaviour. <a href="tutorial-6.html">See it in the tutorial</a>.</p>
+          <p class="src">Least privilege for agents is the standard fix for “excessive agency”: <a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">OWASP Top 10 for LLM Applications, LLM06</a>, 2025.</p>
+        </article>
+        <article id="r6">
+          <p class="no">06</p>
+          <h3>A flow you can read, control and change</h3>
+          <p class="org">The meeting rules, written down</p>
+          <p>Who acts next is a script in <code>chair.md</code>, drawn as a diagram. Decisions are typed answers, like <code>pass</code> or <code>fail</code>, and there are no hidden if-statements. To change how the team works, you change a line.</p>
+          <p class="src">Most failures of multi-agent systems trace to how the system is designed, specs and hand-offs, not only to the model: <a href="https://arxiv.org/abs/2503.13657">Why Do Multi-Agent LLM Systems Fail?</a>, Cemri et al., NeurIPS 2025.</p>
+        </article>
+        <article id="r7">
+          <p class="no">07</p>
+          <h3>Checks and balances</h3>
+          <p class="org">Separation of duties: the writer isn’t the editor</p>
+          <p>The agent that makes a claim isn’t the one that checks it. A fact checker can send a speech back; a judge hears both sides and the checker’s verdicts before ruling.</p>
+          <p class="src">Models that debate and check each other got more factual and reasoned better: <a href="https://arxiv.org/abs/2305.14325">Improving Factuality and Reasoning through Multiagent Debate</a>, Du et al., 2023.</p>
+        </article>
+        <article id="r8">
+          <p class="no">08</p>
+          <h3>Information where it belongs</h3>
+          <p class="org">Need to know</p>
+          <p>A fact can live in one member’s own file, so only that member knows it until they choose to share it. That is how the <a href="examples/hiring-committee.html">hiring committee</a> works. Sealing whole conversations from some members is <a href="roadmap.html">coming next</a>.</p>
+          <p class="src">The classic hidden-profile study of groups: Stasser &amp; Titus, 1985.</p>
+        </article>
+        <article id="r9">
+          <p class="no">09</p>
+          <h3>Every step on the record</h3>
+          <p class="org">Minutes for every meeting</p>
+          <p>Each run keeps its own folder on your disk: every prompt and reply, every decision about who acts next, every tool call, the model that answered, tokens, time and cost. Compare two runs side by side. No agent can read or change the record.</p>
+          <p class="src">You can only fix a hand-off you can see. Plain files, no dashboard to log in to.</p>
+        </article>
+        <article id="r10">
+          <p class="no">10</p>
+          <h3>Improve by experiment, not by hunch</h3>
+          <p class="org">Pilot it, then make it policy</p>
+          <p>A team isn’t automatically better than one agent; studies find the gains are often small. So treat the structure as a hypothesis: change one line, rehearse for free, run both versions a few times, and compare.</p>
+          <p class="src">Gains over single agents “often remain minimal” on popular benchmarks: <a href="https://arxiv.org/abs/2503.13657">Cemri et al.</a>, 2025. That is the case for testing.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
+      <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
+      <p style="margin-top:8px">Visits are counted with <a href="https://www.goatcounter.com/">GoatCounter</a>: no cookies, nothing that identifies you.</p>
+      <p style="margin-top:8px">If you sign up for news, we keep your email, and what you study if you tell us, only to write to you about TeamRunner. Every email has an unsubscribe link, and a note to hello@teamrunner.ai deletes it.</p>
+    </div>
+    <div><h4>Learn</h4><ul><li><a href="why.html">Why a team</a></li><li><a href="install.html">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="examples.html">Examples</a></li><li><a href="docs.html#glossary">Glossary</a></li></ul></div>
+    <div><h4>Reference</h4><ul><li><a href="docs.html">Docs</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><a href="mailto:hello@teamrunner.ai">hello@teamrunner.ai</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
+  </div>
+</footer>
+
+</body>
+</html>

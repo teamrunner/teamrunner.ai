@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 1: Build a team, and rehearse it — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 1 of 9: Build a team, and rehearse it.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="1">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="1" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 1 of 9</span><div class="bar"><i style="width:11%"></i></div></div>
+<h2 id="rehearse"><span class="stepno">Step 1</span>Build a team, and rehearse it for free</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>You will build a small debate from nothing: one agent for a topic, one against it, and a judge. We give you every agent's words to paste, so nothing can go wrong, but every file in the team is one you made.</p>
+<div class="via" data-via="browser">
+<p>Open a <a class="t" tabindex="0" data-tip="The window where you type commands: Terminal on a Mac, PowerShell on Windows. You type a line and press Return.">terminal</a> in the folder where you want to keep your teams, and open TeamRunner's page. This is the one command you need:</p>
+<code class="cmd" data-run="skip">teamrunner ui</code>
+<p>A tab opens in your browser. Keep the terminal open while you work; <code>Ctrl+C</code> there closes the page. The page works only on your computer, on the files in that folder.</p>
+<p>Make a new team called <code>hello</code>: choose <b class="ui">New team</b>, type <code>hello</code>, keep <b class="ui">Empty team</b> under <b class="ui">Start from</b> and choose <b class="ui">Continue</b>. The team's one file, <code>team.yaml</code>, opens in the editor.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Open a terminal in the folder where you want to keep your teams, and make a new, empty team called <code>hello</code>:</p>
+<code class="cmd" data-run data-expect="hello">teamrunner new hello</code>
+<p>Open <code>hello/team.yaml</code> in your text editor.</p>
+</div>
+<p><code>team.yaml</code> says what the team is for. Fill in its description and add two settings. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>. Leave the <code>id:</code> line as it is: TeamRunner uses it to keep the team's history together.</p>
+<div class="panel"><div class="cap"><span class="label">hello/team.yaml</span><span class="label">change this line</span></div><div class="diff" data-edit="hello/team.yaml"><div class="m">- description: ""   # one line: what this team does</div><div class="p">+ description: A debate, one turn each, then a judge decides</div><div class="p">+ </div><div class="p">+ default_model: openrouter/google/gemma-4-31b-it</div><div class="p">+ </div><div class="p">+ default_inputs:</div><div class="p">+   topic: "Remote work makes teams more productive"</div></div></div>
+<p><code>default_model:</code> is the model every agent uses; you'll need it in Step 2. <code>default_inputs:</code> gives the team its topic, until you give it another.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b> (Ctrl+S, or ⌘S on a Mac). Now the first agent: choose <b class="ui">New member</b>, name it <code>01_for.md</code>, and replace what is in it with these lines:</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Save. Now the first agent: make a file <code>hello/01_for.md</code> with these lines:</p>
+</div>
+<div class="panel"><div class="cap"><span class="label">hello/01_for.md</span></div><pre data-file="hello/01_for.md">---
+description: Argues in favor of the topic
+---
+You are debating in favor of this topic:
+
+&gt; {{topic}}
+
+You speak once, first. Make your strongest case in one paragraph.
+</pre></div>
+<p>Each <code>.md</code> file in a team is one agent. Between the two <code>---</code> lines are the agent's settings (its <a class="t" tabindex="0" data-tip="The settings block between the two --- lines at the top of an agent&#x27;s file: a description, which model, what answer it must give.">frontmatter</a>). Below them are its instructions, in plain words. <code>{{topic}}</code> is filled in with the topic from <code>team.yaml</code>.</p>
+<p>The second agent argues against. Make <code>02_against.md</code> the same way:</p>
+<div class="panel"><div class="cap"><span class="label">hello/02_against.md</span></div><pre data-file="hello/02_against.md">---
+description: Argues against the topic
+---
+You are debating against this topic:
+
+&gt; {{topic}}
+
+You speak once, after your opponent. Rebut their main point, then make
+your strongest case against the topic, in one paragraph.
+</pre></div>
+<p>And the judge, <code>03_judge.md</code>:</p>
+<div class="panel"><div class="cap"><span class="label">hello/03_judge.md</span></div><pre data-file="hello/03_judge.md">---
+description: Decides who argued better
+output:
+  winner: [for, against]
+  reasoning: ""
+---
+You have heard one speech from each side on:
+
+&gt; {{topic}}
+
+Decide which side argued better — judge argument quality and logical
+clarity, not your own opinion of the topic. Announce the winner and
+explain your decision in one paragraph.
+</pre></div>
+<p>The judge has one more setting, <code>output:</code>. It makes the judge answer in a fixed form: <code>winner</code> must be <code>for</code> or <code>against</code>, so you can count verdicts later. Step 5 says more.</p>
+<p>That is the whole team: four text files you wrote. Now <b>rehearse</b> it: run all of it with no model. Each agent says placeholder words, and the judge's answer is picked at random. It costs nothing and needs no key, and it shows whether the team runs the way you meant.</p>
+<div class="via" data-via="browser">
+<p>Save, and look under <b class="ui">Validation</b>: if you mistyped something, it points at the line. Then choose <b class="ui">Run…</b>, keep <b class="ui">Rehearse (free, no model)</b> ticked, and choose <b class="ui">Rehearse team</b>. The conversation appears turn by turn, and stays under <b class="ui">Runs</b> afterwards:</p>
+<figure class="shot"><img src="img/ui-conversation.png" alt="TeamRunner&#x27;s page showing a rehearsal of hello: completed, 3 turns, $0.0000, and the first turn, for, with placeholder words" width="1240" height="780" loading="lazy"><figcaption>A rehearsal in <b class="ui">Runs</b>: every turn, what each member could read, and the cost.</figcaption></figure>
+</div>
+<div class="via" data-via="terminal">
+<p>Save, and check the team: <code>validate</code> reads every file and points at any mistake, with the line.</p>
+<code class="cmd" data-run data-expect="hello">teamrunner validate hello</code>
+<code class="cmd" data-run data-expect="completed">teamrunner run hello --rehearse</code>
+<div class="panel out"><div class="cap"><span class="label">what you see</span></div><pre>run · hello · default input topic: &quot;Remote work makes teams more productive&quot;
+rehearsal · no model is called; the words are placeholders and the answers random
+for                                                          0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 1.”
+against                                                      0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 2.”
+judge                       winner = for                     0.0s   $0.0000
+    “[rehearsal] placeholder words, turn 3.”
+
+completed · 3 turns · 0.0s · ≈ $0.0000
+hello/runs/2026-11-05_093012_hello</pre></div>
+</div>
+<p>There is no file saying who speaks when, so each member takes one turn, in the order of their file names: <code>01_for</code>, <code>02_against</code>, <code>03_judge</code>. The numbers set the order and are not part of the names.</p>
+<div class="nextprev"><a href="install.html">← Install</a><a class="tnav" href="tutorial-2.html">Step 2: Your first real run →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

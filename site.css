@@ -446,3 +446,15 @@ h2.hook em{font-style:italic;color:var(--accent)}
   .ftree .files button{padding:4px 8px}
   .ftree .fn .ic{display:none}
 }
+
+/* Home: two ways to work, side by side */
+.ways{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:28px;align-items:start;margin-top:36px}
+.ways .shot{margin:0}
+@media (max-width:880px){.ways{grid-template-columns:minmax(0,1fr)}}
+.signup{margin-top:8px}
+.notify input[name="metadata__study"]{flex-basis:100%;order:3}
+
+/* Tutorial: one page per step */
+.progress{display:grid;gap:6px;margin-bottom:28px;font-size:var(--s1);color:var(--ink-2);font-family:var(--f-mono)}
+.progress .bar{height:4px;background:var(--rule);border-radius:2px;overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--accent)}

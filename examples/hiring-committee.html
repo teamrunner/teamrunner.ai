@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The hiring committee — TeamRunner</title>
+<meta name="description" content="Three AI agents hire for a food bank, each holding facts the others lack. Swap one line of chair.md, run both versions, and see whether the committee finds them.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="The hiring committee — TeamRunner">
+<meta property="og:description" content="Three AI agents hire for a food bank, each holding facts the others lack. Swap one line of chair.md, run both versions, and see whether the committee finds them.">
+<meta property="og:url" content="https://teamrunner.ai/examples/hiring-committee">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../site.css">
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="../count.js" defer></script>
+<script src="../signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="../index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="../why.html">Why</a>
+      <a href="../install.html">Install</a>
+      <a href="../tutorial.html">Tutorial</a>
+      <a href="../examples.html" aria-current="page" style="color:var(--ink)">Examples</a>
+      <a href="../roadmap.html">Roadmap</a>
+      <a href="../docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main id="top">
+  <section class="band" id="hiring-committee">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">Example · <code style="text-transform:none">hiring_committee</code></p>
+        <h2 class="hook">Every fact the committee needs is in the room. <em>Does it find them?</em></h2>
+        <p>In 1985 Stasser and Titus showed that human groups mostly discuss what they all already know, and so miss the facts that would change their decision. It is one of the most replicated findings about how groups decide. With TeamRunner you can ask whether a committee of AI agents falls into the same trap, and what gets it out. It ships as an example, so you can run it today.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The task</span>
+            <h3>Three members, three candidates, and facts no one person has</h3>
+            <p>The committee is hiring a Director of Operations for a food bank. Everyone has read the same packet, which makes Avery look best. Each member also holds two facts the others don’t, written into that member’s own file.</p>
+            <p>Alone, each member would still choose Avery. With all six facts on the table, Blake is the clear choice.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">What everyone knows</span><span class="label">team.yaml</span></div>
+            <div class="cands">
+              <div class="cand lead"><b>Avery</b><span>12 years · ran a $20M budget · strongest interview · MBA · under budget three years running</span></div>
+              <div class="cand"><b>Blake</b><span>6 years, at one food bank · promoted twice · never managed more than $3M · halting interview</span></div>
+              <div class="cand"><b>Casey</b><span>9 years in retail logistics · bilingual · no nonprofit experience</span></div>
+            </div>
+            <div class="cap" style="border-top:1px solid var(--rule)"><span class="label">What only one member knows</span><span class="label">each member’s own file</span></div>
+            <div class="private">
+              <div><p class="who">chen.md <i>reference calls</i></p><p><span class="neg">Avery</span> Former manager would not say whether they would rehire.</p><p><span class="pos">Blake</span> “The best operations person I have worked with.”</p></div>
+              <div><p class="who">diaz.md <i>finance office</i></p><p><span class="neg">Avery</span> Part of one under-budget year came from a one-time grant.</p><p><span class="pos">Blake</span> Cost per meal delivered fell 18% in two years.</p></div>
+              <div><p class="who">okafor.md <i>human resources</i></p><p><span class="neg">Avery</span> Team turnover 28%, against 18% across the sector.</p><p><span class="pos">Blake</span> Regular volunteers grew from 250 to 400.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The change</span>
+            <h3>Change how the meeting is run: swap one line for another</h3>
+            <p>A well-known fix from the research is to have everyone report what they know before anyone gives an opinion. In TeamRunner the way a meeting runs lives in one file, <code>chair.md</code>. Both versions are already written there. Put a <code>#</code> in front of one and take it off the other. Nothing else changes.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">chair.md</span><span class="label">open discussion → share first</span></div>
+            <div class="diff" aria-label="What changes in chair.md: the open-discussion line is turned off and the share-first line is turned on">
+<div class="x">  # How the meeting is run. This is the line the experiment changes.</div>
+<div class="m">- meeting(*3) -> clerk:record</div>
+<div class="p">+ # meeting(*3) -> clerk:record</div>
+<div class="m">- # chen:share_facts -> diaz:share_facts -> okafor:share_facts -> meeting(*2) -> clerk:record</div>
+<div class="p">+ chen:share_facts -> diaz:share_facts -> okafor:share_facts -> meeting(*2) -> clerk:record</div>
+<div class="x"></div>
+<div class="x">  meeting = chen -> diaz -> okafor</div>
+            </div>
+            <div class="defects"><div style="grid-template-columns:minmax(0,1fr)"><span>Red is the old line, green the new one: this view of a change is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>. A line starting with <code>#</code> is a note for people, and is not run.</span></div></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="txt">
+            <span class="stepno">The run</span>
+            <h3>Run both versions, a few times each, and compare</h3>
+            <p>Every turn records whom each member would hire right now, so you can see when minds change and whose facts changed them. Models are random, so run each version more than once; <code>teamrunner runs</code> lists every run with the committee’s decision.</p>
+            <p>Running each version 25 times and getting one table is <a href="../roadmap.html">coming soon</a>. <a href="../tutorial-8.html">Tutorial step 8</a> does it by hand today.</p>
+          </div>
+          <div class="panel">
+            <div class="cap"><span class="label">in your terminal</span><span class="label">works today</span></div>
+<pre>teamrunner new open --from hiring_committee
+teamrunner new share_first --from hiring_committee
+<span style="color:var(--ink-2)"># swap the line in share_first/chair.md, then:</span>
+teamrunner run open
+teamrunner run share_first
+teamrunner runs open
+teamrunner runs share_first</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="nextprev"><a href="../examples.html">← All six examples</a><a href="../tutorial-7.html">Tutorial step 7: private information →</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
+      <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
+      <p style="margin-top:8px">Visits are counted with <a href="https://www.goatcounter.com/">GoatCounter</a>: no cookies, nothing that identifies you.</p>
+      <p style="margin-top:8px">If you sign up for news, we keep your email, and what you study if you tell us, only to write to you about TeamRunner. Every email has an unsubscribe link, and a note to hello@teamrunner.ai deletes it.</p>
+    </div>
+    <div><h4>Learn</h4><ul><li><a href="../why.html">Why a team</a></li><li><a href="../install.html">Install</a></li><li><a href="../tutorial.html">Tutorial</a></li><li><a href="../examples.html">Examples</a></li><li><a href="../docs.html#glossary">Glossary</a></li></ul></div>
+    <div><h4>Reference</h4><ul><li><a href="../docs.html">Docs</a></li><li><a href="../roadmap.html">Roadmap</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><a href="mailto:hello@teamrunner.ai">hello@teamrunner.ai</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
+  </div>
+</footer>
+
+</body>
+</html>

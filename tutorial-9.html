@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 9: Bigger organizations — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 9 of 9: Bigger organizations.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="9">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="9" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 9 of 9</span><div class="bar"><i style="width:100%"></i></div></div>
+<h2 id="bigger"><span class="stepno">Step 9</span>Bigger organizations</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>Two larger examples show how far the same few ideas go. <code>orchestrators_lite</code> is five engineers reviewing code with planted bugs, in rounds, one of them writing the report. All five share one model profile in <code>models/</code>, so changing the model there changes it for everyone. Copy it into a team called <code>review</code>, read it back and rehearse it:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>review</code>, from <code>orchestrators_lite</code>; then <b class="ui">Flow diagram</b> and a rehearsal.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="review">teamrunner new review --from orchestrators_lite</code>
+<code class="cmd" data-run data-expect="emma">teamrunner explain review</code>
+<code class="cmd" data-run data-expect="completed">teamrunner run review --rehearse</code>
+</div>
+<p><code>reference_check</code> checks every reference in a paper: that it exists, that its details are right, and that the cited paper says what the citing sentence claims. Seven members and three toolkeepers, which read the paper and look references up in public catalogues. Copy it into a team called <code>refs</code>, and give it a paper of your own, as a link or a PDF:</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b>, <code>refs</code>, from <code>reference_check</code>. Then <b class="ui">Run…</b>, choose <b class="ui">A file</b> under <b class="ui">What to give the team</b>, and pick your PDF.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="refs">teamrunner new refs --from reference_check</code>
+<code class="cmd" data-run data-expect="toolkeeper">teamrunner explain refs</code>
+<code class="cmd" data-run="skip">teamrunner run refs --file my_paper.pdf</code>
+</div>
+<p>Rehearsing it may end early: the reader's answer, whether it could read the whole paper, is random in a rehearsal, and the team stops when it can't. That is the flow working.</p>
+<h2 id="next">Where to go next</h2>
+<ul><li><b>Start from the example closest to yours.</b> <a href="examples.html">All six</a>, with what each adds.</li><li><b>Read the reference.</b> Every file and every word a team may use is in the <a href="https://github.com/teamrunner/teamrunner#readme">documentation</a>. Unsure of a word? See the <a href="docs.html#glossary">glossary</a>.</li><li><b>See what's coming,</b> and ask to hear when experiments arrive: <a href="roadmap.html">what's coming</a>.</li><li><b>Tell us what you found.</b> <a href="https://github.com/teamrunner/teamrunner/issues/new/choose">Open an issue</a>, or write to hello@teamrunner.ai.</li></ul>
+<div class="signup" data-place="tutorial"></div>
+<div class="nextprev"><a class="tnav" href="tutorial-8.html">← Step 8: A first experiment, by hand</a><a href="examples.html">The examples →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

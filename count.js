@@ -4,6 +4,8 @@
 //   copy-<os>-<step>   a Copy button on install.html (data-count on the button)
 //   out-pypi, out-github, out-issues   links that leave the site
 //   tutorial-browser, tutorial-terminal   the tutorial's "follow in" switch
+//   tutorial-copy-<step>   text copied from a command or file on a tutorial step page
+//   signup-<place>   the news signup sent (signup.js)
 (function(){
   function count(name){
     if(window.goatcounter&&window.goatcounter.count)
@@ -21,4 +23,9 @@
       else if(a.hostname==='github.com') count(a.pathname.indexOf('/issues')>=0?'out-issues':'out-github');
     }
   },true);
+  document.addEventListener('copy',function(e){
+    var m=document.querySelector('main[data-step]'), t=e.target;
+    if(!m||m.dataset.step==='0'||!t||!t.closest) return;
+    if(t.closest('code.cmd, pre, .diff')) count('tutorial-copy-'+m.dataset.step);
+  });
 })();

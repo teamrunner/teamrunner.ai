@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Examples — TeamRunner</title>
+<meta name="description" content="The six teams that ship with TeamRunner, from a three-member round robin to a reference checker. Copy one by name and change it.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Examples — TeamRunner">
+<meta property="og:description" content="The six teams that ship with TeamRunner, from a three-member round robin to a reference checker. Copy one by name and change it.">
+<meta property="og:url" content="https://teamrunner.ai/examples">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html">Tutorial</a>
+      <a href="examples.html" aria-current="page" style="color:var(--ink)">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main id="top">
+  <section class="band" id="examples">
+    <div class="wrap">
+      <div class="intro">
+        <p class="label">All six examples</p>
+        <h2>Start from the one closest to what you want</h2>
+        <p>Copy one by name and it is yours to change: <code>teamrunner new my_team --from fact_checked</code></p>
+      </div>
+      <div class="exlist">
+        <div class="ex"><code>round_robin</code><p>The simplest team: three members and no chair, one turn each in name order, and a typed verdict.</p></div>
+        <div class="ex"><code>multi_agent_debate</code><p>The debate on the <a href="index.html#demo">home page</a>: a chair, with a repeated block of rounds.</p></div>
+        <div class="ex"><code>fact_checked</code><p>The debate with a fact checker that reads the web, and a Python sandbox to check the sums.</p></div>
+        <div class="ex"><code>hiring_committee</code><p>The committee in <a href="examples/hiring-committee.html">the big example</a>: facts only one member knows, kept in that member’s own file.</p></div>
+        <div class="ex"><code>orchestrators_lite</code><p>Five engineers review code against planted bugs, sharing one model profile.</p></div>
+        <div class="ex"><code>reference_check</code><p>Checks every reference in a paper: that it exists, that its details are right, and that it says what the citing sentence claims.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p style="color:var(--ink);font-family:var(--f-mono)">teamrunner</p>
+      <p style="margin-top:8px">Preview release. Until the first announced release, a new version may need changes to teams made with an earlier one.</p>
+      <p style="margin-top:8px">GPL-3.0-or-later, like R. Your teams, runs and results are yours, under any licence you choose.</p>
+      <p style="margin-top:8px">Visits are counted with <a href="https://www.goatcounter.com/">GoatCounter</a>: no cookies, nothing that identifies you.</p>
+      <p style="margin-top:8px">If you sign up for news, we keep your email, and what you study if you tell us, only to write to you about TeamRunner. Every email has an unsubscribe link, and a note to hello@teamrunner.ai deletes it.</p>
+    </div>
+    <div><h4>Learn</h4><ul><li><a href="why.html">Why a team</a></li><li><a href="install.html">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="examples.html">Examples</a></li><li><a href="docs.html#glossary">Glossary</a></li></ul></div>
+    <div><h4>Reference</h4><ul><li><a href="docs.html">Docs</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li><a href="https://github.com/teamrunner/teamrunner/issues/new/choose">GitHub issues</a></li><li><a href="mailto:hello@teamrunner.ai">hello@teamrunner.ai</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/SECURITY.md">Security</a></li></ul></div>
+  </div>
+</footer>
+
+</body>
+</html>

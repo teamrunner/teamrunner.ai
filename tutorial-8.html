@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 8: A first experiment, by hand — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 8 of 9: A first experiment, by hand.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="8">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="8" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 8 of 9</span><div class="bar"><i style="width:89%"></i></div></div>
+<h2 id="experiment"><span class="stepno">Step 8</span>A first experiment, by hand</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>A known fix is to have everyone report what they know before anyone gives an opinion. Compare it with open discussion: make two copies of the committee, <code>open</code> and <code>share_first</code>, one for each way of running the meeting.</p>
+<div class="via" data-via="browser">
+<p><b class="ui">New team</b> twice, both from <code>hiring_committee</code>: <code>open</code> and <code>share_first</code>.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="open">teamrunner new open --from hiring_committee</code>
+<code class="cmd" data-run data-expect="share_first">teamrunner new share_first --from hiring_committee</code>
+</div>
+<p>Both ways are already written in <code>chair.md</code>, one turned off with a <code>#</code>. In <code>share_first/chair.md</code>, swap them: put a <code>#</code> in front of the first line and take it off the second.</p>
+<div class="panel"><div class="cap"><span class="label">share_first/chair.md</span><span class="label">change these lines</span></div><div class="diff" data-edit="share_first/chair.md"><div class="m">- meeting(*3) -&gt; clerk:record</div><div class="p">+ # meeting(*3) -&gt; clerk:record</div><div class="x">  #</div><div class="x">  # Share first: the chair asks each member to report what they know</div><div class="x">  # before anyone gives an opinion, then two rounds of discussion. Put a</div><div class="x">  # `#` in front of the line above and remove it from the line below.</div><div class="m">- # chen:share_facts -&gt; diaz:share_facts -&gt; okafor:share_facts -&gt; meeting(*2) -&gt; clerk:record</div><div class="p">+ chen:share_facts -&gt; diaz:share_facts -&gt; okafor:share_facts -&gt; meeting(*2) -&gt; clerk:record</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>, check <b class="ui">Validation</b>, and rehearse both teams.</p>
+</div>
+<div class="via" data-via="terminal">
+<code class="cmd" data-run data-expect="OK">teamrunner validate share_first</code>
+<code class="cmd" data-run data-expect="10 turns">teamrunner run open --rehearse</code>
+<code class="cmd" data-run data-expect="share_facts">teamrunner run share_first --rehearse</code>
+</div>
+<p>Models are random, so one run of each proves nothing. Run each five times, then tally: count how often each committee chose Blake. Ten real runs cost a few cents.</p>
+<div class="via" data-via="browser">
+<p>The page runs one team at a time, so start each run when the last one has finished: <b class="ui">Run…</b> with models, five times on <code>open</code> and five on <code>share_first</code>. Then, in <b class="ui">Runs</b>, pick each team under <b class="ui">Team</b> and count the decisions.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>On a Mac or Linux:</p>
+<code class="cmd">for i in 1 2 3 4 5; do teamrunner run open; teamrunner run share_first; done</code>
+<p>In PowerShell on Windows:</p>
+<code class="cmd">1..5 | % { teamrunner run open; teamrunner run share_first }</code>
+<p>Each list shows every run's decision:</p>
+<code class="cmd" data-run data-expect="decision">teamrunner runs open</code>
+<code class="cmd" data-run data-expect="decision">teamrunner runs share_first</code>
+</div>
+<div class="aside"><p><b>Coming soon: experiments.</b> One file will name both versions and how many runs of each, and TeamRunner will run them all and give you one CSV for R, Stata or pandas. <a href="roadmap.html">What it will look like</a>.</p></div>
+<div class="nextprev"><a class="tnav" href="tutorial-7.html">← Step 7: Private information</a><a class="tnav" href="tutorial-9.html">Step 9: Bigger organizations →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

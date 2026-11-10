@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 6: Tools, through a toolkeeper — TeamRunner tutorial</title>
+<meta name="description" content="TeamRunner tutorial, step 6 of 9: Tools, through a toolkeeper.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+(function(){var v='browser';try{v=localStorage.getItem('tr-via')||v}catch(e){}
+if(location.hash==='#terminal'||location.hash==='#browser')v=location.hash.slice(1);
+document.documentElement.setAttribute('data-via',v)})();
+</script>
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="count.js" defer></script>
+<script src="signup.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="why.html">Why</a>
+      <a href="install.html">Install</a>
+      <a href="tutorial.html" aria-current="page" style="color:var(--ink)">Tutorial</a>
+      <a href="examples.html">Examples</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="right">
+      <span class="pill">preview</span>
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc" data-step="6">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="6" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 6 of 9</span><div class="bar"><i style="width:67%"></i></div></div>
+<h2 id="tools"><span class="stepno">Step 6</span>Tools, through a toolkeeper</h2>
+<div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
+<p>Agents never hold tools themselves. A tool sits with a <a class="t" tabindex="0" data-tip="A member with no model that holds one tool and decides who may use it and how often, like the attendant at a factory&#x27;s tool crib.">toolkeeper</a>: a member with no model that checks who is asking and enforces the limits, like the attendant at a tool crib. In <code>checked</code>, <code>web.md</code> holds the web, and its <code>access:</code> list says who may use it:</p>
+<div class="panel"><div class="cap"><span class="label">checked/web.md</span><span class="label">the whole file</span></div><pre>---
+description: The web toolkeeper — reads public research records and source pages
+kind: toolkeeper
+tools:
+  read_page: {max_chars: 20000, calls_per_turn: 2}   # no search-service key needed
+access:
+  fact_checker: {calls_per_turn: 3}
+  judge: standard
+---
+I read public web pages and research records. Send me a URL and I return
+its text. The fact checker gets three reads a turn, the judge two.
+
+To find research, use Crossref's public API, with URL-encoded words:
+https://api.crossref.org/works?query.bibliographic=remote+work+productivity&amp;rows=3
+Change the query to match the claim. Records may include abstracts,
+DOIs and source links; follow those links to check the evidence itself.
+You can also send a known public source URL. Do not invent source URLs.
+A title or search match alone is not evidence that a claim is true.
+If a page is unavailable or the evidence is insufficient, say so.</pre></div>
+<p>Above the second <code>---</code> are its settings: one tool, <code>read_page</code>, and the <code>access:</code> list. Below them are its instructions, which go to whoever asks. If a member not on the list asks, the request is refused. TeamRunner enforces these terms, so you don’t rely on the agents behaving well. A lookup is a side trip inside the asker’s own turn, not a step in the flow, so <code>chair.md</code> doesn’t change.</p>
+<p>The fact checker may use it three times a turn; the judge on the standard terms; the debaters, not listed, argue from what they know. Give the side arguing <i>for</i> the web too, once a turn, and the debate is no longer even:</p>
+<div class="panel"><div class="cap"><span class="label">checked/web.md</span><span class="label">add a line</span></div><div class="diff" data-edit="checked/web.md"><div class="x">  access:</div><div class="p">+   for: {calls_per_turn: 1}</div></div></div>
+<div class="via" data-via="browser">
+<p><b class="ui">Save</b>. The plain-words summary under <b class="ui">Flow diagram</b> says who may use what, on which terms. Then rehearse.</p>
+</div>
+<div class="via" data-via="terminal">
+<p><code>explain</code> prints who may use what, on which terms:</p>
+<code class="cmd" data-run data-expect="for may use it">teamrunner explain checked</code>
+<code class="cmd" data-run data-expect="completed">teamrunner run checked --rehearse</code>
+</div>
+<p>Every request, the toolkeeper's yes or no, and what came back are kept in the run. <code>checked</code> also has a second toolkeeper, <code>sandbox.md</code>, which runs Python so the fact checker can check the sums in a claim.</p>
+<div class="nextprev"><a class="tnav" href="tutorial-5.html">← Step 5: Typed answers and decisions</a><a class="tnav" href="tutorial-7.html">Step 7: Private information →</a></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  function mark(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('.via-switch button').forEach(function(b){
+      b.setAttribute('aria-pressed',b.dataset.via===v?'true':'false')})}
+  function carry(){var v=root.getAttribute('data-via');
+    document.querySelectorAll('a.tnav').forEach(function(a){a.href=a.href.split('#')[0]+'#'+v})}
+  mark(); carry();
+  document.querySelectorAll('.via-switch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var top=b.getBoundingClientRect().top;  // keep the clicked switch where it was
+      root.setAttribute('data-via',b.dataset.via);
+      try{localStorage.setItem('tr-via',b.dataset.via)}catch(e){}
+      mark(); carry(); window.scrollBy(0,b.getBoundingClientRect().top-top);
+      try{history.replaceState(null,'','#'+b.dataset.via)}catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>
