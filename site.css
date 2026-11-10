@@ -290,6 +290,8 @@ html[data-via="browser"] .via[data-via="terminal"],html[data-via="terminal"] .vi
 .hero2 .ctas{margin-top:28px}
 .hero2 .note{margin-top:14px;font-size:var(--s1);color:var(--ink-2)}
 .demo-head{display:grid;gap:6px;max-width:48rem;margin-bottom:16px}
+.demo-rule{border:0;border-top:1px solid var(--rule);margin:48px 0 28px}
+.demo-head .soon{margin-left:0}
 .demo-head p:last-child{color:var(--ink-2);font-size:var(--s2)}
 .demo-head code{font-size:.88em}
 .demo{display:grid;grid-template-columns:minmax(0,16rem) minmax(0,1.25fr) minmax(0,1fr);background:var(--panel);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-bottom:80px;box-shadow:0 1px 0 var(--rule),0 18px 40px -28px rgba(20,32,43,.35)}
