@@ -9,7 +9,7 @@
     box.innerHTML=
       '<form class="notify" method="post" target="_blank" action="'+ACTION+'">'
       +'<label for="'+id+'" class="label" style="flex-basis:100%">Tell me when designed experiments arrive</label>'
-      +'<input id="'+id+'" type="email" name="email" placeholder="you@university.edu" autocomplete="email" required>'
+      +'<input id="'+id+'" type="email" name="email" placeholder="Email" autocomplete="email" required>'
       +'<input type="text" name="metadata__study" placeholder="What do you study? (optional)" aria-label="What do you study? (optional)">'
       +'<input type="hidden" name="tag" value="'+place+'">'
       +'<button type="submit">Notify me</button>'
