@@ -1,4 +1,7 @@
-"""Write tutorial.html. Files are <pre data-file>, edits are <div class="diff" data-edit>,
+"""Historical single-page tutorial generator (not the current multi-page publisher).
+Do not run this over tutorial.html: edit tutorial-N.html and replay test_tutorial.py.
+
+Originally: write tutorial.html. Files are <pre data-file>, edits are <div class="diff" data-edit>,
 commands are <code class="cmd" data-run>; tests/test_tutorial.py replays them in page order.
 data-run="skip" marks a command that costs money (a real run) or opens a browser, shown
 but not replayed.
@@ -179,10 +182,10 @@ p("Now <b>rehearse</b> the team: run all of it with no model. Each agent says pl
 with via("browser"):
     p("Choose " + ui("Run…") + ", keep " + ui("Rehearse (free, no model)") + " ticked, and choose "
       + ui("Rehearse team") + ". The conversation appears turn by turn, and stays under "
-      + ui("Runs") + " afterwards:")
+      + ui("Run history") + " afterwards:")
     shot("ui-conversation.png", "TeamRunner's page showing a rehearsal of hello: completed, "
          "3 turns, $0.0000, and the first turn, for, with placeholder words",
-         "A rehearsal in " + ui("Runs") + ": every turn, what each member could read, and the cost.")
+         "A rehearsal in " + ui("Run history") + ": every turn, what each member could read, and the cost.")
 with via("terminal"):
     run("teamrunner run hello --rehearse", expect="completed")
     output("""run · hello · default input topic: "Remote work makes teams more productive"
@@ -223,7 +226,7 @@ with via("terminal"):
                        which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
                        your shell or the package
                        add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env""", cap="without a key")
-p("The examples run on Gemma 4 through <a href=\"https://openrouter.ai\">OpenRouter</a>, one key "
+p("This tutorial selects Gemma 4 through <a href=\"https://openrouter.ai\">OpenRouter</a>, one key "
   "for many providers' models. Make an account there, add a few dollars of credit and create a "
   "key. TeamRunner keeps keys in one file, <code>~/.teamrunner/.env</code>: a file called "
   "<code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never "
@@ -232,7 +235,7 @@ p("The examples run on Gemma 4 through <a href=\"https://openrouter.ai\">OpenRou
 with via("browser"):
     p("Choose " + ui("Set up keys") + ", pick <code>OPENROUTER_API_KEY</code>, paste the key into "
       + ui("New key") + " and choose " + ui("Save key") + ". The page writes it to that file and "
-      "never shows it again; " + ui("Check keys and models online") + " checks that it works.")
+      "never shows it again; " + ui("Validate") + " checks that it works.")
 with via("terminal"):
     p("Put your key in it:")
     file("~/.teamrunner/.env", "OPENROUTER_API_KEY=sk-or-...\n", note="in your home folder")
@@ -253,7 +256,7 @@ p("Every run is kept in <code>hello/runs/</code>, one folder each, named for whe
   "<code>output.md</code> is what the team produced. Next to it, <code>events.jsonl</code> holds "
   "every turn, with every prompt, reply, model, token and cost.")
 with via("browser"):
-    p(ui("Runs") + " lists them, newest first, with each verdict. Select one to read its "
+    p(ui("Run history") + " lists them, newest first, with each verdict. Select one to read its "
       + ui("Conversation") + ", its " + ui("Output") + " and its " + ui("Record") + "; the "
       "links beside them open the files themselves.")
 with via("terminal"):
@@ -292,7 +295,7 @@ edit("hello/02_against.md", [
 with via("browser"):
     p(ui("Save") + " (Ctrl+S, or ⌘S on a Mac). Rehearse to check nothing broke, then run it with "
       "models on the same message as before.")
-    p("Now compare. In " + ui("Runs") + ", tick the two real runs and choose "
+    p("Now compare. In " + ui("Run history") + ", tick the two real runs and choose "
       + ui("Compare selected runs") + ": their outputs side by side, and under "
       + ui("Member versions") + ", the paragraph you changed.")
     shot("ui-compare.png", "Two runs of hello compared: for and judge unchanged, against changed "
@@ -431,7 +434,7 @@ p("The others learn Chen's notes only if Chen says them in the meeting. Each mem
   "<code>preferred</code> every turn, whom they would hire right now, so you can see when minds "
   "change; the clerk records the <code>decision</code>. Rehearse it, then run it for real.")
 with via("browser"):
-    p(ui("Run…") + " twice: once rehearsed, once " + ui("Run with models") + ". " + ui("Runs")
+    p(ui("Run…") + " twice: once rehearsed, once " + ui("Run with models") + ". " + ui("Run history")
       + " shows each run's decision.")
 with via("terminal"):
     run("teamrunner run committee --rehearse", expect="completed")
@@ -476,7 +479,7 @@ p("Models are random, so one run of each proves nothing. Run each five times, th
 with via("browser"):
     p("The page runs one team at a time, so start each run when the last one has finished: "
       + ui("Run…") + " with models, five times on <code>open</code> and five on "
-      "<code>share_first</code>. Then, in " + ui("Runs") + ", pick each team under "
+      "<code>share_first</code>. Then, in " + ui("Run history") + ", pick each team under "
       + ui("Team") + " and count the decisions.")
 with via("terminal"):
     p("On a Mac or Linux:")
@@ -521,7 +524,7 @@ p("Rehearsing it may end early: the reader's answer, whether it could read the w
   "random in a rehearsal, and the team stops when it can't. That is the flow working.")
 
 parts.append('<h2 id="next">Where to go next</h2>')
-ul(["<b>Start from the example closest to yours.</b> <a href=\"index.html#examples\">All six</a>, "
+ul(["<b>Start from the example closest to yours.</b> <a href=\"index.html#examples\">All examples</a>, "
     "with what each adds.",
     f"<b>Read the reference.</b> Every file and every word a team may use is in the "
     f"<a href=\"{GH}#readme\">documentation</a>. Unsure of a word? See the "

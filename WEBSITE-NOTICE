@@ -1,0 +1,23 @@
+TeamRunner website
+Copyright 2026 Kumar Muthuraman
+Publisher and maintainer: Serenity Partners LLC
+Contact: hello@teamrunner.ai
+
+Original website code and documentation: GPL-3.0-or-later (see LICENSE).
+Designated package examples, generated starter files and authoring guide:
+MIT-0 (see templates-LICENSE). Package dependency notices are in NOTICE;
+paths in that file refer to the package source, not this website checkout.
+Third-party source material and model outputs retain any applicable rights;
+no ownership, exclusivity, or freedom from third-party claims is promised.
+Software licenses do not grant rights to the TeamRunner name or imply endorsement.
+
+Fonts loaded from Google Fonts (not bundled in this website): IBM Plex Sans,
+IBM Plex Mono and Newsreader, SIL Open Font License 1.1. Their authors retain
+copyright. See the respective Google Fonts source repositories for notices:
+https://github.com/google/fonts/tree/main/ofl/ibmplexsans
+https://github.com/google/fonts/tree/main/ofl/ibmplexmono
+https://github.com/google/fonts/tree/main/ofl/newsreader
+
+Provided as is, without warranty, to the extent permitted by applicable law.
+See legal.html for publisher, liability, service and data disclosures, and
+LICENSE sections 15–17 for warranty and liability terms.
