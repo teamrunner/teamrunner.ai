@@ -73,10 +73,10 @@
     </div>
     <div class="tabpane" role="tabpanel" id="p-win" aria-labelledby="t-win" hidden>
       <ol>
-        <li>Open <b>PowerShell</b> from the Start menu and install uv:
-          <div class="cmdrow"><code class="cmd" id="c4">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code><button class="copy" type="button" data-target="c4" data-count="copy-win-uv">Copy</button></div>
-          <p style="margin-top:6px">This is the Windows version of the same installer; <code>irm</code> is PowerShell’s download command, like <code>curl</code>.</p></li>
-        <li>Close PowerShell and open it again, so it finds uv. Then install TeamRunner:
+        <li>Open <b>PowerShell</b> or <b>Command Prompt</b> from the Start menu and install uv with WinGet, the Windows package manager:
+          <div class="cmdrow"><code class="cmd" id="c4">winget install --id=astral-sh.uv -e</code><button class="copy" type="button" data-target="c4" data-count="copy-win-uv">Copy</button></div>
+          <p style="margin-top:6px">If <code>winget</code> isn’t available, choose another method from the <a href="https://docs.astral.sh/uv/getting-started/installation/">official uv installation guide</a>.</p></li>
+        <li>Close the terminal and open it again, so it finds uv. Then install TeamRunner:
           <div class="cmdrow"><code class="cmd" id="c5">uv tool install teamrunner</code><button class="copy" type="button" data-target="c5" data-count="copy-win-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
           <div class="cmdrow"><code class="cmd" id="c6">teamrunner ui</code><button class="copy" type="button" data-target="c6" data-count="copy-win-ui">Copy</button></div></li>
@@ -134,7 +134,7 @@ completed · 3 turns · 0.0s · ≈ $0.0000</pre>
   <h2 id="problems">If something goes wrong</h2>
   <ul>
     <li><b><code>uv</code> or <code>teamrunner</code>: command not found.</b> Close the terminal and open a new one. If it still isn’t found, run <code>uv tool update-shell</code>, then open a new terminal again.</li>
-    <li><b>Windows says scripts are disabled.</b> Use the PowerShell line exactly as shown; <code>-ExecutionPolicy ByPass</code> applies to that one command only.</li>
+    <li><b>Windows can’t find <code>winget</code>.</b> See the <a href="https://docs.astral.sh/uv/getting-started/installation/">official uv installation guide</a> for other ways to install uv, then return to step 2 above.</li>
     <li><b>Anything else:</b> <a href="https://github.com/teamrunner/teamrunner/issues/new/choose">open an issue</a> or write to hello@teamrunner.ai, with what you typed and what it printed.</li>
   </ul>
 
