@@ -594,7 +594,6 @@ page = (head
       <a href="index.html#reference">Reference</a>
     </nav>
     <div class="right">
-      <span class="pill">preview</span>
       <a class="pill" href="{GH}">GitHub</a>
     </div>
   </div>
