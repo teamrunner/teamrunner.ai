@@ -289,6 +289,7 @@ html[data-via="browser"] .via[data-via="terminal"],html[data-via="terminal"] .vi
 .hero2{padding-block:72px 40px;max-width:54rem}
 .hero2 h1{font-size:var(--s6);letter-spacing:-.01em}
 .hero2 h1 em{font-style:italic;color:var(--accent)}
+.hero2 h1 .experiment-emphasis{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:.035em;text-underline-offset:.1em}
 .hero2 .lede{font-size:1.1875rem;color:var(--ink-2);max-width:40em;margin-top:20px}
 .hero2 .ctas{margin-top:28px}
 .hero2 .note{margin-top:14px;font-size:var(--s1);color:var(--ink-2)}
