@@ -56,9 +56,9 @@ document.documentElement.setAttribute('data-via',v)})();
 <p>Make a new team called <code>hello</code>: choose <b class="ui">+ Team</b>, type <code>hello</code>, keep <b class="ui">Empty team</b> under <b class="ui">Start from</b> and choose <b class="ui">Continue</b>. The team's one file, <code>team.yaml</code>, opens in the editor.</p>
 </div>
 <div class="via" data-via="terminal">
-<p>Open a terminal in the folder where you want to keep your teams, and make a new, empty team called <code>hello</code>:</p>
+<p>Open a terminal and make a new, empty team called <code>hello</code>. The first time, <code>new</code> asks once where your workspace should be (press Enter for a <code>teamrunner</code> folder in your home folder); the team goes in its <code>teams/</code> folder, and commands such as <code>teamrunner run hello</code> find it from any folder:</p>
 <code class="cmd" data-run data-expect="hello">teamrunner new hello</code>
-<p>Open <code>hello/team.yaml</code> in your text editor.</p>
+<p>Open <code>hello/team.yaml</code> in your text editor: it is in your workspace's <code>teams/</code> folder (<code>~/teamrunner/teams/hello/team.yaml</code> if you pressed Enter), as are the other files these pages name. To make a team right where you are instead, write <code>teamrunner new ./hello</code>.</p>
 </div>
 <p><code>team.yaml</code> says what the team is for. Fill in its description and add two settings. In this view, red is a line to remove and green a line to add; it is called a <a class="t" tabindex="0" data-tip="A view of what changed between two versions of a file: removed lines in red, added lines in green.">diff</a>. Leave the <code>id:</code> line as it is: TeamRunner uses it to keep the team's history together.</p>
 <div class="panel"><div class="cap"><span class="label">hello/team.yaml</span><span class="label">change this line</span></div><div class="diff" data-edit="hello/team.yaml"><div class="m">- description: ""   # one line: what this team does</div><div class="p">+ description: A debate, one turn each, then a judge decides</div><div class="p">+ </div><div class="p">+ default_model: openrouter/google/gemma-4-31b-it</div><div class="p">+ </div><div class="p">+ default_inputs:</div><div class="p">+   topic: "Remote work makes teams more productive"</div></div></div>
