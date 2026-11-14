@@ -64,7 +64,7 @@
         <li>Open <b>Terminal</b> (press ⌘ Space, type “Terminal”, press Return) and install uv:
           <div class="cmdrow"><code class="cmd" id="c1">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c1" data-count="copy-mac-uv">Copy</button></div></li>
         <li>Close Terminal and open it again, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c2">uv tool install teamrunner</code><button class="copy" type="button" data-target="c2" data-count="copy-mac-install">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c2">uv tool install teamrunner --python 3.13</code><button class="copy" type="button" data-target="c2" data-count="copy-mac-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
           <div class="cmdrow"><code class="cmd" id="c3">teamrunner ui</code><button class="copy" type="button" data-target="c3" data-count="copy-mac-ui">Copy</button></div></li>
       </ol>
@@ -75,7 +75,7 @@
           <div class="cmdrow"><code class="cmd" id="c4">winget install --id=astral-sh.uv -e</code><button class="copy" type="button" data-target="c4" data-count="copy-win-uv">Copy</button></div>
           <p style="margin-top:6px">If <code>winget</code> isn’t available, choose another method from the <a href="https://docs.astral.sh/uv/getting-started/installation/">official uv installation guide</a>.</p></li>
         <li>Close the terminal and open it again, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c5">uv tool install teamrunner</code><button class="copy" type="button" data-target="c5" data-count="copy-win-install">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c5">uv tool install teamrunner --python 3.13</code><button class="copy" type="button" data-target="c5" data-count="copy-win-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
           <div class="cmdrow"><code class="cmd" id="c6">teamrunner ui</code><button class="copy" type="button" data-target="c6" data-count="copy-win-ui">Copy</button></div></li>
       </ol>
@@ -86,7 +86,7 @@
           <div class="cmdrow"><code class="cmd" id="c7">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-target="c7" data-count="copy-linux-uv">Copy</button></div>
           <p style="margin-top:6px">No <code>curl</code>? Use <code>wget -qO- https://astral.sh/uv/install.sh | sh</code>.</p></li>
         <li>Open a new terminal, so it finds uv. Then install TeamRunner:
-          <div class="cmdrow"><code class="cmd" id="c8">uv tool install teamrunner</code><button class="copy" type="button" data-target="c8" data-count="copy-linux-install">Copy</button></div></li>
+          <div class="cmdrow"><code class="cmd" id="c8">uv tool install teamrunner --python 3.13</code><button class="copy" type="button" data-target="c8" data-count="copy-linux-install">Copy</button></div></li>
         <li>Open TeamRunner in your browser:
           <div class="cmdrow"><code class="cmd" id="c9">teamrunner ui</code><button class="copy" type="button" data-target="c9" data-count="copy-linux-ui">Copy</button></div></li>
       </ol>
@@ -96,7 +96,7 @@
 
   <p class="or">or</p>
   <h2 id="pip" style="margin-top:12px;padding-top:0;border-top:0">Already have Python? Use pip</h2>
-  <p>With Python 3.10 or later, one line does it. Use a virtual environment if you keep one.</p>
+  <p>With Python 3.10 to 3.14, one line does it. Use a virtual environment if you keep one.</p>
   <div class="cmdrow"><code class="cmd" id="c10">pip install teamrunner</code><button class="copy" type="button" data-target="c10" data-count="copy-pip">Copy</button></div>
   <p>Then <code>teamrunner ui</code>, as above.</p>
 
@@ -134,6 +134,7 @@ completed · 3 turns · 0.0s · ≈ $0.0000</pre>
   <ul>
     <li><b><code>uv</code> or <code>teamrunner</code>: command not found.</b> Close the terminal and open a new one. If it still isn’t found, run <code>uv tool update-shell</code>, then open a new terminal again.</li>
     <li><b>Windows can’t find <code>winget</code>.</b> See the <a href="https://docs.astral.sh/uv/getting-started/installation/">official uv installation guide</a> for other ways to install uv, then return to step 2 above.</li>
+    <li><b><code>Failed to build `pyyaml`</code> (often on Windows).</b> uv picked a Python too new for one of TeamRunner’s parts. Install with a tested Python instead: <code>uv tool install teamrunner --python 3.13</code>.</li>
     <li><b>Anything else:</b> <a href="https://github.com/teamrunner/teamrunner/issues/new/choose">open an issue</a> or write to hello@teamrunner.ai, with what you typed and what it printed.</li>
   </ul>
 
