@@ -16,8 +16,8 @@
       +'<button type="submit">Notify me</button>'
       +'</form>'
       +'<p class="notify-done" role="status" hidden></p>'
-      +'<p class="notify-note">One email when experiments are released: run each version many times and get one table. '
-      +'Unsubscribe any time. Or <a href="https://github.com/teamrunner/teamrunner">watch the repository on GitHub</a>.</p>';
+      +'<p class="notify-note">One short email when a new version comes out. Nothing else; reply to any email to be taken off. '
+      +'Or <a href="https://github.com/teamrunner/teamrunner">watch the repository on GitHub</a>.</p>';
     var form=box.querySelector('form'), done=box.querySelector('.notify-done'), button=form.querySelector('button');
     function say(html){ done.innerHTML=html; done.hidden=false; }
     function failed(){
@@ -33,7 +33,7 @@
       // left without a network error is taken as saved.
       fetch(SAVE,{method:'POST',mode:'no-cors',body:body}).then(function(){
         form.hidden=true;
-        say('You are on the list. We will write once, when experiments are released.');
+        say('You are on the list. We will write when a new version comes out, and only then.');
         if(window.goatcounter&&window.goatcounter.count)
           window.goatcounter.count({path:'signup-'+place,title:'signup-'+place,event:true});
       },failed);

@@ -145,7 +145,7 @@ A real run is the same team on a real model. Watch one we recorded.</pre>
         <p class="txfoot" id="txfoot" hidden></p>
       </div>
     </div>
-    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our six recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, <i>for</i> won two of three plain debates but only one of three checked ones; the replay shows one of each. The fact checker never failed a speech, and the checked debates cost about twice as much. Three runs each is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial-8.html">tutorial step 8</a>, on a real question.<br>This fact checker works only from what its model remembers. To let it check sources, <a href="tutorial-6.html">give it the web</a>.</p>
+    <p class="demo-foot" id="demofoot" hidden><b>Now it’s an experiment.</b> Does fact-checking change who wins, or only make the debate longer and costlier? In our ten recorded runs on the motion “Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all”, all on Claude Haiku 5.5, <i>for</i> won two of three plain debates but only two of seven checked ones; every one can be replayed above. The fact checker never failed a speech, and the checked debates cost about twice as much. Ten runs is too few to call it. Would your model agree? Run each version a few times and compare: that is <a href="tutorial-8.html">tutorial step 8</a>, on a real question.<br>This fact checker works only from what its model remembers. To let it check sources, <a href="tutorial-6.html">give it the web</a>.</p>
     </div>
   </section>
 
@@ -258,7 +258,7 @@ teamrunner runs hello</pre>
       <p style="margin-top:8px">Engine and documentation: <a href="LICENSE">GPL-3.0-or-later</a>. Designated examples, starter files and authoring guide: <a href="templates-LICENSE">MIT-0</a>. Your own work is not automatically GPL; provider terms and third-party rights still apply.</p>
       <p style="margin-top:8px">Provided as is, without warranty, to the extent permitted by law. Costs are estimates; actual charges may exceed estimates and budgets. The publisher, author and contributors disclaim liability to the extent permitted by law. Verify AI outputs and protect sensitive data. <a href="legal.html">Publisher, liability and data notices</a> · <a href="NOTICE">Third-party notices</a>.</p>
       <p style="margin-top:8px">Visits and selected actions are counted with <a href="https://www.goatcounter.com/">GoatCounter</a>, without analytics cookies. This site also loads Google Fonts. See our <a href="legal.html#website-data">website data disclosures</a>.</p>
-      <p style="margin-top:8px">If you sign up for news, your email, signup time and page are stored in our Google Sheet for TeamRunner updates. Every email has an unsubscribe link, and a note to hello@teamrunner.ai deletes it.</p>
+      <p style="margin-top:8px">If you sign up for news, your email, signup time and page are stored in our Google Sheet for TeamRunner updates. Reply to any email, or write to hello@teamrunner.ai, and your address is deleted.</p>
     </div>
     <div><h4>Learn</h4><ul><li><a href="why.html">Why a team</a></li><li><a href="install.html">Install</a></li><li><a href="tutorial.html">Tutorial</a></li><li><a href="examples.html">Examples</a></li><li><a href="docs.html#glossary">Glossary</a></li></ul></div>
     <div><h4>Reference</h4><ul><li><a href="docs.html">Docs</a></li><li><a href="https://github.com/teamrunner/teamrunner/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="https://pypi.org/project/teamrunner/">PyPI</a></li><li><a href="https://github.com/teamrunner/teamrunner">Source</a></li></ul></div>
@@ -442,8 +442,13 @@ teamrunner runs hello</pre>
       else{body.classList.remove('typing');body.innerHTML=md(src);txlist.scrollTop=txlist.scrollHeight;rp.timer=setTimeout(done,700)}
     })();
   }
-  function tally(){ // this page replays one run of each version; this is every run we recorded on the motion
-    return 'We recorded three plain debates and seven with the fact checker on this motion, and replay one of each here. All ten: plain debate: for 2, against 1 · with the fact checker: for 2, against 5';
+  function tally(){ // every run we recorded on the motion, counted from the published records, not written by hand
+    function count(v){var mine=RUNS.filter(function(r){return r.version===v}), w={};
+      mine.forEach(function(r){w[r.winner]=(w[r.winner]||0)+1});
+      return {n:mine.length, text:Object.keys(w).sort().map(function(k){return k+' '+w[k]}).join(', ')};}
+    var p=count('plain'), c=count('checked');
+    return 'Every run we recorded on this motion is published here: '+p.n+' plain debates ('+p.text+') and '
+      +c.n+' with the fact checker ('+c.text+'). Choose one above to replay it.';
   }
   function picker(){
     var v=on?'checked':'plain', mine=RUNS.filter(function(r){return r.version===v}), p=document.getElementById('txpick');

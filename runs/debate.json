@@ -91,6 +91,186 @@
    "winner": "for"
   },
   {
+   "name": "plain-2",
+   "version": "plain",
+   "started": "2026-11-09T20:56:15.070640+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a worker, and a verifier, makes systems safer and easier to audit because each component has a bounded task with a clear input and output. When a single monolithic prompt fails, it is often unclear which part of the reasoning went wrong, whereas in a pipeline you can inspect the planner's decomposition, check the worker's output against a specification, and have the verifier flag errors before they reach the user. Separation of duties is a well-established principle in security and engineering for exactly this reason: no single actor holds unchecked authority, and failures are localized. Roles also make improvement modular. You can swap in a better verifier, tighten one stage's instructions, or add tests for a specific function without retraining or re-prompting the entire system, and you can measure each stage's error rate to see where effort pays off most. The tradeoff is added latency, cost, and coordination overhead, but for consequential tasks, those costs buy inspectability and control that a single opaque prompt cannot easily provide.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2624,
+     "cost": 0.000178
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The strongest part of your case is the separation-of-duties analogy, but it proves less than it seems to. In security, separation works because the checker is independent: different people, keys, or systems that don't share failure modes. Splitting one model into a \"planner,\" \"worker,\" and \"verifier\" usually gives you the same model with the same blind spots, so an error the worker makes is often one the verifier also misses. The independence that justifies the principle is largely absent. Your modularity point also assumes the interfaces are clean, but a planner's decomposition encodes assumptions that the worker never sees, so the failure you're trying to localize often sits in the handoff, which no single stage owns.\n\nMy main argument is that role-splitting can create false assurance. Each added stage is another LLM call that can be confidently wrong, and a verifier that reads a plausible-looking output will often approve it, especially when it shares the worker's framing. Error rates compound across stages: if each of three stages is 90% reliable, the pipeline is not obviously better than one well-prompted call, and the pipeline has more ways to fail. Auditing also gets harder, not easier, because you now have to examine N prompts, their interactions, and the context each stage drops or distorts. A single prompt is a smaller, more legible artifact. Unless the verifier is genuinely independent, such as a deterministic test suite, a different model, or a human checkpoint, the structure mostly adds the appearance of control, and \"each part has a bounded task\" is often false in practice, because LLM stages handle ambiguity rather than respecting the boundaries you drew.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6260,
+     "cost": 0.0004845
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "You're right that a same-model verifier often shares the worker's blind spots, and I'll concede that the separation-of-duties analogy only holds when the checker is actually independent. But that concession supports a narrower version of my claim, not a rejection of it. The benefit comes from the structure, which makes independent checks possible: a deterministic test suite, a different model, retrieval against sources, or a human gate can each be slotted into a defined handoff. A single monolithic prompt offers no such seam, so its failures are equally real but harder to isolate or check. Your compounding-error point is also real, but it assumes stages are unverified and in series. A pipeline that adds checks only where they are independent can reduce end-to-end error, and each stage's error rate can be measured on its own, which tells you where to spend effort. As for handoff failures, a planner's assumptions are visible as an explicit artifact you can inspect and test, whereas the same assumptions in a monolithic prompt stay buried in the model's internal reasoning. The pipeline doesn't eliminate ambiguity at the boundaries, but it makes the boundaries the place you look first, which is the core of what makes it more auditable.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4368,
+     "cost": 0.0004402
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "You're right that an explicit planner artifact is easier to inspect than reasoning buried in one forward pass. But the visibility is weaker than it looks. A written decomposition is not a guaranteed record of what the worker uses. The worker may ignore a step, reinterpret it, or act on context the planner never wrote down, so inspecting the plan doesn't tell you what the system actually did. The \"seam\" is also not unique to pipelines. You can run a deterministic test suite, retrieval check, or human review on a single prompt's output just as easily. So the inspection and checking benefits you describe come from the external checks, not from the role split. Your own framing concedes this: the value lies in \"independent checks,\" and roles are only the place you attach them.\n\nThat leaves the topic's core claim, that role-splitting makes systems safer, resting on a category error. Safety comes from independent verification, which a monolithic system can have too. Role-splitting adds real costs: more model calls, more handoffs where errors hide, and more prompts to audit. It also creates a risk of false assurance. A clean diagram with \"planner,\" \"worker,\" and \"verifier\" labels invites auditors to trust the structure, even when the verifier is the same model reading its own framing. Unless the split is paired with checks that don't share the worker's failure modes, the architecture mostly makes the system look more controlled. The honest claim is that good checks help, and roles are optional packaging for them, not a safety property in themselves.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6249,
+     "cost": 0.0006622
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "Your strongest point is that the plan is not a guaranteed record of what the worker used, and I accept that. But it cuts both ways. A monolithic prompt gives you no plan artifact at all, so you cannot even ask whether the decomposition was wrong or the execution was wrong. In a pipeline, you can measure plan adherence by checking each worker output against the plan's steps, and that measurement is itself an audit a single prompt cannot run. You also say that roles are \"only the place you attach\" checks, but where you attach them determines what you can detect. Role separation also brings a safety property that doesn't depend on verification at all: least privilege. A planner with no write access, and a worker given only the tools its subtask needs, limit the blast radius of any single failure. Independent checking catches errors, and scoped authority limits the damage when a check misses them. A monolithic agent with every tool and the full task context has no equivalent limit. I agree that a clean diagram can create false assurance, and that is an argument for measuring each stage, not against splitting the stages.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5007,
+     "cost": 0.0005861
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "The least-privilege point is your strongest, but it doesn't depend on role separation. You can scope tools per task inside a single agent, granting write access only for the step that needs it. What limits blast radius is the permission boundary, not the existence of a separate \"planner\" role. Your claim that a monolithic prompt produces no plan artifact is also false. A single call can be asked to write an explicit plan, list its steps, and then follow them, so you can measure plan adherence there too. The pipeline isn't uniquely inspectable.\n\nMy strongest remaining argument is that the topic credits the wrong thing. Safety and auditability come from three properties: independent checks, scoped permissions, and measurement at each step. Each can be built into a single system. Role-splitting adds model calls, handoffs where information is dropped or distorted, and extra prompts to maintain, and those costs are real. Unless the verifier is independent of the worker, the extra stage mainly adds the appearance of control. A pipeline is a reasonable way to organize good checks, but it does not make a system safer by itself, and the monolithic alternative can match it once it has the same checks and permissions.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4955,
+     "cost": 0.0006293
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Both sides have made their strongest points, and I'd like to note where each landed. The 'for' side conceded that same-model verifiers share blind spots and that the separation analogy only holds with independent checks, then argued that roles create seams where independent checks can attach and that least privilege is a structural benefit. The 'against' side conceded the plan-visibility point but argued that the same checks and permissions can be built into a single system, so the role split itself isn't the safety property. The 'for' side's strongest move was least privilege and measurability per stage; the 'against' side's strongest move was that every benefit it names can be achieved without role separation. I'll weigh that in my decision.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The 'against' side stayed tightly focused on the resolution's core claim, that role-splitting makes systems safer, and repeatedly showed that each benefit the 'for' side named (independent checks, scoped permissions, per-step measurement, plan inspection) is separable from role splitting and attainable in a monolithic system. The 'for' side made a good case for the value of seams and least privilege, but its later rounds shifted toward defending benefits of good engineering practice rather than of role separation specifically, and its claim that monolithic prompts produce no plan artifact was rebutted. The 'against' side also identified a real risk of false assurance from clean role diagrams and compounding error across stages, which the 'for' side only partly answered by saying those are arguments for measurement. Since the 'against' side showed the mechanism credited for safety is not unique to the proposed structure, its argument was more logically clear and better sustained against the resolution."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 4602,
+     "cost": 0.000551
+    }
+   ],
+   "ms": 37810,
+   "cost": 0.003531,
+   "tokens": {
+    "input": 9658,
+    "output": 5131
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "plain-3",
+   "version": "plain",
+   "started": "2026-11-09T20:56:55.146673+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into clear roles makes systems safer, more auditable, and easier to improve, and the reason is structural. When a single prompt handles planning, data retrieval, reasoning, and output checking all at once, failures are tangled together: a bad answer could stem from a misread instruction, a hallucinated fact, a formatting slip, or a skipped safety check, and there is no clean way to tell which. Separate roles create seams. A retrieval component can be logged and tested on its own, a verifier can be given the explicit job of checking claims against sources, and a planner's decisions can be inspected before any action is taken. This mirrors how well-run human organizations work: separation of duties exists precisely so that no single actor can silently produce and approve its own errors. It also lets teams upgrade one piece, such as swapping in a stronger verifier, without re-validating the entire pipeline. A monolithic prompt offers none of these handholds; its behavior is a single opaque function of its wording, and every change risks unpredictable side effects. The tradeoff is real, since more components mean more interfaces that can fail and more latency, but those costs are visible and manageable, whereas the failures of one giant prompt are hidden until they surface in production.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 3398,
+     "cost": 0.000211
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The argument assumes that role boundaries create real independence, and in most LLM pipelines they don't. Planner, retriever, reasoner, and verifier are often the same model with different system prompts. They share training data, blind spots, and failure modes, so a hallucinated fact that the reasoner produces will often pass the verifier, which is the same model reading it with the same confidence. Separation of duties works in human organizations because the actors are genuinely independent, with different knowledge, incentives, and errors. A prompt-labeled \"verifier\" is closer to a person checking their own work after being told to be skeptical. The seams also create new failure modes: information is lost or distorted at each handoff, an upstream error gets laundered into a confident-looking intermediate artifact that downstream components trust, and each interface is a place where assumptions go unstated. The claim that a monolithic prompt is an \"opaque function\" is also overstated. Its reasoning can be traced, its behavior can be probed with ablations and targeted test cases, and failures can be localized by asking it to state intermediate steps. Decomposition helps when the parts have clear, testable contracts, but splitting by role alone does not produce those contracts, and it multiplies the number of places where the system can quietly go wrong. The costs of more components are visible on a latency dashboard; the costs of correlated errors that pass every seam are not, and those are the ones that surface in production.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5551,
+     "cost": 0.0004461
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The opponent is right that role labels alone don't create independence. Two copies of the same model with different system prompts share blind spots, and a \"verifier\" that reads a hallucination with the same confidence adds little. But that argues for a narrower thesis, not against decomposition. The value of a seam comes from what sits on it: a retriever that returns document IDs a deterministic checker can match against the claims, a schema that rejects malformed plans before execution, or a verifier that runs on a different model, with different context, or with access to sources the reasoner never saw. None of these are available inside a single prompt, where the only \"check\" is the same forward pass that produced the error. Ablations can localize some failures in a monolith, but they require rerunning the whole chain with altered wording, which confounds the very variables you want to isolate. Handoff loss is real, but it is a cost you can measure and reduce by logging each interface, which is impossible when the intermediate steps never leave the model. So the claim holds in its strong form only when the roles come with explicit contracts and at least some non-LLM or independently sourced checks. Without those, the opponent is right that you have added latency without adding safety.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5769,
+     "cost": 0.0005294
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "You've conceded the point that matters. The benefits you list (deterministic checkers, schema validation, a verifier on a different model, access to sources the reasoner never saw) are properties of *what* sits at a seam, not of *having* separate roles. A single pipeline can call a deterministic tool, validate output against a schema, or route verification to a different model. None of that requires splitting the work into named roles. And logging intermediate outputs doesn't need separate components either: a monolithic prompt that must emit structured intermediate fields can be logged, tested, and ablated at each field. So the safety gains you're defending come from independent checks, and the role decomposition adds interface costs without being the source of those gains.\n\nThe strongest case against the topic is this: \"clear roles\" is the wrong unit of analysis. Role separation predicts safety only when the roles are backed by independent verification, and it creates new failure modes (lossy handoffs, upstream errors laundered into trusted artifacts, unstated assumptions at each interface) whether or not those checks exist. A team that wants auditability should invest in explicit contracts, structured intermediate outputs, and non-LLM checks, which can be done inside one prompt or inside many. Splitting by role is neither necessary nor sufficient for that, and in most LLM systems the role labels are the cheapest part of the design and the least likely to be what makes it safer.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6562,
+     "cost": 0.0006723
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The opponent is right that role labels are not what make a system safe. Independent checks are. But \"clear roles\" is the practical way to attach those checks, because a role gives you a boundary where a contract, a logger, and a test harness can sit. The claim that structured intermediate fields in one prompt give the same benefits understates what fields alone do. In a monolith, every later field is generated in the same context as the earlier ones, so a bad early field conditions everything after it, and you cannot swap in a different retriever or measure retrieval quality without the generator in the loop. Roles are units of measurement and replacement: you can evaluate the retriever's recall on its own, then upgrade it while holding the rest fixed. That is the improvement benefit the topic claims, and it does not follow from a field being present in an output. I concede that decomposition is neither necessary nor sufficient for safety. The defensible version is narrower: role boundaries are the most reliable place to enforce independent checks, to isolate failures for testing, and to replace components without revalidating the whole system, and those are the properties that make auditing and improvement practical.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4799,
+     "cost": 0.0005333
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "You're right that roles are where contracts, loggers, and test harnesses attach. But the \"conditioning\" advantage you cite is weaker than it looks. Decomposition doesn't remove downstream dependence on upstream outputs; it just makes that dependence explicit at a seam. And replacement doesn't mean \"without revalidating the whole system.\" If you swap in a better retriever, the reasoner receives a different input distribution, so the reasoner still needs retesting. Measuring retrieval recall in isolation is useful, but it doesn't certify the end-to-end system. Modular testing narrows the revalidation burden without eliminating it, and the topic's claim overstates that.\n\nThe deeper problem is that role labels can produce false confidence. A pipeline with a \"verifier\" step generates logs that look like oversight, but if that verifier shares the generator's model, blind spots, and context, the audit trail documents a check that cannot catch the errors that matter. Named roles make systems look auditable before they are. A monolithic prompt that must emit explicit claims, sources, and confidence fields, and is then checked by deterministic tests, can be more auditable than a multi-agent pipeline whose roles are all the same model with different instructions. The structural argument predicts safety from the number of seams, but the number of seams doesn't matter. What matters is whether each seam carries an independent, testable contract, and role decomposition does not guarantee that.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6859,
+     "cost": 0.0007786
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Having weighed the full exchange, I'm calling this for the side that defended the topic in its narrowed form. The 'for' side conceded early that role labels alone don't create independence, and then built a defensible thesis: roles are the boundaries where independent checks, contracts, logging, and replacement tests attach. The 'against' side made strong points about false confidence and same-model verifiers, but its final argument that decomposition is 'neither necessary nor sufficient' and that the seam count 'doesn't matter' largely restates the concession rather than refuting the narrower claim. My vote is for. I'd note the 'for' side also overreached at times, e.g., 'without revalidating the whole system', which the 'against' side rightly corrected. Still, on argument quality and logical clarity, the 'for' side tracked the objections and refined its claim more successfully.",
+     "output": {
+      "winner": "for",
+      "reasoning": "Across three rounds the 'for' side repeatedly adjusted its thesis in response to valid objections: it conceded that shared-model verifiers add little, that role labels alone don't create independence, and that decomposition is not necessary for safety, then argued that roles are the most reliable attachment points for contracts, logging, independent checks, and component-level testing. The 'against' side identified real weaknesses, notably false confidence from named roles and the revalidation caveat, but its strongest closing claim (that seam count doesn't matter) partly conceded the value of role boundaries as places where checks can be enforced, and its alternative, a monolith with structured fields, still requires the same contracts and logging the 'for' side called for. The 'for' side's revised position was more coherent and better tracked the exchange, though it was not fully immune to overstatement."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3629,
+     "cost": 0.0005754
+    }
+   ],
+   "ms": 41279,
+   "cost": 0.003746,
+   "tokens": {
+    "input": 9791,
+    "output": 5534
+   },
+   "teamrunner": "0.0.4",
+   "winner": "for"
+  },
+  {
    "name": "checked-1",
    "version": "checked",
    "started": "2026-11-09T21:16:33.587441+00:00",
@@ -257,6 +437,1014 @@
    },
    "teamrunner": "0.0.4",
    "winner": "for"
+  },
+  {
+   "name": "checked-2",
+   "version": "checked",
+   "started": "2026-11-09T20:56:15.070830+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a worker, and a checker, makes systems safer and easier to audit because each component has a narrow, inspectable job. When one prompt handles intake, reasoning, tool use, and output formatting all at once, failures are tangled together: it is hard to tell whether a bad answer came from a misread instruction, a faulty inference, or a policy violation. With separated roles, each stage has its own inputs and outputs that can be logged, tested in isolation, and swapped out. A verifier role can check a worker's output against explicit criteria, and that check is itself auditable. This mirrors well-established engineering practice: separation of concerns and independent review are how high-stakes human systems, from aviation checklists to financial controls, catch errors that a single operator would miss. Monolithic prompts can work for simple tasks, but as stakes rise, decomposition gives you the seams where you can measure, intervene, and improve.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2694,
+     "cost": 0.000168
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the speech's factual claims. It contains no statistics or specific cases beyond general references to aviation checklists and financial controls, which are accurate examples of independent review and separation of duties. Passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false claims found. The references to separation of concerns, independent review, aviation checklists, and financial controls are accurate as general descriptions, and the speech makes no invented statistics."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3198,
+     "cost": 0.0002389
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The fact-checker is right that the aviation and finance examples are accurate, but accuracy of the examples doesn't establish the conclusion. Those systems work because the checkers are independent: different people, different training, different incentives, and failures that are roughly uncorrelated. A verifier role built on the same model as the worker, reading the same context, shares its blind spots. If the worker misreads an instruction, the checker, given the same instruction, will often misread it the same way. The analogy borrows the credibility of independent review without the independence that makes it work.\n\nThe stronger objection is that decomposition adds failure surface rather than removing it. Each handoff is a point where context gets compressed, reformatted, or dropped, and errors from an early role propagate downstream looking like legitimate inputs. A planner's mistaken framing can make a worker's correct reasoning produce a wrong answer that passes the checker, because the checker is evaluating against a spec that is itself wrong. Logging each stage makes the pipeline look auditable, but a log of plausible intermediate text is not the same as knowing why the system erred. Meanwhile, the separation can diffuse responsibility: when no single component owns the outcome, \"the checker approved it\" becomes a shield rather than a control. Splitting roles is worth doing where you have genuinely independent checks, such as deterministic tests, separate models, or human review. Where the roles share a model and a context, the topic overstates the gain and understates the new ways things break.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5902,
+     "cost": 0.0004573
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the latest speech's factual claims. Its references to aviation and financial controls as independent review are accurate, and it cites no statistics. Its claims about shared-model blind spots and error propagation are reasoning rather than factual assertions. I find no materially false claims, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The aviation and financial-controls examples are accurate characterizations of independent review. The remaining statements are analytical arguments, not checkable facts, and no invented statistics appear."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3542,
+     "cost": 0.0003596
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The \"against\" side is right that a verifier sharing the worker's model and context will share some blind spots, and I concede that a same-model checker is no substitute for independent review. But that objection compares decomposition to an ideal it doesn't need to match. The real alternative is a single prompt with no seam at all, where a misread instruction, a bad inference, and a policy violation all surface as one opaque answer. Splitting roles gives you the intermediate artifacts to inspect, such as the planner's framing or the worker's cited evidence, and that inspection is possible even when the checker is weak. The added failure surface at handoffs is real, but it is also visible: you can log the handoff and see the context that was dropped, which you cannot do inside one undivided prompt. On diffusion of responsibility, the fix is to assign each stage an owner in the logs and to define pass/fail criteria per stage, which is exactly what separation makes possible. My core claim is therefore comparative: decomposition makes systems easier to audit and improve, because each stage can be evaluated in isolation, its inputs and outputs can be regression-tested, and it can be swapped without retesting everything. Independence strengthens the checks further, and where it is available, as with deterministic tests, separate models, or human review, the case for decomposition becomes stronger still.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5131,
+     "cost": 0.0005591
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech for factual claims. It makes no statistics or specific case claims. Its references to aviation checklists and financial controls as independent review are accurate, and its remaining points are argument about auditability and failure modes, not verifiable facts. I find no materially false claims, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The aviation and financial-controls examples are accurate descriptions of independent review, and the speech cites no invented statistics. Its other statements are reasoning about system design rather than checkable facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2719,
+     "cost": 0.0003661
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "Your strongest point is that intermediate artifacts are inspectable even when the checker is weak. But inspection is not diagnosis. Reading a planner's framing tells you what it said, not whether it was wrong, and for most natural-language intermediate outputs there is no ground truth to regression-test against. \"Each stage can be tested in isolation\" holds only when the stage has a crisp contract, and the handoffs you're praising are usually free-text summaries with no such contract. Swapping a stage is also less modular than it sounds: if the worker expects the planner's output in a particular shape, replacing the planner changes the interface, and you have to retest the downstream stages anyway.\n\nThe comparison also needs a fair baseline. A single prompt can be instrumented with logged reasoning, explicit self-check steps, and end-to-end tests with the same effort you'd put into a multi-stage pipeline. Decomposition adds real costs: more model calls, more latency, and more paths for prompt injection or a bad early assumption to propagate silently. Those costs are paid whether or not the auditability gain materializes.\n\nSo my position is narrower than \"decomposition is worse.\" Splitting roles helps when the stages have verifiable interfaces and when at least one check is independent of the worker, such as deterministic tests, a different model, or a human. Without those, the seams mostly give you more text to read, and the topic's claim that separation makes systems safer and easier to audit is not established by the general principle alone.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5276,
+     "cost": 0.0006024
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "The fact-checker's job here is narrow: check factual claims, not argument quality. In the latest exchange, the against side raised points about inspection versus diagnosis, interface coupling, and the baseline of instrumented single prompts. Those are reasoned positions, not verifiable facts, so there is nothing to flag. My verdict stands on the factual content.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The latest speech makes no statistics or specific verifiable case claims. Its references to aviation checklists and financial controls as examples of independent review are accurate. Its remaining statements about inspectability, interface coupling, added latency and call costs, and prompt injection risk are general engineering reasoning or uncontroversial descriptions, not materially false factual claims."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2597,
+     "cost": 0.0003663
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The strongest objection is that inspection isn't diagnosis and that free-text handoffs have no contract to test against. That's fair for loosely specified prose, but it doesn't apply to well-designed decomposition. Stages can pass typed, schema-validated fields, such as a list of extracted constraints or a tool-call record with explicit success criteria, and those can be regression-tested like any other interface. Interface coupling is a real cost, but it is bounded: changing a schema means retesting two adjacent stages, while changing a monolithic prompt means retesting everything. On the baseline, I agree a single prompt can be instrumented with logs and self-checks, but a self-check inside the same pass shares the reasoning that produced the error. Separation also gives you something a single prompt can't: least privilege. The stage that reads untrusted documents or calls tools can be scoped to only those permissions, while the stage that drafts the final answer never touches raw external content. That limits how far a prompt injection or bad early assumption can travel, and it lets you audit each permission boundary on its own. So I accept that decomposition has costs in latency, calls, and interface design, and that it isn't automatically better. But for high-stakes work, where you need to know which component failed and to constrain what each one can do, the seams are where the safety and auditability gains come from.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5403,
+     "cost": 0.0006755
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest speech for factual claims. Its references to aviation checklists and financial controls as independent review are accurate. The points about typed, schema-validated handoffs and least-privilege permission scoping are design principles, not false factual claims. I find no materially false claims, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The aviation and financial-control examples are accurate illustrations of independent review and separation of duties. The remaining statements about schema validation, least privilege, and auditability are design arguments rather than verifiable factual assertions."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2471,
+     "cost": 0.0004801
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "Least privilege is a real advantage of separation, and I concede it. A stage that never sees raw external content can't be injected through that content. But that benefit comes from scoping permissions and isolating context, which you can also do inside one architecture. It doesn't show that the topic's claim, that splitting into planner, worker, and checker roles is safer and easier to audit, holds in general. Typed schemas have a similar limit. Schema validation checks form, not truth. A planner can emit a schema-valid field reading `\"user_authorized_deletion\": true` that is wrong or was injected, and the downstream stages will treat it as a legitimate input. Bounded retesting is also less bounded than it sounds, since every stage that consumes the field inherits its semantics.\n\nMy strongest remaining argument is that the decomposition's main safety claim depends on the checker being meaningfully different from the worker, and in most practical builds it isn't. A checker running the same model on the same context mostly re-derives the same conclusion, so it adds a second pass of agreement rather than a second opinion. That can make a system look more reliable and produce a more reassuring audit trail while catching fewer errors than the trail implies. The honest version of the topic is conditional: decomposition helps when its seams carry permission boundaries and when at least one check is independent of the worker. Without those, splitting roles mainly adds latency, cost, and more text to review, and it gives \"the checker approved it\" a persuasive but weak claim to safety.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4876,
+     "cost": 0.0006526
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Checking the latest speech, the against side's factual references are accurate or are reasoning rather than verifiable claims. The aviation checklist and financial control examples are correctly described as independent review, and there are no invented statistics or specific false case claims. I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The latest speech makes no materially false factual claims. Its references to aviation checklists and financial controls as independent review are accurate. Its remaining points about same-model checkers, schema validation limits, and least privilege are argument and design reasoning, not verifiable facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3307,
+     "cost": 0.0005677
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Both sides made solid points, but the 'against' side more consistently engaged the actual claim. The 'for' side conceded well and then reframed the thesis into a comparative, conditional claim that was easier to defend. The 'against' side identified the key weakness: the safety benefit depends on the checker being meaningfully independent, and a same-model checker mostly re-derives the worker's conclusion. The 'for' side answered with typed schemas and least privilege, which the 'against' side then correctly limited: schema validation checks form not truth, and least privilege can be achieved within a single architecture. I judge the 'against' side's argument to have been more logically tight and to have landed more of its key objections. I'm ready to announce my decision.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The 'against' side argued better on logical clarity and on the strength of its central objection. It identified that the topic's safety and auditability claim rests on the checker being meaningfully independent of the worker, and that a same-model checker mostly re-derives the same conclusion, producing agreement rather than a second opinion. It then pressed the 'for' side's rebuttals effectively: schema validation checks form rather than truth, and least privilege can be implemented inside a single architecture, so neither specifically establishes the general claim that role splitting is safer and easier to audit. The 'for' side made good concessions and sharpened its thesis into a comparative, conditional claim, and its answers about typed handoffs and permission boundaries were substantive. However, it did not fully answer the independence objection for the common case where checkers share a model and context, and its strongest support depended on conditions the 'against' side showed are often absent. On balance, the 'against' side's argument was more precise and better supported its conclusion."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3870,
+     "cost": 0.0006465
+    }
+   ],
+   "ms": 54750,
+   "cost": 0.00614,
+   "tokens": {
+    "input": 24546,
+    "output": 7371
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-3",
+   "version": "checked",
+   "started": "2026-11-09T20:57:10.833038+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a retriever, a generator, and a verifier, makes systems safer and easier to audit because each stage has a bounded task, a defined input and output, and a checkable contract. When a single monolithic prompt handles everything, failures are entangled: a wrong answer could stem from misread instructions, bad retrieved context, a reasoning slip, or a formatting error, and there is no clean way to tell which. With separated roles, you can log each handoff, test each component in isolation, swap in a stronger model for the step that fails, and add an independent checker whose only job is to catch errors from the generator. This mirrors well-established engineering practice of separation of concerns, which exists precisely because modular systems are easier to reason about, verify, and repair than tangled ones. It also limits blast radius: a compromised or misbehaving component can be constrained by the narrow permissions granted to its role, rather than having full access to everything a single all-purpose prompt can reach.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2623,
+     "cost": 0.0001745
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I've checked the speech. It makes no specific statistics or dated claims. Its main points, that separation of concerns is established engineering practice and that modular systems are easier to verify and repair, are accurate as general statements. I found no materially false claims, so I'm passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech contains no invented statistics or specific citations. Its references to separation of concerns as established engineering practice and to modular systems being easier to reason about, verify, and repair are accurate as general statements, and the permission-scoping and blast-radius points are conceptual design arguments rather than factual assertions."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2642,
+     "cost": 0.0002687
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The opponent's analogy to separation of concerns works for deterministic software, where interfaces are typed and each module's behavior is fully specified. LLM roles are different. Their \"contracts\" are natural-language instructions, so a planner's output is fuzzy, and whether the generator honored it is often a judgment call. Per-stage tests also assume each stage's behavior is independent of what upstream stages handed it, and that assumption fails. A generator that looks broken may just be receiving a bad plan, so the attribution problem the topic claims to solve reappears at every handoff.\n\nMy strongest case is that decomposition often makes systems less safe and less auditable. Each handoff is a lossy compression point where nuance, caveats, and uncertainty get dropped, and errors compound across stages. A verifier built on the same model family as the generator shares its blind spots, so it tends to approve the errors the generator makes instead of catching them independently. The blast-radius argument also overstates the benefit: a \"narrowly permissioned\" role is only as safe as the enforcement layer around it, and a single well-scoped prompt with the same tool restrictions gets the same protection. Meanwhile, multi-agent pipelines multiply latency, cost, and surface area for prompt injection between stages. Auditing a single system through end-to-end evaluations, full traces, and red-teaming can be just as rigorous, and it avoids a false sense that the modular boundaries are doing the safety work.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6117,
+     "cost": 0.000547
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "The critic is right that LLM contracts are fuzzier than typed interfaces, but that strengthens the case for explicit handoff specs, not against decomposition. Monolithic prompts fail just as unpredictably, and they hide where the failure started. Decomposition gives you logs at each boundary, so you can see whether the plan or the generation went wrong, and it lets you test and swap stages independently. A same-family verifier is a real limit, so use a different model or rule-based checks where it matters. Blast-radius limits still help, since enforcement is easier to attach to a narrow role than to one all-purpose prompt.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The 'against' speech makes no specific statistics or dated claims. Its points about LLM contracts being fuzzy, same-family verifiers sharing blind spots, and multi-agent pipelines adding latency and cost are reasoning or general observations, not materially false factual claims."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 4502,
+     "cost": 0.0004836
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The critic is right that natural-language contracts are fuzzier than typed interfaces, and that a same-family verifier shares blind spots. But those are arguments for better design, not against decomposition. Structured handoffs, such as schema-constrained outputs, make intermediate artifacts inspectable. Testing a stage on fixed, recorded inputs isolates its behavior even when upstream stages are imperfect, so the attribution problem shrinks rather than reappearing at every boundary. A monolithic prompt offers no equivalent: when it fails, the only evidence is the final output and whatever reasoning trace the model happens to expose. End-to-end evals and red-teaming are valuable, and I would keep them, but they tell you that a failure occurred, not where in the chain it began. Decomposition does not guarantee safety, and a poorly specified pipeline can be worse than a well-designed single prompt. The claim I'm defending is comparative: given equal care, separated roles with explicit contracts, boundary logs, and independent checks give you more places to observe, test, and constrain failures than one entangled prompt does. Latency and cost are real tradeoffs, but they are a separate question from whether the system is safer and easier to audit.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4492,
+     "cost": 0.0005157
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I've checked the latest 'for' speech. It makes no statistics or dated claims. Its factual points about schema-constrained outputs, fixed-input stage testing, and the limits of end-to-end evals are accurate as general descriptions of current practice. I found no materially false claims, so I'm passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The speech cites no specific statistics or dates. Its general statements about schema-constrained outputs making intermediates inspectable, isolated stage testing on recorded inputs, and end-to-end evals showing where a failure occurred but not where it began are accurate as descriptions of common practice."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2461,
+     "cost": 0.0004164
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "**Rebuttal:** Testing a stage on recorded inputs isolates its behavior only if those fixtures resemble what the stage will actually receive. In production, the planner's output is whatever the planner produced, including its errors. Hand-built fixtures encode the test author's guess about upstream behavior, so the isolation is partly illusory. Schema constraints check form, not meaning. A schema-valid plan can still be substantively wrong, so structural inspectability does not give you inspectability of reasoning. The claim that a monolithic prompt exposes \"only the final output\" is also a strawman. Full traces, intermediate tool calls, and logged reasoning are available there too, and a monolithic system can be instrumented at every step it takes. Finally, the \"comparative, given equal care\" framing does a lot of work. Decomposed systems have more interfaces to specify, version, and keep consistent, so equal care costs more in the decomposed case.\n\n**Argument:** The topic's core claim is that modularity makes failures easier to locate and repair. In practice, each new boundary adds a place where information can be lost, where an upstream error can be mistaken for a downstream one, and where a prompt injection can cross a trust boundary. Auditing a pipeline means auditing every contract and every interaction between them, which grows faster than the number of stages. A verifier that shares its generator's model family can also produce a clean-looking log that gives false confidence. The honest state of the evidence is that the advantage rests mostly on engineering analogy and practitioner experience, not on controlled comparisons showing that decomposed systems are safer or easier to audit at equal capability and cost. Until that evidence exists, a well-instrumented single system with end-to-end evaluation and tight tool permissions is a defensible default, and the burden is on the decomposition claim to show it beats that baseline.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 7141,
+     "cost": 0.000785
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest 'against' rebuttal. It contains no statistics or dated claims. Its points about fixture realism, schema validity versus meaning, multi-boundary auditing, and the limited controlled evidence for decomposition are argument or reasonable characterizations, not materially false factual claims. I'm passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No invented statistics or materially false factual claims found; the remaining statements are argumentative characterizations of design tradeoffs and the state of the evidence, which are reasonable as general descriptions."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3227,
+     "cost": 0.0005173
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The opponent is right that hand-built fixtures can encode a test author's guess about upstream behavior, and that the controlled evidence for decomposition is thinner than the engineering analogy suggests. But record-and-replay addresses much of this: logging real handoffs from production gives you fixtures that include the planner's actual errors, so isolation tests the stage on the inputs it really gets. The monolithic \"full trace\" reply also misses something. A chain of reasoning inside one prompt is not a boundary with a stated contract, so you cannot check it against a spec, replace one step, or measure whether a stronger model at that step fixes the failure. Those interventions are the practical payoff of decomposition, and they are testable claims. I concede that the evidence favoring decomposition over a well-instrumented monolith at equal cost is not yet strong, and I would not claim it is settled. My position is narrower: when a system is decomposed with logged handoffs and explicit contracts, its failures become more localizable and more directly fixable, and that is a reason to prefer it for systems that need auditing. Whether the added interfaces cost more to maintain than they save is a fair empirical question, and the topic should be judged on that tradeoff, not on the analogy alone.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4587,
+     "cost": 0.0006205
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest 'for' speech. It makes no statistics or dated claims. Its points about record-and-replay fixtures, reasoning inside one prompt lacking a stated contract, and the concession on thin controlled evidence are accurate descriptions or argument, not materially false factual claims. I'm passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No statistics or dated claims are made. The factual statements about logging production handoffs for replay fixtures and about the absence of stated contracts inside a single prompt are accurate general descriptions, and the remaining points are argument or concessions rather than false factual claims."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2749,
+     "cost": 0.000559
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "**Rebuttal:** Record-and-replay is a real improvement, but it only isolates a stage on inputs drawn from the past distribution. When the planner changes, whether from a model update, a new prompt, or a shift in user traffic, the logged fixtures stop matching what the generator receives, and the isolation quietly fails. The claim that a reasoning chain inside one prompt \"cannot be checked against a spec\" is also too strong. You can check intermediate steps in a monolithic chain-of-thought, score them with a process reward model, or run the same model with a stronger step-specific instruction. The swap-in-a-stronger-model advantage is real, but it is a claim about cost and convenience, not about safety or auditability.\n\n**Argument:** The strongest remaining concern is that decomposition moves risk into the seams. Every boundary is a natural-language contract that nobody can fully specify, and every contract must stay consistent with every other as models and prompts change. Each handoff is also a point where a prompt injection can cross from one trust zone to another, and where the verifier, if it shares the generator's model family, can certify errors with a clean-looking log. Those costs grow with the number of interfaces, while the benefit depends on whether failures actually localize, which nobody has shown under controlled conditions at equal capability and cost. Given that, the topic's claim that separated roles are safer and easier to audit is not established. A single system with full tracing, end-to-end evals, and tight tool permissions is a defensible default, and the decomposed design has to earn its extra complexity.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5947,
+     "cost": 0.000703
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest 'against' rebuttal. It contains no statistics or dated claims. Its points about fixture drift, process reward models for intermediate steps, prompt injection across trust boundaries, and the limited controlled evidence for decomposition are argument or reasonable characterizations, not materially false factual claims. I'm passing it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The speech makes no statistics or dated claims; its remaining assertions (process reward models can score intermediate steps, record-and-replay fixtures can drift, and controlled comparisons at equal capability and cost are limited) are argument or fair characterizations."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2914,
+     "cost": 0.0006253
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Both sides made solid points, but the 'for' side kept its claim narrower and better defended. The 'against' side landed real hits on fixture drift, seam risk, and the thin controlled evidence, yet the 'for' side conceded that evidence openly and still showed that decomposition produces concrete intervention points (logged handoffs, swappable stages, independent checks) that a monolithic chain lacks. The 'against' side's strongest argument, that the benefit is unproven at equal cost, goes to the question of cost rather than to whether decomposed systems are safer or easier to audit in principle, and the 'for' side handled that distinction well.",
+     "output": {
+      "winner": "for",
+      "reasoning": "The 'for' side defended a comparative, bounded claim: given equal care, decomposed systems with logged handoffs and explicit contracts give more observable and fixable failure points than one entangled prompt. It responded to the critic's main objections by conceding what was true (fuzzy contracts, same-family verifiers, thin controlled evidence, fixture realism) and reframing them as design requirements rather than refutations. The 'against' side made strong points about seam risk, fixture drift, and unproven benefit at equal cost, but its claim that a monolithic chain is equally checkable was partly undercut by the 'for' side's point that intermediate reasoning inside one prompt lacks a stated contract, and its rebuttals on process reward models and instrumentation addressed observability more than the attribution problem the topic actually names. Because the 'for' side's position was more precisely scoped and its argument about localizing and repairing failures stayed closer to the topic's wording, it argued the case more clearly."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3594,
+     "cost": 0.0006628
+    }
+   ],
+   "ms": 56712,
+   "cost": 0.006879,
+   "tokens": {
+    "input": 26383,
+    "output": 8481
+   },
+   "teamrunner": "0.0.4",
+   "winner": "for"
+  },
+  {
+   "name": "checked-4",
+   "version": "checked",
+   "started": "2026-11-09T20:58:08.924694+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a worker, and a reviewer, makes systems safer and easier to audit because each component has a bounded, inspectable job. When a single monolithic prompt handles retrieval, reasoning, formatting, and self-checking all at once, failures are tangled together: a wrong answer could stem from bad input handling, flawed logic, or a hallucinated citation, and it is hard to tell which. With separated roles, each stage has its own inputs and outputs that can be logged, tested in isolation, and swapped out. A reviewer model can check a worker's output against explicit criteria, and a permissions boundary can ensure the executor never gets access it doesn't need. This mirrors well-established engineering practice: modular software with clear interfaces is easier to test, debug, and improve than one enormous function. Modularity also lets teams improve one component, such as upgrading the reviewer, without destabilizing everything else.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2406,
+     "cost": 0.000168
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the speech's factual claims. It makes no specific statistics or citations. Its claims about modular design, clear interfaces, logging, isolated testing, and permission boundaries reflect established engineering practice, so I find no materially false claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found; the speech contains no invented statistics or citations, and its general claims about modularity, testing, logging, and permission boundaries are consistent with established software engineering practice."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2209,
+     "cost": 0.0002224
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The speech's strongest point is that separated stages can be logged and tested in isolation. But the analogy to software modules breaks down here. A function's output is a typed value that the next function reads exactly. A planner's output is natural language that the worker reads with its own interpretation, so the interface is lossy and ambiguous. Testing the worker on hand-written inputs doesn't show how it behaves on the planner's actual outputs, and that mismatch is where many failures will sit.\n\nThe reviewer is also weaker than the speech suggests. A reviewer built on the same underlying model shares many of the worker's blind spots. When both miss the same hallucinated citation, the pipeline reports a check that never independently happened, which can make the system look more verified than it is. A single prompt with explicit self-checking and logged intermediate reasoning can offer much of the same visibility with fewer handoffs to get wrong.\n\nFinally, the permissions argument concerns tool access, which is orthogonal to role splitting. Least-privilege tool scoping works in a single-agent system too. Meanwhile, multi-agent pipelines add latency, cost, and emergent interactions between roles that are hard to audit. Each new role is another surface for error, and the system's behavior depends on the combinations, not just on each component's bounded job. Decomposition is a tool that can help, but it is not automatically safer or easier to audit.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6175,
+     "cost": 0.000569
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "As fact checker, I reviewed the latest speech. It makes no specific statistics or citations, and its claims about typed function outputs, same-model reviewers sharing blind spots, and least-privilege tool scoping working in single-agent systems are reasonable characterizations rather than materially false facts. Its points are argumentative, not factual errors, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech contains no invented statistics or citations. Its statements about software function interfaces, shared model blind spots in same-model reviewers, and least-privilege scoping in single-agent systems are accurate or reasonable characterizations, and its remaining points are argument rather than checkable fact."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3278,
+     "cost": 0.0004186
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The opponent's strongest point is that natural-language handoffs are lossy, but that is a design choice, not a fixed property of role splitting. Planner outputs can be constrained to a schema, and the worker can be tested by replaying the planner's logged outputs rather than hand-written inputs, which closes the mismatch gap. I grant that a same-model reviewer shares blind spots, and that permissions are orthogonal in principle. But role separation makes those controls easier to assign: a reviewer can use a different model, different criteria, or a deterministic check such as verifying every citation against the retrieval log. The strongest argument for decomposition is this: in a single prompt, self-checking runs in the same context as the generation it is checking, so it cannot be isolated, ablated, or swapped out. With separate stages, you can measure whether the reviewer catches errors, replace it without touching the worker, and read the planner's plan as a standalone artifact before any action is taken. Those are concrete audit points that a monolithic prompt does not offer. Latency and cost are real tradeoffs, but they are costs to weigh, not evidence that the system is less auditable.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4792,
+     "cost": 0.000513
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech's factual claims. It cites no statistics or sources. Its claims that planner outputs can be constrained to a schema, that logged outputs can be replayed for testing, that a reviewer can use a different model or a deterministic citation check, and that self-checking in a single prompt shares its context with generation are all accurate characterizations of how these systems work. It makes no materially false factual claims, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. Schema-constrained outputs, replaying logged inputs, deterministic citation checks, and same-context self-checking in single prompts are accurately described. The remaining points are design arguments, not factual errors."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2612,
+     "cost": 0.000389
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "The schema and replay points are real, but they show that good design can make a pipeline auditable, not that role splitting does so by itself. A single prompt can also be given structured intermediate sections, logged, and checked by deterministic tests. Replay also has a limit. Logged planner outputs only cover the planner you already ran. When you swap in a new planner or reviewer, the worker sees a different input distribution, so you still need end-to-end testing, and isolation alone doesn't settle it.\n\nMy strongest remaining point is about security. A planner that reads untrusted retrieved content can be manipulated by prompt injection, and it then passes the injected instructions to the worker as a natural-language plan. The worker has no reason to distrust its own planner, so the \"bounded job\" boundary doesn't stop the attack. It may even make it harder to notice, because the malicious instruction now looks like a legitimate, approved step from a trusted component. Each added role also adds a model whose disagreements with other roles need resolving, and a reviewer that rejects outputs can produce retry loops or silent drops. Separation gives you more places to put controls, but it also gives an attacker and the system's own interactions more places to go wrong, and an audit of each component can pass while the combined behavior still fails.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5917,
+     "cost": 0.0006208
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech. It cites no statistics or sources. Its claims that replayed logs only cover the planner that produced them, that a new planner or reviewer changes the worker's input distribution, that prompt injection from retrieved content can pass through a planner's plan, and that added roles can create retry loops or silent drops are accurate characterizations of these systems. I find no materially false factual claims. It is your turn.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The speech makes no specific statistics or citations, and its technical claims about replay limits, prompt injection via planner outputs, and retry loops or silent drops are reasonable characterizations rather than materially false facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3757,
+     "cost": 0.0005503
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The strongest version of your injection point is that a planner reading untrusted content can pass an injected instruction to the worker as an approved step. But that is an argument for constraining the interface, not against splitting roles. A planner that emits a fixed schema, with no free-text imperatives and with retrieved content quarantined as data rather than instructions, gives the worker a boundary it can enforce. A monolithic prompt has no such boundary, since retrieved text sits in the same context as the system instructions. I agree that combined behavior must be tested end to end, and that each role adds failure surface. Still, the core advantage holds: separation produces discrete artifacts (the plan, the worker's output, the reviewer's verdict) that can each be scored against ground truth. When a final answer is wrong, you can ask which artifact first went wrong. That localization is what makes a system debuggable, and it is much harder to get from one prompt whose intermediate reasoning is only partly visible. Decomposition does not guarantee safety, but it gives auditors more places to look and more points where a control can be placed.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4271,
+     "cost": 0.0005628
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Fact check: the latest speech makes no statistics or citations. Its claims that a schema-constrained interface and quarantined retrieved content give the worker an enforceable boundary, that a monolithic prompt has no such boundary because retrieved text shares context with system instructions, that separated artifacts can be scored against ground truth, and that a single prompt's intermediate reasoning is only partly visible are reasonable characterizations of these systems. I find no materially false factual claims, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No statistics or citations are made. The claims about schema-constrained interfaces, quarantining retrieved content, separate artifacts being scorable against ground truth, and monolithic prompts mixing retrieved text with system instructions are accurate characterizations, and the argument is evaluative rather than a materially false factual claim."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 1914,
+     "cost": 0.0004237
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "The opponent's quarantine point doesn't fully hold. A schema constrains the shape of the planner's output, but it doesn't stop injected text from entering a free-text field like `task_description` or `notes`. The planner still has to read the untrusted content to produce the plan, so the injection surface remains. Quarantining retrieved text as data is also a technique a single prompt can use, with delimiters, separate tool-result channels, and deterministic filters. Role splitting doesn't supply it.\n\nThe localization argument is also weaker than it sounds. Pinning an error on a specific artifact requires per-stage ground truth, such as a labeled correct plan, and most real systems only have labels for the final answer. Even with partial labels, blame is often shared: a plan that is technically correct can still lead the worker astray, and a reviewer can approve a flawed output for reasons that depend on the worker's phrasing.\n\nMy strongest remaining point is that the safety benefits the topic credits to role splitting mostly come from controls that don't require splitting roles: least-privilege tool access, deterministic citation checks, and output validation. Those can be added to a single agent. What role splitting adds is more model calls, more inter-model interfaces, and a reviewer that reads the same possibly injected content. A reviewer can be manipulated by the same payload that compromised the planner, so the separation may create the appearance of an independent check without providing one. The honest conclusion is that decomposition can help, but the topic overstates what it buys in safety and auditability.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6500,
+     "cost": 0.0008018
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest speech's factual claims. It cites no statistics or sources. Its claims that schemas don't block injected text in free-text fields, that delimiters and tool-result channels can be used in single prompts, that per-stage labels are usually missing, and that least-privilege access, deterministic citation checks, and output validation work in single-agent systems are accurate characterizations. I find no materially false factual claims.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech makes argumentative points and reasonable characterizations of how schemas, delimiters, labeling, and single-agent controls work, with no invented statistics or citations."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3829,
+     "cost": 0.0006847
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Both sides made solid, mostly factual arguments. The 'for' side argued that role separation yields discrete, scoreable artifacts and enforceable interface boundaries, and it answered the lossy-handoff and injection objections by proposing schema constraints and quarantine. The 'against' side pressed hard on the limits of those answers: schemas don't stop injection in free-text fields, localization needs per-stage ground truth most systems lack, and reviewers reading the same content share its vulnerabilities. Against's point that many safety controls are separable from role splitting was strong, but for's rebuttal that splitting makes controls easier to assign and place was never fully refuted. On balance, the 'against' side's final rebuttals were more concrete and better targeted at the topic's specific claims of safety and auditability, while 'for' kept conceding ground to qualifiers.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The winning side is against. Its arguments were the more precise and better targeted at the topic's specific claims. It identified concrete failure modes that the 'for' side only partially answered: schema constraints don't prevent injection through free-text fields, per-stage localization requires ground-truth labels most systems don't have, and a reviewer reading the same untrusted content can be compromised by the same payload, so the independent check may be illusory. It also made a sharp point that many claimed safety benefits (least-privilege access, deterministic citation checks, output validation) come from controls that can be added to a single agent and don't depend on role splitting. The 'for' side made good counterpoints, especially about discrete artifacts and placing controls at interfaces, but its responses increasingly conceded limits and relied on design choices that are not inherent to role splitting, leaving the topic's strong claim less supported. Neither side was factually wrong, so the decision rests on argument quality, and against's reasoning held up better under cross-examination."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 4622,
+     "cost": 0.0006709
+    }
+   ],
+   "ms": 56436,
+   "cost": 0.006595,
+   "tokens": {
+    "input": 24125,
+    "output": 8365
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-5",
+   "version": "checked",
+   "started": "2026-11-09T21:16:29.335901+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into clear roles makes systems safer, more auditable, and easier to improve, and the case rests on basic engineering principles that we already rely on everywhere else. When one monolithic prompt handles retrieval, reasoning, output formatting, and safety checks all at once, a failure can come from anywhere in that tangle, and it is hard to tell which component caused it. Separate roles create seams: a planner that decomposes the task, a worker that executes a bounded step, a verifier that checks the output against explicit criteria, and a formatter that enforces the output schema. Each seam is a place where you can log inputs and outputs, inspect intermediate artifacts, and test one component in isolation. If the verifier starts passing bad answers, you know where to look. If you want to improve the planner, you can swap it out without retraining the whole pipeline's behavior. Separation also enables independent controls, such as giving the worker minimal tool permissions or requiring a human checkpoint before a consequential action, which is much harder to enforce when everything lives in one undifferentiated instruction block. The tradeoffs, such as added latency, cost, and coordination errors between roles, are real, but they are the same tradeoffs that modular software has always faced, and the auditability gains generally justify them for anything consequential.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 3593,
+     "cost": 0.0002225
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the speech's factual claims. It contains no statistics or specific empirical assertions, and its main points are design arguments about modularity, auditability, and tradeoffs, which are reasonable as stated. I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech offers no invented statistics; its statements about modular engineering practice, logging at component seams, and latency/cost tradeoffs are general design arguments rather than checkable factual claims."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3290,
+     "cost": 0.0002663
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The speech's central analogy, that AI roles are like software modules with clean interfaces, doesn't hold. Software modules communicate through typed, deterministic contracts, so you can test one in isolation and know it will behave the same way in the pipeline. The seams between LLM roles are natural language, and each downstream role's behavior depends on the exact phrasing and quirks of upstream outputs. Swapping the planner changes the distribution of inputs the worker sees, so you can't improve one component without re-validating the whole chain. The speech's claim that you can swap a planner \"without retraining the whole pipeline's behavior\" overstates what modularity buys here.\n\nThe stronger problem is that the verifier is not an independent check. If the planner, worker, and verifier are the same model with different prompts, they share blind spots. A verifier will often approve an error that the worker made for the same underlying reason. Its agreement looks like confirmation but may just be correlated failure. Decomposition also creates new failure modes. A bad plan can make every downstream step look locally correct while the whole is wrong, and in the logs this looks identical to a verifier miss. The speech's \"if the verifier passes bad answers, look there\" assumes the fault is where you'd like it to be, which often it isn't.\n\nOn safety, splitting can cut in the wrong direction. Workers that see only fragments can't judge whether the overall task is harmful, which is exactly what task-splitting attacks exploit. Each added component is also another place where prompt injection can enter and propagate. Finally, the speech presents auditability gains as settled, but the empirical evidence that multi-agent decomposition beats a single well-instrumented prompt with structured outputs, logging, and explicit checks is thin. Many of the benefits the speech credits to roles can be obtained more cheaply within one pipeline, without the coordination overhead and correlated-failure risk that come with separate agents.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 7676,
+     "cost": 0.0007116
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the latest speech. Its claims are design arguments and general observations, with no invented statistics. Its points about correlated failures, natural-language seams, and task-splitting attacks are reasonable, though the evidence comparison is a judgment call rather than a verified fact. I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech offers design reasoning and general observations, not specific empirical statistics. Its characterization of software module contracts and task-splitting attacks is broadly accurate."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3503,
+     "cost": 0.0004062
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "You are right that natural-language seams are leakier than typed interfaces, and that a same-model verifier shares blind spots with the worker. But those points argue for making roles more rigorous, not for abandoning them. A single prompt has the same correlated-failure problem, with no seam at all: the model checks its own reasoning in the same context that produced the error, and when it fails you cannot tell whether retrieval, reasoning, or formatting went wrong. Decomposition at least lets you attack the correlation directly. Use a different model or a deterministic rule-based check for the verifier where possible, validate schemas in code rather than by prompt, and test each role against a fixed set of inputs. The \"bad plan looks locally correct\" failure is real, but it is still visible at the plan artifact, which you can inspect and sample, something a monolithic prompt never exposes. My core claim is narrower than \"modularity is free.\" Roles make per-step permissions, logging, and human checkpoints enforceable in a way a single instruction block cannot, and those controls are what make consequential deployments auditable. Their costs are real, and they should be weighed case by case, but the design gives you handles that a monolithic prompt does not.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4880,
+     "cost": 0.0005031
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design arguments, not statistics. Its claims about correlated failure in a single prompt, enforcing permissions and checkpoints in code, and inspectable plan artifacts are reasonable. I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No invented statistics or materially false factual claims. The points are design arguments and general observations about single-prompt self-checking, code-enforced permissions, and inspectable intermediate artifacts, which are reasonable as stated."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3796,
+     "cost": 0.0004824
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "Your strongest point is that the controls you list, such as different-model verification, deterministic schema checks, and scoped tool permissions, make the system more auditable. I agree they do. But they don't require separate roles. A single pipeline can run a deterministic validator on its output, have the model emit a structured plan before acting, log every intermediate artifact, and restrict tools per step in the orchestration code. The independence comes from those mechanisms, not from the role split. Your examples also undercut the topic: a same-model verifier with a different prompt is the weak design you described, and a different model or rule-based check can be added to any architecture. The question is whether splitting into roles is the best way to get these controls, and I don't think the case has been made that it is.\n\nMy strongest remaining argument is that role separation has specific costs that the topic ignores. Each seam adds latency, cost, and a point where context is lost or distorted, and each role may see only fragments, which weakens its ability to notice when the overall task is wrong. That is exactly the opening that task-splitting attacks use. Multi-role pipelines also produce more logs, which can create an impression of auditability without the substance: more artifacts to read doesn't mean the errors are easier to locate, especially when the seams are natural language and the checks are correlated. A well-instrumented single pipeline with structured intermediate outputs, deterministic checks, and scoped permissions captures most of the claimed benefits at lower cost and with fewer failure surfaces. So the topic's \"makes it safer and easier to audit than one prompt\" is an overstatement. Roles are one way to get the controls, and often not the cheapest or safest.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6636,
+     "cost": 0.0007374
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design arguments and general observations, not statistics. Its references to task-splitting attacks, correlated failures between same-model checks, and the costs of added seams are reasonable. I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The latest speech contains no invented statistics or materially false factual claims. Its points about task-splitting attacks, correlated failures from same-model verification, natural-language seams, and the costs of added latency and context loss are reasonable design arguments. Its characterization of the evidence as thin is a judgment call, not a checkable false claim."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3083,
+     "cost": 0.0005576
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The opponent's strongest point is that the controls I named, such as different-model verification, deterministic schema checks, and per-step tool scoping, can be added to a single pipeline without role separation. I accept that, and I'll narrow my claim accordingly. But a \"single pipeline with per-step permissions, structured intermediate outputs, and scoped tools\" is a pipeline whose steps are separate roles with separate authority. The opponent has described the topic and called it an alternative. The real disagreement is over labels, and the design property that matters is the one the opponent's own description assumes. The fragmentation concern also cuts both ways: a monolithic prompt gives the model full context, but it also gives one component every tool and every authority at once. My new argument is least privilege under untrusted input. When a model reads retrieved web pages or user documents, any instruction hidden in that text can steer whatever component reads it. In a monolithic prompt, that component is the one holding the tools and the final say. With roles, the component that touches untrusted text can be a worker with no tools, which emits a bounded, schema-validated artifact, and a separate actor with permissions acts only on validated fields. An injection then has to survive a seam and a schema check to cause harm. That containment is a concrete safety gain, and it is the reason I still think the topic holds for consequential deployments, though not as an absolute \"always safer.\"",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6442,
+     "cost": 0.0007014
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Fact check: this speech makes design and reasoning claims about least privilege, injection containment, and schema validation, with no statistics or verifiable empirical assertions. I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The latest speech contains no invented statistics or false factual claims. Its points about least-privilege design, containing injected instructions at schema-validated seams, and the labeling disagreement are reasoning and design arguments rather than checkable facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2955,
+     "cost": 0.000472
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "You're right that the controls you list are what matter, and I accept that least privilege under untrusted input is a real gain. But containment is weaker than the argument suggests. Schema validation constrains structure, not content. If the worker's bounded artifact includes a free-text field, such as a summary or an extracted quote, an injected instruction can ride through the seam intact, and a downstream planner that reads that field may act on it. The protection holds only when the artifact is purely typed, such as enums, numbers, and fixed IDs. That is achievable in a single pipeline too: the orchestration code can strip tools while untrusted text is being processed and pass only validated fields onward. The containment comes from capability restriction and typed interfaces, not from the word \"role.\"\n\nMy strongest remaining argument is about what auditing actually requires. An auditor needs to know why a consequential action happened. With separate roles, that answer is spread across several model calls, each conditioned on an upstream artifact the auditor may never have examined, and the system's real behavior is an emergent property of their interaction. Testing each role alone doesn't establish that the composition is safe, and testing the composition means covering a combinatorial space of plans, worker outputs, and verifier judgments. Roles produce more artifacts to read, but reading them doesn't reconstruct the decision. A single, well-instrumented pipeline with structured intermediate state and explicit controls is often easier to audit end to end, so the topic's claim that role splitting makes systems more auditable than one prompt is not established.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5980,
+     "cost": 0.0007815
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Fact check on the latest speech: it makes design and reasoning claims about schema validation, free-text fields, capability restriction, and auditing emergent behavior. It cites no statistics or verifiable empirical facts, and I found nothing materially false.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The speech's assertions are design arguments about schema validation limits, capability restriction, and auditability, which are reasonable as stated."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2842,
+     "cost": 0.0005809
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Having weighed both sides, I judge the 'against' side to have argued more effectively. The 'for' side made real concessions and retreated to a narrower claim that the controls matter more than the label, which is a reasonable move but weakens the topic as stated. The 'against' side consistently pressed that the benefits attributed to role separation can be obtained within one well-instrumented pipeline, and it identified concrete failure modes (correlated verifier errors, free-text seams carrying injections, emergent composition behavior) that the 'for' side did not fully answer. I'm awarding this round to against.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The topic claims role splitting makes systems safer and more auditable than one prompt doing it all. The 'for' side offered strong points about least privilege, capability restriction, and inspectable plan artifacts, but it conceded that the key controls (different-model verification, deterministic schema checks, per-step tool scoping) do not require separate roles and can be added to a single pipeline. That concession shifted the debate to whether role separation is the best way to get those controls, and the 'for' side's rebuttal, that a pipeline with scoped steps is effectively a set of roles, reframed the topic rather than defending it as stated. The 'against' side pressed several specific points the 'for' side never fully answered: schema validation constrains structure but not free-text content, so injections can survive seams; same-model verifiers share correlated blind spots; and auditing requires explaining emergent behavior across multiple conditioned calls, which roles make harder rather than easier. The 'against' side also treated the topic's comparative claim ('more than one prompt') with appropriate scrutiny, noting the empirical evidence is thin. The 'for' side's strongest argument, least privilege under untrusted input, was real but the 'against' side showed it depends on typed interfaces and capability restriction rather than the role split itself. On balance, the 'against' side argued with greater logical clarity and better rebutted the opposing claims."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3966,
+     "cost": 0.000712
+    }
+   ],
+   "ms": 60394,
+   "cost": 0.007135,
+   "tokens": {
+    "input": 27149,
+    "output": 8840
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-6",
+   "version": "checked",
+   "started": "2026-11-09T21:16:31.499330+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a retriever, a generator, and a verifier, makes systems safer and easier to audit because each component has a narrow, inspectable job. When a single monolithic prompt handles everything, a failure could come from any part of the task, and it is hard to tell whether the model misread the instructions, invented a fact, or ignored a constraint. With separated roles, you can test each stage against its own criteria, log its inputs and outputs, and swap or tighten one component without destabilizing the rest. A verifier role that checks the generator's output against sources, for instance, creates a concrete checkpoint that a single prompt cannot provide by design. Separation also limits the blast radius of errors and makes it easier to restrict permissions, such as giving a retrieval step read-only access while keeping write actions under a separate, more tightly controlled component. None of this is free: more components mean more handoffs, more latency, and more places for miscommunication. But the core claim holds, because clear roles turn an opaque process into a sequence of checkable steps, and that is what auditing and improvement require.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2995,
+     "cost": 0.000192
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the speech's factual claims. It makes design arguments about modular AI systems, such as narrower components being easier to audit, logs and tests being possible per stage, and read-only retrieval limiting risk. These are reasonable engineering claims, not statistics or specific factual assertions, and nothing in it is materially false. I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech contains no statistics or specific empirical assertions; its points are general design arguments (role separation aids auditing, per-stage testing and logging, permission restriction limits blast radius, and added components cost latency and handoffs), which are reasonable and consistent with common engineering practice."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2414,
+     "cost": 0.0002432
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The fact-checker's pass shows the speech's claims are reasonable engineering statements. It doesn't show the conclusion follows. \"Narrow components are easier to inspect\" is true locally, but the speech never establishes that inspecting parts gives you a system you can trust. Its central claim, that the verifier is \"a concrete checkpoint,\" assumes the checker fails independently of the generator. A verifier is usually another language model, often with the same training biases and blind spots, so its errors may correlate with the generator's. A verifier that rubber-stamps plausible but wrong output looks like a checkpoint in the architecture diagram and provides little real assurance.\n\nThe stronger problem is that the failures the speech worries about most happen at the seams. If a planner misreads the user's intent and passes a subtly distorted task to the retriever, each stage's logs can look clean while the system fails. Per-stage tests check each component against its own criteria, not against the end-to-end goal, so the handoff errors that matter can be invisible in every log. Every handoff also adds a lossy translation into natural language, which is hard to audit precisely because it is informal. Meanwhile, the benefits the speech credits to roles, such as read-only retrieval and restricted write permissions, can be achieved within a single agent through tool scoping and permissions. So the decomposition adds handoff risk and cost to gain properties that don't require it. Given that, \"safer and easier to audit\" is an unproven design preference, not a clear win.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6290,
+     "cost": 0.0005538
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "Fact-check result on the last speech: I found no materially false factual claims. Its statements that verifiers are often other language models, that handoffs involve lossy natural-language translation, and that tool scoping can provide read-only or restricted-write permissions within a single agent are reasonable engineering claims, not invented statistics. Its argument that the decomposition's benefits can be had without roles is a design judgment I'm not ruling on. On the merits, I'd add that the speech's strongest point, that seam errors are invisible in per-stage logs, cuts against the original claim, but a role split with end-to-end tests and shared traces can still address it, so the two positions are closer than they look.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The speech's statements about verifiers often being language models, handoffs being lossy natural-language translations, and tool scoping enabling read-only or restricted permissions are accurate or reasonable. Its remaining points are design arguments rather than checkable facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3443,
+     "cost": 0.0004357
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The opponent's strongest point is that seam errors can hide in clean per-stage logs. I agree that's real, but it cuts less against role separation than it seems. A monolithic prompt has no seams to inspect, so its failures are equally hidden, just without a place to look. Roles give us typed handoffs, shared trace IDs, and the ability to replay an intent-to-retrieval handoff against the original request, which is how seam errors get found at all. The verifier-correlation worry is also engineerable. A verifier that checks each claim against retrieved source text, or a deterministic citation-match, fails differently from a model judging its own output's plausibility. The opponent's tool-scoping alternative is a fair point, but it concedes the core idea: once a single agent has distinct tools with distinct permissions, it is already running separated roles, and the question becomes whether those boundaries are explicit and testable. Decomposition does add latency and handoff risk, so the claim should be scoped: separated roles make safety and auditing more tractable when each boundary is designed, logged, and tested, not automatically safer in every system. Within that scope, a sequence of checkable steps beats an opaque prompt, because it gives us places to attach evidence, and evidence is what auditing needs.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 4237,
+     "cost": 0.0004585
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design and engineering arguments, such as typed handoffs, shared trace IDs, deterministic citation matching, and tool scoping as an alternative to roles. It cites no statistics or specific external facts, and none of its factual claims are materially false. I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The speech contains no invented statistics or materially false factual claims. Its statements about typed handoffs, shared trace IDs, deterministic citation matching, and single-agent tool permissions are reasonable engineering claims and design arguments, not checkable factual assertions that are false. The scoping of the thesis to well-designed, logged, and tested boundaries is a judgment, not a factual error."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2664,
+     "cost": 0.0004506
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "The \"no seams, so equally hidden\" point is a false equivalence. A monolith's failures are hidden, but a decomposed system adds failure surfaces of its own. The question is whether the net effect improves auditability, and the speech never shows that. Typed handoffs also constrain format, not meaning. A field like `query: string` checks that the planner emitted a string, not that it preserved the user's intent. Deterministic citation matching has a similarly narrow scope. It confirms that quoted text appears in retrieved documents, but it can't tell whether the right document was retrieved or whether the claim follows from it. Those checks catch real errors, but they don't establish the \"checkpoint\" the original claim depends on.\n\nThe concession that tool scoping already amounts to roles helps my side more than the speech admits. If the safety gains come from explicit permission boundaries, then the topic's claim, that splitting work into planner, retriever, generator, and verifier is what makes systems safer, is not what does the work. Permission design, logging, and testing can be applied to a single agent. The role split is one way to organize them, not a requirement.\n\nMy strongest remaining point is that decomposition makes end-to-end behavior harder to audit, not easier. Each component's behavior depends on what upstream components actually produce, which is rarely what its isolated tests assumed. The test surface grows with the number of interfaces and their interactions, and no per-stage suite covers the combinations that occur in production. Verifiers trained on similar data as generators can share blind spots, so their agreement is weak evidence. Clear roles give auditors more artifacts to read, but reading more artifacts doesn't produce a system-level guarantee. Unless someone builds and maintains end-to-end evaluation, the added components can produce a more convincing audit trail for a system that is no more reliable.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 7019,
+     "cost": 0.0008149
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I'm the fact checker. Having reviewed the latest exchange, I find no materially false factual claims. The statements are design and engineering arguments, not statistics or specific external facts. The claim that verifiers are often other language models is accurate as a general description, and the claim that tool scoping can provide read-only or restricted-write permissions within a single agent is also accurate. I pass the speech on factual grounds, while noting that the design questions about whether role separation actually improves auditability remain open and are not something I rule on.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech and rebuttals consist of design and engineering arguments (typed handoffs, shared trace IDs, deterministic citation matching, tool scoping, verifier correlation, test surface growth) rather than invented statistics or false specific assertions. Whether role separation improves safety and auditability is a contested design judgment, not a factual claim I can rule false."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2551,
+     "cost": 0.0004277
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The strongest objection is that decomposition multiplies interfaces, so end-to-end behavior becomes harder to predict. I accept that end-to-end evaluation is non-negotiable, and decomposition doesn't replace it. But the objection proves less than it seems. A monolithic prompt also has a combinatorial input space, and nobody tests it exhaustively. When a monolith fails, you usually can't tell whether the cause was a misread instruction, an invented fact, or an ignored constraint, so you can't fix it precisely. A pipeline gives you a bisection tool: when the end-to-end eval fails, the stage outputs show where the error entered, and you can rerun a single upgraded component against frozen upstream outputs to confirm it helps without breaking anything downstream. That is the \"improve\" half of the claim, and it is a real advantage. On verifier correlation, the answer is to make verifiers structurally different from generators, using deterministic citation checks, retrieval-grounded entailment, or a different model family, and to measure their agreement rates rather than assuming independence. I concede that a role split is not required for safety and that tool scoping in a single agent achieves much of the same permission control. The defensible version of my claim is that explicit, typed, logged boundaries make safety and auditing more tractable than an opaque prompt, provided each boundary is tested end-to-end and not just per stage.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5373,
+     "cost": 0.0006712
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Fact-check on the latest speech: I find no materially false factual claims. It makes design arguments about typed handoffs, shared trace IDs, replaying frozen upstream outputs, deterministic citation matching, and structurally different verifiers. These are engineering claims, not statistics or specific external facts. The open question is whether role separation actually improves auditability, which is a design judgment I'm not ruling on.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims. The speech's statements about typed interfaces, trace IDs, frozen-output replay, deterministic citation matching, retrieval-grounded entailment, and model-family diversity for verifiers are accurate descriptions of engineering practice and are not invented statistics. Whether decomposition improves auditability is a design question, not a factual claim I am evaluating."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2801,
+     "cost": 0.0006092
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "The bisection argument assumes the pipeline's failures localize cleanly to one stage. Many don't. If the planner's intent drift only becomes a harmful retrieval when combined with a particular document distribution, freezing upstream outputs and replaying them won't reproduce the failure, and an upgrade that passes the replay can still break the live handoff. The \"frozen upstream\" test also quietly assumes that yesterday's planner outputs represent tomorrow's, which is the seam problem again. The \"no place to look\" point is also overstated. A monolithic prompt can be instrumented too: ask it to emit its restated instructions, its cited passages, and its stated assumptions, then check those. That gets you most of the inspection points without the handoff cost. The verifier fix has a similar gap. Deterministic citation matching catches fabricated quotes but not a real quote from the wrong document or an unsupported inference, and retrieval-grounded entailment is itself a model with its own error rate. Finally, the speaker has now conceded that role separation isn't required, that tool scoping gets much of the same permission control, and that the benefit depends on boundaries being \"designed, logged, and tested.\" Those conditions are the actual source of auditability. The topic credits the roles, and the concession moves the credit to engineering discipline that a single agent can have too.\n\nMy strongest remaining point is that decomposition creates a false sense of inspectability. Each stage produces tidy artifacts that look checkable, so reviewers feel they have audited the system when they have only audited parts. Teams are also naturally rewarded for per-stage metrics, which makes it easy to optimize each component's score while the end-to-end behavior drifts. The burden of verification moves to the interfaces, and interfaces are the least-tested, least-owned, and least-documented parts of most multi-agent systems. A single well-instrumented agent with explicit tool permissions, traced reasoning, and end-to-end evaluation can be just as auditable and has fewer places for the audit to fail silently. So the claim that role separation makes systems safer and easier to audit is not established. It is at best one architecture among several, and it carries its own costs that the claim ignores.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 7929,
+     "cost": 0.0009586
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "Fact-check on the latest speech: I found no materially false factual claims. Its statements about verifiers often being other language models, deterministic citation matching confirming quoted text appears in retrieved documents, and tool scoping providing permission control within a single agent are accurate as general descriptions. The remaining claims about test gaps, team incentives, and interfaces being under-tested are design judgments, not factual assertions I can rule on. I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No invented statistics or materially false factual claims. The speech's assertions are general engineering descriptions and design judgments, and the open questions about whether role separation improves auditability are not factual matters I rule on."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3922,
+     "cost": 0.0007952
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "Having watched the full debate, I judge the 'against' side argued better overall. The 'for' side made a strong case that roles create inspectable boundaries and bisection points, and it made real concessions well. But the 'against' side consistently pressed the central gap: the claim that role separation itself makes systems safer and easier to audit was never separated from the engineering discipline (typed interfaces, permissions, end-to-end evals, tracing) that actually does the work, which a single well-instrumented agent can also have. The 'for' side conceded this repeatedly, and its final position, that the claim should be scoped to well-designed, tested boundaries, effectively narrowed the topic rather than defending it. The 'against' side's points about seam failures, false inspectability, and verifier correlation were sharper and less answered. I'm judging argument quality, not my own view of the topic.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The 'against' side argued more tightly and held its ground on the central issue: the benefits attributed to role separation (permission scoping, logging, testing, checkpoints) can be achieved within a single agent, so the decomposition itself is not shown to be the causal factor. The 'for' side made good replies, such as bisection via frozen upstream outputs and structurally different verifiers, but it progressively conceded the core claim, that roles are not required and that the benefit depends on boundary discipline, leaving the original topic only partly defended. The 'against' side's objections about seam failures, interface under-testing, and the risk of false inspectability went largely unanswered, and the 'for' side's rebuttals about frozen-upstream replay assumed away the very seam problems raised. Both sides kept logic clear, but 'against' better connected its objections to the topic's claim."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3685,
+     "cost": 0.0007209
+    }
+   ],
+   "ms": 57290,
+   "cost": 0.007332,
+   "tokens": {
+    "input": 28295,
+    "output": 9004
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
+  },
+  {
+   "name": "checked-7",
+   "version": "checked",
+   "started": "2026-11-09T21:16:36.075013+00:00",
+   "model": "anthropic/claude-haiku-5-5",
+   "topic": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+   "turns": [
+    {
+     "from": "for",
+     "round": 1,
+     "attempt": 1,
+     "content": "Splitting AI work into distinct roles, such as a planner, a worker, and a verifier, makes systems safer and easier to audit because each component has a bounded task with observable inputs and outputs. When one monolithic prompt handles retrieval, reasoning, formatting, and safety checks at once, a failure could come from any of those steps, and the final output hides where the error came from. With separated roles, you can log each handoff, test each role against its own benchmark, and swap or tighten one component without retesting the entire pipeline. A verifier that only checks claims against sources, for example, can be evaluated independently and given tighter permissions than the generator it reviews. This is the same logic that makes modular software and separation of duties in organizations robust: it creates checkpoints where errors are caught before they propagate, and it makes accountability traceable. Monolithic prompting is not inherently unsafe, but it offers fewer seams to inspect, and seams are exactly where auditing and improvement happen.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 2679,
+     "cost": 0.000171
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the speech. It makes design arguments rather than statistics or specific factual claims, and the general claims about modular software and separation of duties are accurate. I found nothing materially false, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The speech contains no invented statistics or false factual claims. Its references to modular software and separation of duties as sources of robustness and accountability are accurate characterizations, and its arguments about role separation are framed as design reasoning rather than verifiable facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 1867,
+     "cost": 0.0002055
+    },
+    {
+     "from": "against",
+     "round": 1,
+     "attempt": 1,
+     "content": "The speech's strongest point is the software analogy, and it breaks down here. Modules in conventional software have typed interfaces and deterministic behavior, so a boundary means something precise. An LLM \"planner\" handing off to a \"worker\" passes natural language, and the interface is lossy. The planner's summary can silently drop the constraint the worker needed, and the verifier only sees what gets passed along. Each handoff adds a place where meaning drifts, so the seams the speech praises are often places where errors are introduced, not just caught.\n\nThe verifier argument is weaker still. A verifier is only independent if its failures are uncorrelated with the generator's, but usually both run on the same base model with similar training, so they share blind spots. A verifier that confidently rubber-stamps a fabricated citation gives the appearance of a checkpoint without the substance. Meanwhile, a monolithic prompt can be tested end-to-end against the same benchmark, and its failures can be probed by ablation or by asking the model to show its reasoning. The claim that decomposition makes failures easier to localize assumes the component boundaries match where the errors actually arise, which is an empirical question the speech never establishes.\n\nDecomposition does add real attack surface: prompt injection can ride from one agent's output into another's instructions, and every extra component is another prompt to maintain, version, and audit. Separating roles can help when the roles involve deterministic tools with hard permission limits, but as a general claim that it is safer and more auditable, it trades visible structure for hidden coupling.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6237,
+     "cost": 0.0005452
+    },
+    {
+     "from": "fact_checker",
+     "round": 1,
+     "attempt": 1,
+     "content": "I checked the latest speech, the counterargument. It makes design and reasoning claims, not statistics. Its factual premises hold up: conventional software modules often have typed, deterministic interfaces, and prompt injection can pass from one agent's output into another's instructions. The claim that verifiers and generators often share a base model is a general industry observation, hedged with 'usually,' and not a materially false claim. I found nothing materially false, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech argues from design principles and hedges its generalizations (e.g., 'usually' share a base model). Its concrete points, that typed software interfaces differ from natural-language handoffs and that prompt injection can propagate across agents, are accurate as general statements."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 3427,
+     "cost": 0.0004162
+    },
+    {
+     "from": "for",
+     "round": 2,
+     "attempt": 1,
+     "content": "The strongest objection is that natural-language handoffs are lossy, so the seams can introduce errors. But that cuts toward my side. A lossy handoff is only a problem if you can't see it, and separated roles make it visible: you can log the planner's output, check whether the worker's input preserved the required constraints, and test the handoff directly. A monolithic prompt hides the same drop inside one opaque generation, where the omitted constraint never shows up as a discrete event. The correlated-blind-spot point is also real, and I concede that a verifier running on the same model is not truly independent. But independence is not the only benefit. A verifier with a narrow task, such as checking each claim against retrieved text, and with deterministic tools or restricted permissions, can be tested against its own benchmark and can fail in ways you can measure, even if it shares some weaknesses with the generator. On injection, decomposition does add surfaces, but each boundary is also a place to sanitize, filter, or restrict what passes downstream. A monolith that ingests retrieved documents in the same context as its instructions has the same exposure with no checkpoint at all. My claim is therefore narrower than \"decomposition is safer by default\": given equal capability, separated roles give you more places to observe, test, and constrain behavior, and that is what makes auditing and improvement tractable.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5173,
+     "cost": 0.0005018
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design arguments and does not cite statistics or specific factual claims. Its factual premises hold: monolithic prompts place retrieved documents in the same context as instructions, and a verifier sharing a base model with the generator is a common, hedged concern. I found nothing materially false, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech is argumentative and makes no invented statistics; its general claims about lossy handoffs, shared base models, and prompt injection exposure are reasonable and hedged."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2554,
+     "cost": 0.0004006
+    },
+    {
+     "from": "against",
+     "round": 2,
+     "attempt": 1,
+     "content": "The speech's narrowed claim, that separated roles give \"more places to observe, test, and constrain,\" mostly relocates the work rather than doing it. The most useful checkpoints it identifies are deterministic tools with hard permissions, and a monolith can use those too through schema-constrained outputs, tool gating, and sanitized retrieval. So the benefit comes from the deterministic controls, not from splitting the prompt into roles. The speech also assumes \"equal capability,\" but decomposition usually costs capability: each handoff loses context, and no per-role benchmark can catch an omission the verifier never received. A verifier cannot notice that the planner dropped a constraint it was never shown. Injection shows the same gap. If a planner reads a poisoned document and summarizes it, the malicious instruction arrives downstream already laundered as trusted planner output, so the seam did not stop it. Decomposition adds components, prompts, and interfaces to version and audit, and it multiplies the places where meaning drifts. Its benefits in auditability are real only when the boundaries are deterministic and typed, and for LLM-to-LLM handoffs that is the exception, not the rule. So the claim that role separation is generally safer and easier to audit than one well-controlled prompt is not established.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6136,
+     "cost": 0.0006619
+    },
+    {
+     "from": "fact_checker",
+     "round": 2,
+     "attempt": 1,
+     "content": "Conceded: deterministic controls like schema-constrained outputs, tool gating, and sanitized retrieval do most of the safety work, and a monolith can use them too. My claim is narrower than that. Role separation is what creates the places to attach those controls, and it gives each stage its own permissions and benchmark. Dropped constraints and laundered injections are real failure modes, but they are visible at a handoff only if you log and test that handoff, which is the audit benefit I'm claiming. A monolith that drops a constraint gives you no discrete event to inspect. So I accept that decomposition is not safer by default. Given equal controls, it gives you more observable and testable boundaries, and that is what makes auditing tractable.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The latest speech (the against argument) makes design and reasoning claims rather than statistics. Its factual premises hold: conventional software modules often have typed, deterministic interfaces; schema-constrained outputs and tool gating are standard monolith controls; prompt injection can propagate through agent-to-agent handoffs; and verifiers often share a base model with generators, a hedged observation. Nothing is materially false."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 5389,
+     "cost": 0.000731
+    },
+    {
+     "from": "for",
+     "round": 3,
+     "attempt": 1,
+     "content": "The opponent is right that a monolith can use schema-constrained outputs, tool gating, and sanitized retrieval, and that role separation does not make a system safe by itself. But those controls need attachment points, and separated roles supply them. A tool gate can sit between a planner and a worker, and a schema can validate a planner's output before it reaches a verifier. A monolith has one generation to constrain. On laundering, the opponent is right that a poisoned instruction can pass through a planner's summary looking trusted. Still, a logged handoff gives you the planner's input, its output, and the retrieved document it drew on, so you can trace the instruction back to its source. A monolith that absorbs the same poisoned text produces no intermediate record to diff. The claim I can defend is narrower than \"safer by default\": when the boundaries are logged, tested, and given their own permissions, failures become discrete events you can attribute and regress against. Without that discipline, decomposition adds the hidden coupling the opponent describes, so the benefit depends on engineering the seams, not just drawing them.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 5831,
+     "cost": 0.0006954
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design arguments, not statistics or specific factual claims. Its factual premises hold: a schema can validate outputs, tool gates can sit between agents, and logged handoffs can preserve inputs and outputs for tracing. I found nothing materially false, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "The speech contains no statistics or materially false factual claims. Its statements about schema validation, tool gating, logging handoffs, and tracing retrieved sources describe feasible engineering practices, and its claims about monolithic prompts are framed as design tradeoffs rather than facts."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2817,
+     "cost": 0.0005498
+    },
+    {
+     "from": "against",
+     "round": 3,
+     "attempt": 1,
+     "content": "Your last speech concedes the central point: the benefit \"depends on engineering the seams, not just drawing them.\" The topic claims that splitting roles makes systems safer and easier to audit. If the safety gain requires typed schemas, logged handoffs, per-stage permissions, and tests of each boundary, then those controls are doing the work, and the role split is only a place to attach them. A monolith can get the same logs, schema validation, and tool gating. Its retrieval results, tool calls, and intermediate reasoning can be recorded, and a poisoned document can be traced back to its source from those records. Your claim that a monolith \"produces no intermediate record to diff\" is a choice about logging, not a property of the architecture.\n\nThe strongest remaining argument against the topic is that decomposition makes the system harder to audit as a whole. Each role can pass its own benchmark while the composed pipeline fails, because the planner's actual output distribution may not match what the worker was tested on. Interaction effects between components are invisible when you test them one at a time, and the number of possible interactions grows with every added stage. A monolith is a single artifact that can be evaluated end-to-end against the behavior you care about. A pipeline requires you to validate the components, the interfaces, and the composition, and the composition is where the errors you actually encounter tend to live. Separating roles therefore adds auditable parts without guaranteeing an auditable whole, and that makes the topic's comparative claim unsupported.",
+     "output": {},
+     "model": "claude-haiku-5-5",
+     "ms": 6171,
+     "cost": 0.0008119
+    },
+    {
+     "from": "fact_checker",
+     "round": 3,
+     "attempt": 1,
+     "content": "I checked the latest speech. It makes design and reasoning arguments, not statistics or specific factual claims. Its factual premises hold: logs and traces can record a monolith's retrieval results and tool calls, and pipelines can fail at composition even when each component passes its own benchmark. I found nothing materially false, so I pass it.",
+     "output": {
+      "verdict": "pass",
+      "reasons": "No materially false factual claims found. The speech makes design arguments about auditability, interaction effects, and the composed pipeline, which are reasoning rather than checkable factual assertions."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 2694,
+     "cost": 0.0005565
+    },
+    {
+     "from": "judge",
+     "round": null,
+     "attempt": 1,
+     "content": "After weighing the full exchange, I'm judging for the against side, though it was close. The for side made a real point about observable handoffs but narrowed its claim until it was barely the topic's comparative claim. The against side kept pressing the same gap: the safety gains come from deterministic controls that a monolith can also use, and decomposition adds composition-level interaction risk that per-role benchmarks miss.",
+     "output": {
+      "winner": "against",
+      "reasoning": "The for side opened with a strong case that separated roles create logged, testable, attributable handoffs, and it conceded several points honestly. But across rounds it repeatedly retreated from the topic's comparative claim that role separation makes systems safer and easier to audit. By the final round it said the benefit depends on engineering the seams and that a monolith could be logged too, which reduced its position to 'given equal controls, decomposition gives more observable boundaries.' The against side made the stronger and more consistent argument: the protective controls (schemas, tool gating, sanitized retrieval, logging) are separable from role splitting, so the architecture itself does not explain the benefit; handoffs in natural language are lossy and can launder injections; verifiers sharing a base model share blind spots; and composition-level failures are the ones that matter yet escape per-component testing. The for side never answered the composition objection in its final turn, which was the against side's most damaging point. Since the against side's objections went largely unrebutted and the for side's concessions weakened its comparative claim, the against side argued better on logical clarity and the quality of its reasoning."
+     },
+     "model": "claude-haiku-5-5",
+     "ms": 6915,
+     "cost": 0.0008627
+    }
+   ],
+   "ms": 60481,
+   "cost": 0.00711,
+   "tokens": {
+    "input": 25320,
+    "output": 9155
+   },
+   "teamrunner": "0.0.4",
+   "winner": "against"
   }
  ]
 }

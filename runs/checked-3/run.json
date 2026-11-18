@@ -1,0 +1,53 @@
+{
+  "run_id": "01M711KGXH9WJFEG1R47VXMV9R",
+  "teamrunner_version": "0.0.4",
+  "environment": {
+    "python": "3.13.5",
+    "litellm": "1.106.6",
+    "deno": "2.9.8"
+  },
+  "started_at": "2026-11-09T20:57:10.833038+00:00",
+  "finished_at": "2026-11-09T20:58:03.969461+00:00",
+  "team": "checked",
+  "entry": "team-checked",
+  "inputs": {
+    "topic": {
+      "value": "Splitting AI work into clear roles makes it safer and easier to audit and improve than one prompt doing it all",
+      "source": "given"
+    }
+  },
+  "fingerprint": {
+    "content_hash": "sha256:3badc774a91dc5c5fe8c0b4849c860abf7e410f01f43684c9696525780bee376",
+    "git_commit": "f55bb8eab50da1cc559d70a4d412b48b7e8b808d",
+    "git_dirty": true
+  },
+  "status": "completed",
+  "reason": null,
+  "turns": 13,
+  "tool_calls": 0,
+  "latency_ms": 56712,
+  "cost_usd": 0.006879,
+  "cost_known_usd": 0.006879,
+  "cost_models_usd": 0.006879,
+  "cost_tools_usd": 0,
+  "tokens": {
+    "input": 26383,
+    "output": 8481
+  },
+  "keys": {
+    "ANTHROPIC_API_KEY": "key_file"
+  },
+  "rehearsal": null,
+  "backup_models": {},
+  "cost_is_estimate": true,
+  "prices": {
+    "models": {
+      "anthropic/claude-haiku-5-5": {
+        "input_per_million": 0.1,
+        "output_per_million": 0.5,
+        "source": "LiteLLM 1.106.6's price table"
+      }
+    },
+    "tools": {}
+  }
+}
