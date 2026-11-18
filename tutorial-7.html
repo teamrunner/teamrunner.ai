@@ -54,6 +54,11 @@ document.documentElement.setAttribute('data-via',v)})();
 <div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="committee">teamrunner new committee --from hiring_committee</code>
 </div>
+<p>The example runs on Claude, through Anthropic. To keep to the model and the one key you set up in step 2, change the model its members share. It is a model profile, <code>models/member.yaml</code>, named once in <code>team.yaml</code>:</p>
+<div class="panel"><div class="cap"><span class="label">committee/models/member.yaml</span><span class="label">change this line</span></div><div class="diff" data-edit="committee/models/member.yaml"><div class="m">- name: anthropic/claude-haiku-5-5</div><div class="p">+ name: openrouter/google/gemma-4-31b-it</div></div></div>
+<div class="via" data-via="browser">
+<p>Open <code>models/member.yaml</code> in the committee's files, change the line, and <b class="ui">Save</b>.</p>
+</div>
 <p>What everyone has read, the application packet, is in <code>team.yaml</code>. What only one member knows is written into that member's own file:</p>
 <div class="panel"><div class="cap"><span class="label">committee/chen.md</span><span class="label">part of it</span></div><pre>You also sat in on the reference calls, and your notes say:
 
