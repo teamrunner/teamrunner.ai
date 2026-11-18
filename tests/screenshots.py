@@ -7,6 +7,7 @@ model), opens it in `teamrunner ui`, and saves four PNGs in img/:
     ui-conversation.png  a rehearsal's conversation (step 1)
     ui-compare.png       two runs compared, one member changed (step 3)
     ui-flow.png          the flow diagram of chair.md (step 4)
+    ui-experiment.png    a rehearsed experiment on hello, in the Experiments tab (the homepage)
 
 Uses the installed `teamrunner` and Google Chrome through Playwright:
 
@@ -75,14 +76,27 @@ def main() -> int:
                     url = m.group(0); break
             if not url:
                 print("teamrunner ui printed no address"); return 1
-            shoot(url)
+            shoot(url, lambda: experiment(work, env))
         finally:
             server.terminate(); server.wait(timeout=10)
     print("saved", ", ".join(sorted(p.name for p in IMG.glob("ui-*.png"))))
     return 0
 
 
-def shoot(url: str) -> None:
+def experiment(work: Path, env: dict) -> None:
+    """A small experiment on hello, rehearsed: made only after the tutorial's shots, so they
+    show the tutorial's files and nothing else."""
+    study = work / "rounds_or_not"
+    study.mkdir()
+    (study / "experiment.md").write_text(
+        "---\nname: rounds-or-not\nconditions:\n  rounds: ../hello\n  one_turn_each:\n"
+        "    from: ../hello\n    change: {chair: remove}\nreplications: 3\nseed: 7\n"
+        "metrics:\n  - judge.output.winner\n---\n\n## Question\n\n"
+        "Does arguing in rounds change who wins?\n", encoding="utf-8")
+    tr(work, env, "experiment", "./rounds_or_not", "--rehearse")
+
+
+def shoot(url: str, make_experiment) -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="chrome")
         page = browser.new_page(viewport={"width": 1240, "height": 780}, device_scale_factor=2,
@@ -130,6 +144,18 @@ def shoot(url: str) -> None:
         page.wait_for_timeout(200)
         page.evaluate(tidy)
         page.screenshot(path=IMG / "ui-compare.png")
+
+        make_experiment()
+        page.locator("#experiments-view").click()
+        page.locator("#refresh-experiments").click()
+        page.locator("#experiments-list tr").first.wait_for()
+        page.locator("#experiments-list tr").first.locator("button, a").first.click()
+        page.locator("#exp-runs-tab").click()
+        page.get_by_role("button", name=re.compile(r"^Rehearsals")).click()  # a rehearsal fills the grid at no cost
+        page.locator("#experiment-body .exp-grid").wait_for()
+        page.wait_for_timeout(400)
+        page.evaluate(tidy)
+        page.screenshot(path=IMG / "ui-experiment.png")
         browser.close()
 
 
