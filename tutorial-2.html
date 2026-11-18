@@ -47,29 +47,24 @@ document.documentElement.setAttribute('data-via',v)})();
 <div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="2" aria-label="Tutorial progress"><span><a href="tutorial.html">Tutorial</a> · Step 2 of 9</span><div class="bar"><i style="width:22%"></i></div></div>
 <h2 id="first-run"><span class="stepno">Step 2</span>Your first real run</h2>
 <div class="via-switch" role="group" aria-label="Follow this tutorial"><span>follow in</span><button type="button" data-via="browser" aria-pressed="true">Browser</button><button type="button" data-via="terminal" aria-pressed="false">Terminal</button></div>
-<p>A real run calls a model, which needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the model's provider that lets TeamRunner use it, billed by the provider. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>.</p>
+<p>A real run calls a model. The model is named once, as <code>default_model:</code> in <code>hello/team.yaml</code>: <code>teamrunner/demoLLM</code>, a small model we host so that your first runs need no account and no key, at no charge to you. It answers up to 100 requests a day from each address (a run of <code>hello</code> takes three), with short replies; past that it says so, and the run stops. Your prompts go through our gateway to OpenRouter and the model behind it, so do not send it anything private. Step 7 moves to a model of your own choosing.</p>
 <div class="via" data-via="browser">
-<p>Select <code>team.yaml</code> to see it. Then try a real run: choose <b class="ui">Run…</b>, clear <b class="ui">Rehearse (free, no model)</b> and choose <b class="ui">Run with models</b>. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs.</p>
+<p>Select <code>team.yaml</code> to see it. Then run it for real: choose <b class="ui">Run…</b>, clear <b class="ui">Rehearse (free, no model)</b> and choose <b class="ui">Run with models</b>. The conversation appears as it happens, and the judge's verdict at the end.</p>
 </div>
 <div class="via" data-via="terminal">
 <p><code>explain</code> shows it beside each member:</p>
 <code class="cmd" data-run data-expect="for">teamrunner explain hello</code>
-<p>Try a real run. If the key is missing, TeamRunner stops before anything is spent and tells you which key it needs:</p>
+<p>Run it for real:</p>
 <code class="cmd" data-run="skip">teamrunner run hello</code>
-<div class="panel out"><div class="cap"><span class="label">without a key</span></div><pre>✗ the run cannot start:
-  OPENROUTER_API_KEY   for, against and judge use openrouter/google/gemma-4-31b-it,
-                       which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
-                       your shell or the package
-                       add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env</pre></div>
-</div>
-<p>This tutorial selects Gemma 4 through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. Make an account there, add a few dollars of credit and create a key. TeamRunner keeps keys in one file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. This model needs an OpenRouter key. In newer source builds the introductory shipped examples instead use the limited hosted demo; the larger examples use Anthropic. Read the model in each team before running it.</p>
-<div class="via" data-via="browser">
-<p>Choose <b class="ui">Set up keys</b>, pick <code>OPENROUTER_API_KEY</code>, paste the key into <b class="ui">New key</b> and choose <b class="ui">Save key</b>. The page writes it to that file and never shows it again; <b class="ui">Validate</b> checks that it works.</p>
-</div>
-<div class="via" data-via="terminal">
-<p>Put your key in it:</p>
-<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENROUTER_API_KEY=sk-or-...
-</pre></div>
+<div class="panel out"><div class="cap"><span class="label">what you see</span><span class="label">the words will differ</span></div><pre>run · hello · default input topic: "Remote work makes teams more productive"
+✓ 1 model
+for                                                          3.5s   $0.0000
+    “Remote work fundamentally enhances team productivity by dismantling the…”
+against                                                      3.3s   $0.0000
+    “While the opponent champions autonomy and reduced interruptions, they…”
+judge                       winner = against                 3.3s   $0.0000
+
+completed · 3 turns · 26.4s · ≈ $0.0000</pre></div>
 </div>
 <div class="via" data-via="browser">
 <p>Run it again, and this time give it your own topic: in <b class="ui">Run…</b>, choose <b class="ui">A message</b> under <b class="ui">What to give the team</b> and type <code>Four-day weeks make teams more productive</code>. The message fills in <code>{{topic}}</code>. Tick <b class="ui">Rehearse (free, no model)</b> to try a message for free.</p>
@@ -90,8 +85,8 @@ document.documentElement.setAttribute('data-via',v)})();
 <p>And to see the newest one again, as it printed:</p>
 <code class="cmd" data-run data-expect="judge">teamrunner runs hello latest</code>
 </div>
-<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and add that provider's key instead. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
-<div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It calls your selected provider and incurs its charges; the cost varies. You can rehearse what it wrote for free. In a terminal:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
+<div class="aside"><p><b>Another provider, or free local models?</b> Change <code>default_model:</code> to <code>openai/…</code>, <code>anthropic/…</code> or <code>gemini/…</code> and add that provider's key, as <a href="tutorial-7.html">step 7</a> shows. Free models on your own computer work too, through <a href="https://ollama.com">Ollama</a>: <code>ollama/gpt-oss:20b</code>. Pick one of about 20 billion parameters or more: the smallest models often can't give answers in the form a team needs.</p></div>
+<div class="aside"><p><b>Or describe a team in a sentence,</b> and a model writes the files for you. It needs a model key of your own (<a href="tutorial-7.html">step 7</a> shows how to add one), and the provider charges for it; the cost varies. You can rehearse what it wrote for free. In a terminal:</p><code class="cmd" data-run="skip">teamrunner new launch --describe "A product manager pitches a feature. An engineer and a designer push back, twice. Then the CEO decides go or no-go."</code></div>
 <div class="nextprev"><a class="tnav" href="tutorial-1.html">← Step 1: Build a team, and rehearse it</a><a class="tnav" href="tutorial-3.html">Step 3: Edit the words →</a></div>
 </main>
 <script>

@@ -54,10 +54,25 @@ document.documentElement.setAttribute('data-via',v)})();
 <div class="via" data-via="terminal">
 <code class="cmd" data-run data-expect="committee">teamrunner new committee --from hiring_committee</code>
 </div>
-<p>The example runs on Claude, through Anthropic. To keep to the model and the one key you set up in step 2, change the model its members share. It is a model profile, <code>models/member.yaml</code>, named once in <code>team.yaml</code>:</p>
+<p>This committee is a bigger job than the debate: ten turns a meeting, with longer instructions, and step 8 runs it ten times. That is more than the demo model is for, so from here the tutorial uses a model of your own: Gemma 4, through <a href="https://openrouter.ai">OpenRouter</a>, one key for many providers' models. The example runs on Claude through Anthropic; change the model its members share. It is a model profile, <code>models/member.yaml</code>, named once in <code>team.yaml</code>:</p>
 <div class="panel"><div class="cap"><span class="label">committee/models/member.yaml</span><span class="label">change this line</span></div><div class="diff" data-edit="committee/models/member.yaml"><div class="m">- name: anthropic/claude-haiku-5-5</div><div class="p">+ name: openrouter/google/gemma-4-31b-it</div></div></div>
 <div class="via" data-via="browser">
 <p>Open <code>models/member.yaml</code> in the committee's files, change the line, and <b class="ui">Save</b>.</p>
+</div>
+<p>A model of your own needs an <a class="t" tabindex="0" data-tip="A password-like code from a model provider that lets TeamRunner use its models. The provider bills you for what you use.">API key</a>: a code from the provider that lets TeamRunner use it, billed by the provider. Make an account at OpenRouter, add a few dollars of credit and create a key. TeamRunner keeps keys in one file, <code>~/.teamrunner/.env</code>: a file called <code>.env</code> in a folder called <code>.teamrunner</code> in your home folder. It is never inside a team, because team folders get shared and a key would go with them. Without it, a real run stops before anything is spent and says which key it needs.</p>
+<div class="via" data-via="browser">
+<p>Choose <b class="ui">Set up keys</b>, pick <code>OPENROUTER_API_KEY</code>, paste the key into <b class="ui">New key</b> and choose <b class="ui">Save key</b>. The page writes it to that file and never shows it again; <b class="ui">Validate</b> checks that it works.</p>
+</div>
+<div class="via" data-via="terminal">
+<p>Put your key in it:</p>
+<div class="panel"><div class="cap"><span class="label">~/.teamrunner/.env</span><span class="label">in your home folder</span></div><pre>OPENROUTER_API_KEY=sk-or-...
+</pre></div>
+<p>Without it, a real run stops and says so:</p>
+<div class="panel out"><div class="cap"><span class="label">without a key</span></div><pre>✗ the run cannot start:
+  OPENROUTER_API_KEY   chen, clerk, diaz and okafor use openrouter/google/gemma-4-31b-it,
+                       which needs OPENROUTER_API_KEY; not found in ~/.teamrunner/.env,
+                       your shell or the package
+                       add `OPENROUTER_API_KEY=…` to ~/.teamrunner/.env</pre></div>
 </div>
 <p>What everyone has read, the application packet, is in <code>team.yaml</code>. What only one member knows is written into that member's own file:</p>
 <div class="panel"><div class="cap"><span class="label">committee/chen.md</span><span class="label">part of it</span></div><pre>You also sat in on the reference calls, and your notes say:
