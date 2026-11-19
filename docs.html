@@ -44,10 +44,28 @@
 <main id="top">
   <section class="band" id="reference">
     <div class="wrap">
-      <div class="intro">
+      <div class="intro" id="files">
         <p class="label">Docs</p>
+        <h2>One page for each file you write</h2>
+        <p>Each starts with a small example and how to try it, then gives every setting, its values and defaults, and what TeamRunner refuses.</p>
+      </div>
+      <div class="refs">
+        <a href="docs/team_yaml.html"><i>a team</i><b>team.yaml</b><span>What makes a folder a team: its name, default model and inputs</span></a>
+        <a href="docs/member.html"><i>a team</i><b>A member</b><span>A member’s <code>.md</code> file: its model, settings, typed answers and prompt</span></a>
+        <a href="docs/toolkeeper.html"><i>a team</i><b>A toolkeeper</b><span>The member who holds the tools, and who may use them on what terms</span></a>
+        <a href="docs/chair.html"><i>a team</i><b>chair.md</b><span>The flow: who speaks when, rounds and decisions</span></a>
+        <a href="docs/model_profile.html"><i>a team</i><b>A model profile</b><span><code>models/*.yaml</code>: a model and its settings in one file</span></a>
+        <a href="docs/experiment.html"><i>an experiment</i><b>experiment.md</b><span>Versions of a team, run side by side many times each</span></a>
+        <a href="docs/variant.html"><i>an experiment</i><b>A variant</b><span><code>variants/</code>: the files a condition puts in place of the team’s</span></a>
+        <a href="docs/answer_key.html"><i>an experiment</i><b>An answer key</b><span><code>metrics/*.yaml</code>: scoring each run against a known answer</span></a>
+        <a href="docs/evaluator.html"><i>an experiment</i><b>An evaluator</b><span><code>metrics/*.md</code>: a model that grades each run with a rubric</span></a>
+        <a href="docs/task.html"><i>an experiment</i><b>A task</b><span><code>tasks/*.yaml</code>: the inputs every condition gets</span></a>
+      </div>
+
+      <div class="intro" style="margin-top:72px">
+        <p class="label">Everything else</p>
         <h2>Where everything else lives</h2>
-        <p>The full documentation is the README on GitHub.</p>
+        <p>The rest of the documentation is the README on GitHub.</p>
       </div>
       <div class="refs">
         <a href="install.html"><i>this site</i><b>Install</b><span>uv or pip, on Mac, Windows or Linux</span></a>

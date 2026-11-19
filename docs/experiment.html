@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>experiment.md — TeamRunner docs</title>
+<meta name="description" content="Versions of a team, run side by side many times each. Every setting, its values and defaults, and what TeamRunner refuses.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../site.css">
+<link rel="stylesheet" href="docs.css">
+<script data-goatcounter="https://teamrunner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="../count.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="../index.html" aria-label="TeamRunner home">
+      <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="25" r="14" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="24" cy="11" r="6.5" style="fill:var(--accent);stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="11.9" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+        <circle cx="36.1" cy="32" r="6.5" style="fill:currentColor;stroke:var(--paper)" stroke-width="3"/>
+      </svg>
+      teamrunner
+    </a>
+    <nav aria-label="Main">
+      <a href="../why.html">Why</a>
+      <a href="../install.html">Install</a>
+      <a href="../tutorial.html">Tutorial</a>
+      <a href="../examples.html">Examples</a>
+      <a href="../docs.html" aria-current="page" style="color:var(--ink)">Docs</a>
+    </nav>
+    <div class="right">
+      <a class="pill" href="https://github.com/teamrunner/teamrunner">GitHub</a>
+    </div>
+  </div>
+</header>
+<main class="doc ref" data-page="experiment">
+<nav class="files" aria-label="Files"><a href="team_yaml.html">team.yaml</a><a href="member.html">A member</a><a href="toolkeeper.html">A toolkeeper</a><a href="chair.html">chair.md</a><a href="model_profile.html">A model profile</a><a href="experiment.html" aria-current="page">experiment.md</a><a href="variant.html">A variant</a><a href="answer_key.html">An answer key</a><a href="evaluator.html">An evaluator</a><a href="task.html">A task</a></nav>
+<h1 id="experimentmd">experiment.md</h1>
+<p>An experiment runs versions of a team side by side, many times each, in a fair order, and counts the results the same way for every version. It is one file, <code>experiment.md</code>, in a folder of its own. The team it studies is never edited.</p>
+<h2 id="a-first-experiment">A first experiment</h2>
+<p>Does the model playing the advocate change who wins the debate? Make a folder in your workspace's <code>experiments/</code>, and in it this file:</p>
+<div class="panel" markdown="0"><div class="cap"><span class="label">experiments/advocate_model/experiment.md</span></div><pre>---
+name: advocate-model
+conditions:
+  gpt:
+    from: debate
+    change:
+      advocate.model: openai/gpt-6-luna
+  claude:
+    from: debate
+    change:
+      advocate.model: anthropic/claude-sonnet-5-5
+replications: 20        # 2 conditions × 20 = 40 runs
+seed: 42
+metrics:
+  - judge.output.winner
+limits:
+  max_concurrent: 4
+  max_cost_usd: 40.00
+---
+
+## Question
+
+Does the model playing the advocate change who wins the debate?</pre></div>
+
+<p>It names two versions of the team <code>debate</code>, called <strong>conditions</strong>. Each starts <code>from:</code> the team and says what to <code>change:</code> in it; here only the advocate's model differs. Each condition runs 20 times, in an order drawn from <code>seed: 42</code>, and every run's judge's answer is counted. The text below the settings is for people: every run records it.</p>
+<p>Try it, spending nothing:</p>
+<div class="cmds" markdown="0"><code class="cmd">teamrunner experiment advocate_model --plan <span class="cm"># the conditions, how they differ, the order, the cost estimate</span></code><code class="cmd">teamrunner experiment advocate_model --rehearse <span class="cm"># every run end to end, with no model, at no cost</span></code><code class="cmd">teamrunner experiment advocate_model <span class="cm"># the real runs</span></code></div>
+
+<p>In <code>teamrunner ui</code>, the same experiment is under <strong>Experiments</strong>. A shipped example uses everything on this page: <code>teamrunner new my_study --from leader_vs_flat</code>. <em>New in 0.0.7.</em></p>
+<p>The rest of this page is every setting in detail.</p>
+<h2 id="the-folder">The folder</h2>
+<p>A folder is an experiment when it holds <code>experiment.md</code>. Beside it live the study's own files:</p>
+<div class="panel" markdown="0"><div class="cap"><span class="label">experiments/leader_vs_flat/</span></div><pre>experiments/leader_vs_flat/
+├── experiment.md
+├── variants/        files a condition puts in place of the team&#x27;s
+├── metrics/         answer keys (.yaml) and evaluators (.md); no member ever reads them
+├── tasks/           the inputs every condition gets
+├── conditions/      built by TeamRunner, rebuilt before every run
+└── runs/            one folder per run</pre></div>
+
+<p>Only <code>experiment.md</code> is needed. The experiment must be outside the team it studies: an experiment folder inside the team's package is refused, so nothing it makes lands in the team.</p>
+<h2 id="the-settings-block">The settings block</h2>
+<p>The settings go at the top, between two lines of <code>---</code>. A file that does not start that way is refused. Any word the file does not know is refused with the nearest known word (<code>replicates</code> → did you mean <code>replications</code>?), and two old words say what replaced them: <code>patch:</code> is now <code>change:</code>, and <code>conditions_order:</code> is gone because the order is drawn from <code>seed:</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Needed</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#name"><code>name</code></a></td>
+<td>yes</td>
+<td>A short name for the experiment</td>
+</tr>
+<tr>
+<td><a href="#conditions"><code>conditions</code></a></td>
+<td>this, or <code>base</code> and <code>factors</code></td>
+<td>Each version, by name</td>
+</tr>
+<tr>
+<td><a href="#base"><code>base</code></a> and <a href="#factors"><code>factors</code></a></td>
+<td>this, or <code>conditions</code></td>
+<td>Every combination of several changes</td>
+</tr>
+<tr>
+<td><a href="#replications"><code>replications</code></a></td>
+<td>yes</td>
+<td>Runs per condition, at least 2</td>
+</tr>
+<tr>
+<td><a href="#allow_single_run"><code>allow_single_run</code></a></td>
+<td>no</td>
+<td><code>true</code> lets <code>replications: 1</code> through</td>
+</tr>
+<tr>
+<td><a href="#seed"><code>seed</code></a></td>
+<td>yes</td>
+<td>Fixes the order of the runs and each run's seed</td>
+</tr>
+<tr>
+<td><a href="#task"><code>task</code></a></td>
+<td>no</td>
+<td>The inputs every condition gets</td>
+</tr>
+<tr>
+<td><a href="#metrics"><code>metrics</code></a></td>
+<td>no</td>
+<td>What to measure, besides cost and time</td>
+</tr>
+<tr>
+<td><a href="#limits"><code>limits</code></a></td>
+<td>no</td>
+<td>Runs at once, and the ceiling on estimated cost</td>
+</tr>
+</tbody>
+</table>
+<h3 id="name"><code>name:</code></h3>
+<p>Any short text: <code>name: advocate-model</code>. It is shown at the top of the console, the summary and the page. Changing it does not change the study.</p>
+<h3 id="conditions"><code>conditions:</code></h3>
+<p>The simple form. Each line under it is one condition: its name, then the team it runs.</p>
+<div class="panel" markdown="0"><div class="cap"><span class="label">experiment.md</span></div><pre>conditions:
+  control: debate                 # the team as it is
+  bold:
+    from: debate
+    change:
+      advocate.prompt: file:variants/bold.md</pre></div>
+
+<ul>
+<li><strong>A team alone</strong> (<code>control: debate</code>) runs that team as it is: the control, written like any other condition. <code>from:</code> with <code>change: {}</code> or no <code>change:</code> at all is the same.</li>
+<li><strong><code>from:</code> and <code>change:</code></strong> run the team with the changes applied. A condition has only these two words; anything else is refused.</li>
+<li><strong>Where the team is.</strong> A name with no slash (<code>debate</code>) is a team in your workspace's <code>teams/</code> (and, when the experiment is in a workspace's <code>experiments/</code>, in the <code>teams/</code> beside it). Anything else is a path from the experiment's folder (<code>../../teams/debate</code>), or from your home folder if it starts with <code>~</code>. The folder must hold a <code>team.yaml</code>. A single member's <code>.md</code> file is refused: TeamRunner runs team folders so far.</li>
+<li><strong>Names.</strong> A condition's name becomes a folder's name, so it uses letters, digits, <code>_</code> and <code>-</code>. Names Windows will not give a folder (<code>con</code>, <code>nul</code>, <code>com1</code>, …) are refused, and so are two names that differ only in capitals (<code>Short</code> and <code>short</code>), because macOS and Windows would make them one folder. <em>New in 0.0.7.</em></li>
+</ul>
+<h3 id="change"><code>change:</code></h3>
+<p>What a condition changes in its team. One line per change: what, then its new value.</p>
+<table>
+<thead>
+<tr>
+<th>You write</th>
+<th>It changes</th>
+<th>The value is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>advocate.model: openai/gpt-5</code></td>
+<td>one setting of the member <code>advocate</code></td>
+<td>the new value</td>
+</tr>
+<tr>
+<td><code>advocate.params.temperature: 0.2</code></td>
+<td>a setting inside a setting</td>
+<td>the new value</td>
+</tr>
+<tr>
+<td><code>advocate.prompt: file:variants/bold.md</code></td>
+<td>the member's prompt, the text below its settings</td>
+<td><code>file:</code> a file with the prompt only</td>
+</tr>
+<tr>
+<td><code>judge: file:variants/strict_judge.md</code></td>
+<td>the whole member file, or adds a member the team lacks</td>
+<td><code>file:</code> a whole member file</td>
+</tr>
+<tr>
+<td><code>fact_checker: remove</code></td>
+<td>takes the member out of this condition</td>
+<td><code>remove</code></td>
+</tr>
+<tr>
+<td><code>chair: file:variants/chair_leader.md</code></td>
+<td>the whole flow (<code>chair.md</code>)</td>
+<td><code>file:</code>, or <code>remove</code></td>
+</tr>
+<tr>
+<td><code>models/careful: file:variants/careful.yaml</code></td>
+<td>a whole model profile in the team's <code>models/</code></td>
+<td><code>file:</code>, or <code>remove</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>file:</code></strong> names a file in the experiment's folder, by its path from there, usually in <code>variants/</code>. A file outside the experiment's folder is refused.</li>
+<li><strong>Only the team's own files.</strong> A change with <code>..</code>, a backslash or a path from the top of the disk, or one that would land outside the condition's copy of the team, is refused, and a change never writes or deletes through a link. <em>New in 0.0.7.</em></li>
+<li><strong>A setting</strong> is any of a member's settings except <code>id</code> and <code>parent_id</code>, which say who a member is, not how it works. A misspelled member or setting is refused with the nearest match (<code>emmma.prompt</code> → did you mean <code>emma</code>?). A setting is changed only on a member the team has; to add a member, add the whole file.</li>
+<li><strong>A setting from a file.</strong> <code>advocate.description: file:variants/long.txt</code> gives the setting the file's text.</li>
+<li><strong><code>remove</code></strong> takes out a whole file. <code>advocate.model: remove</code> is refused: give the setting its new value instead.</li>
+<li><strong>A prompt file</strong> holds the prompt only. One that starts with a settings block is refused; to change the settings too, change the whole member.</li>
+<li><strong>Whole files first.</strong> Whole-file changes are applied before setting changes, so <code>judge: file:…</code> and <code>judge.model: …</code> together give the new judge that model.</li>
+<li><strong>Not yet.</strong> Changes to <code>whiteboard</code>, to <code>manager.md</code>, and to teams inside teams (<code>subteam/member.model</code>) come in a later version of TeamRunner; <code>--plan</code> says so and runs nothing.</li>
+</ul>
+<p>After the changes, every condition is checked as a whole team, as <code>teamrunner validate</code> would, and its problems are shown at their file and line.</p>
+<p><strong>Conditions are folders.</strong> A condition with changes is built as a complete team under <code>conditions/&lt;name&gt;/</code>, marked by a <code>GENERATED.md</code> note, and rebuilt before every run. You can open it, rehearse it or run it alone, but an edit made there is lost: change <code>experiment.md</code> or the files in <code>variants/</code> instead. A folder under <code>conditions/</code> without that note was not made by TeamRunner and is never replaced; the condition that would be built there is refused until you move it.</p>
+<h3 id="base"><code>base:</code></h3>
+<p>The full form, for several changes at once. <code>base:</code> is the team every condition starts from, written as in <a href="#conditions"><code>conditions:</code></a>. It always comes with <a href="#factors"><code>factors:</code></a>, and a file may not have both <code>conditions:</code> and <code>base:</code>.</p>
+<h3 id="factors"><code>factors:</code></h3>
+<p>Each factor is one thing you vary, with its levels. Every combination of levels is a condition.</p>
+<div class="panel" markdown="0"><div class="cap"><span class="label">experiment.md</span></div><pre>base: orchestrators_lite
+factors:
+  leader:
+    - label: flat
+      change: {}
+    - label: visible
+      change:
+        chair: file:variants/chair_leader.md
+  model:
+    - label: small
+      change: {emma.model: openai/gpt-5-mini}
+    - label: large
+      change: {emma.model: openai/gpt-5}</pre></div>
+
+<p>This makes four conditions: <code>flat+small</code>, <code>flat+large</code>, <code>visible+small</code>, <code>visible+large</code>. Each condition is named by its levels, joined with <code>+</code>, and <code>runs.csv</code> keeps each factor's level in a column of its own (<code>factor_leader</code>, <code>factor_model</code>). <em>New in 0.0.7.</em></p>
+<ul>
+<li>A level has <code>label:</code> and <code>change:</code>, and nothing else. Without a label it is named <code>&lt;factor&gt;_&lt;n&gt;</code> (<code>model_2</code>).</li>
+<li>Labels use letters, digits, <code>_</code> and <code>-</code>. A label that YAML reads as yes or no (<code>no</code>, <code>off</code>) must be quoted: <code>label: "no"</code>. A number (<code>label: 2</code>) is read as the label <code>2</code>. <em>New in 0.0.7.</em></li>
+<li>Two levels of one factor may not share a label, or differ only in capitals. <em>New in 0.0.7.</em></li>
+<li>One thing may be changed by one factor only: two factors that both change <code>emma.model</code> are refused.</li>
+</ul>
+<h3 id="replications"><code>replications:</code></h3>
+<p>How many times each condition runs: a whole number, at least 2. The experiment makes conditions × replications runs. One run per condition says little about a model that answers differently each time, so <code>replications: 1</code> is refused unless <a href="#allow_single_run"><code>allow_single_run: true</code></a> is beside it.</p>
+<p>Raising <code>replications:</code> later adds rounds and keeps the runs already made; lowering it counts the first runs and keeps the rest on record, counting them again if you raise it. <em>New in 0.0.7.</em> Neither changes the study.</p>
+<h3 id="allow_single_run"><code>allow_single_run:</code></h3>
+<p><code>true</code> or <code>false</code> (default <code>false</code>). <code>true</code> lets <code>replications: 1</code> through.</p>
+<h3 id="seed"><code>seed:</code></h3>
+<p>A whole number, 0 or more. It fixes everything TeamRunner controls: the order of the runs and each run's own seed. It cannot make a model answer the same way twice; it makes the design the same every time.</p>
+<p>The runs go in <strong>rounds</strong>. Each round runs every condition once, in an order drawn from the seed, so if anything stops the experiment early, the conditions are at most one run apart. <code>--plan</code> shows the order. Changing the seed changes the study.</p>
+<h3 id="task"><code>task:</code></h3>
+<p>A task file, by its path from the experiment's folder (usually in <code>tasks/</code>), with or without its ending: <code>task: tasks/order_summary</code>. It gives every condition the same inputs, in place of the team's <code>default_inputs:</code>, so editing the team cannot change the task. See <a href="task.html">a task file</a>.</p>
+<p>Without <code>task:</code>, each condition uses its team's <code>default_inputs:</code>. With it, an input the task leaves out comes from the team's defaults. The task may not give an input that no prompt in a condition uses, and every input a prompt uses must come from the task or the defaults.</p>
+<h3 id="metrics"><code>metrics:</code></h3>
+<p>A list of what to measure. Cost and time are always measured. Each line is one of two things:</p>
+<ul>
+<li><strong>A member's typed answer</strong>, by its path: <code>judge.output.winner</code>. Its last answer in each run is measured as it is: a choice as the share of each answer, a number as its mean, a yes-or-no as the share of yes. The member must declare that field under its <code>output:</code>. A text answer cannot be counted and is refused: grade it with an evaluator.</li>
+<li><strong>A file</strong>, by its path from the experiment's folder, with or without its ending: <code>metrics/bugs_found</code>. An <a href="answer_key.html">answer key</a> (<code>.yaml</code>) scores against a known answer, with no model. An <a href="evaluator.html">evaluator</a> (<code>.md</code>) is a model that grades each run with a rubric, without being told which condition it came from.</li>
+</ul>
+<p>Members never see <code>metrics/</code>, no <code>change:</code> reaches it, and the same metrics score every condition. Editing a metric does not change the study; it rescores the runs already made (an answer key at once and for free; an evaluator when you ask, with <code>--evaluate</code>).</p>
+<h3 id="limits"><code>limits:</code></h3>
+<p>Two settings, both optional.</p>
+<ul>
+<li><strong><code>max_concurrent:</code></strong> how many runs at once, a whole number, 1 or more (default 1). Keep it inside your provider's rate limits.</li>
+<li><strong><code>max_cost_usd:</code></strong> the ceiling on the whole experiment's estimated spending, running and evaluating, in dollars: <code>40.00</code>. It must be more than 0.</li>
+</ul>
+<p>The ceiling works on estimates at list prices. Before every model call, TeamRunner sets aside the most that call can cost; a call that does not fit what is left is not sent, and that run stops. If the estimate for the whole experiment is over the ceiling, nothing starts. It is not a cap on your provider's bill. <code>--max-cost &lt;usd&gt;</code> replaces it for one session.</p>
+<p>Without <code>max_cost_usd:</code>, the command line warns that nothing caps the spending, and the page will not start a run unless every model the experiment uses is free. A rehearsal has no ceiling.</p>
+<h2 id="the-body">The body</h2>
+<p>Everything below the second <code>---</code> is for people: the question, the hypothesis, where the idea came from. It is optional, plain Markdown. Every run records it, so a run's record shows what the hypothesis said when it ran. It is not part of the study, so fixing a typo costs nothing.</p>
+<h2 id="what-changes-the-study">What changes the study</h2>
+<p>TeamRunner keeps a fingerprint of each condition: its built team, its inputs and the seed. Comments, spacing, <code>id:</code> lines, the body, <code>name:</code>, <code>metrics:</code>, <code>limits:</code> and <code>replications:</code> are left out of it.</p>
+<p>When a fingerprint changes after runs were made, the command stops before running anything and says what changed. <code>--restart</code> starts the changed study from round 1; <code>--keep-unchanged</code> keeps the runs of conditions that did not change. Earlier runs are kept in <code>runs/</code> either way, and undoing the edit makes them count again.</p>
+<p>Editing a team while its experiment runs stops it: each run's copy of the team is checked first, and on a difference no more runs start. The runs so far are kept, and the next command says what changed. <em>New in 0.0.7.</em></p>
+<h2 id="keys-in-the-file">Keys in the file</h2>
+<p><code>experiment.md</code> goes into every run's record, so the experiment's folder is checked for API keys like a team's, and a key found there is refused. <em>New in 0.0.7.</em></p>
+<h2 id="related-files">Related files</h2>
+<ul>
+<li><a href="team_yaml.html">team.yaml</a>: the team a condition runs, and its <code>default_inputs:</code>.</li>
+<li><a href="member.html">A member</a>: the settings <code>change:</code> can reach, and <code>output:</code>, which metrics read.</li>
+<li><a href="chair.html">chair.md</a>: the flow a condition can replace with <code>chair: file:…</code>.</li>
+<li><a href="model_profile.html">A model profile</a>: what <code>models/&lt;name&gt;: file:…</code> replaces.</li>
+<li><a href="variant.html">A variant</a>: the files <code>change:</code> puts in place.</li>
+<li><a href="task.html">A task</a>, <a href="answer_key.html">an answer key</a>, <a href="evaluator.html">an evaluator</a>.</li>
+</ul>
+<p class="version">Describes TeamRunner 0.0.7. Something wrong or unclear? <a href="https://github.com/teamrunner/teamrunner/issues">Tell us on GitHub</a>.</p>
+</main>
+<footer><div class="wrap"><div><p style="margin-top:8px">Copyright 2026 Kumar Muthuraman. Published and maintained by Serenity Partners LLC.</p>
+      <p style="margin-top:8px">Engine and documentation: <a href="../LICENSE">GPL-3.0-or-later</a>. Designated examples, starter files and authoring guide: <a href="../templates-LICENSE">MIT-0</a>. Your own work is not automatically GPL; provider terms and third-party rights still apply.</p>
+      <p style="margin-top:8px">Provided as is, without warranty, to the extent permitted by law. Costs are estimates; actual charges may exceed estimates and budgets. The publisher, author and contributors disclaim liability to the extent permitted by law. Verify AI outputs and protect sensitive data. <a href="../legal.html">Publisher, liability and data notices</a> · <a href="../NOTICE">Third-party notices</a>.</p></div></div></footer>
+</body>
+</html>
